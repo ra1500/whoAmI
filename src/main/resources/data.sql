@@ -1,0 +1,1 @@
+insert into INQUIRY_ENTITY (category_id,description) values (10001,'oh yeah');
