@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+    $(document).ready(function(){
+        $("#getbutton").click(function(){
+            $.ajax({
+                type: "GET",
+                beforeSend: function(){$("#getresult").text("get failed. bad parameters above")},
+                url: "http://localhost:8080/pool/"+ $("#gettextprefix").val() + "/" + $("#gettextid").val() ,
+                success: function(data){$("#getresult").text("GET success! -- id: " + data.id + " prefix: " + data.prefix + " total: " + data.total)},
+                error: function(){$("#getresult").text("error at end of get")},
+             });
+         });
+     });
+    </script>
+    <script>
+    $(document).ready(function(){
+        $("#postbutton").click(function(){
+            $.ajax({
+                type: "POST",
+                beforeSend: function(){$("#postresult").text("POST failed before sent")},
+                url: "http://localhost:8080/pool",
+                data: JSON.stringify({ "id" : $("#posttextid").val(), "prefix" : $("#posttextprefix").val(), "total": $("#posttexttotal").val() }),
+                contentType : 'application/json',
+                dataType: "json",
+                success: function(data){$("#postresult").text("POST success! -- id: " + data.id + " prefix: " + data.prefix + "total: " + data.total)},
+                error: function(){$("#postresult").text("error at end of POST")},
+             });
+         });
+     });
+    </script>
+
+    <title>neural</title>
+</head>
+<body>
+
+<div>
+    Get id <input type="text" id="gettextid"><br>
+    Get prefix <input type="text" id="gettextprefix"><br>
+    <button id="getbutton">getPool</button><br>
+    <p id="getresult">'GET' status/return:</p> <br>
+</div>
+<div>
+    post id <input type="text" id="posttextid"><br>
+    post prefix <input type="text" id="posttextprefix"><br>
+    post total <input type="text" id="posttexttotal"><br>
+    <button id="postbutton">postPool</button><br>
+    <p id="postresult">'POST' status/return:</p> <br>
+</div>
+</body>
+</html>

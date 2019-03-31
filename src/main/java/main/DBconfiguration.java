@@ -1,6 +1,6 @@
 package main;
 
-import main.InquiryEntity;
+// import main.InquiryEntity;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;

@@ -5,4 +5,8 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface RepositoryDAO extends JpaRepository<InquiryEntity, Long> {
+
+    InquiryEntity findOneByGid(Long gid);
+
+
 }
