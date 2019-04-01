@@ -16,6 +16,7 @@ public class InquiryEntityDtoTransformer {
         }
 
         InquiryEntityDto dto = new InquiryEntityDto();
+        dto.setGid(inquiryEntity.getGid());
         dto.setCreated(inquiryEntity.getCreated());
         dto.setCategoryId(inquiryEntity.getCategoryId());
         dto.setDescription(inquiryEntity.getDescription());
@@ -25,6 +26,6 @@ public class InquiryEntityDtoTransformer {
     }
 
     public InquiryEntity generate(final InquiryEntityDto dto) {
-        return new InquiryEntity(dto.getGid());
+        return new InquiryEntity(dto.getCategoryId(),dto.getDescription(),dto.getRawCsvData());
     }
 }

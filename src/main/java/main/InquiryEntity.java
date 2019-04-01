@@ -32,10 +32,11 @@ public class InquiryEntity implements Serializable {
         super();
     }
 
-    public InquiryEntity(Long gid, String description) {
+    public InquiryEntity(Long categoryId, String description, String rawCsvData) {
         super();
-        this.gid = gid;
+        this.categoryId = categoryId;
         this.description = description;
+        this.rawCsvData = rawCsvData;
     }
 
     public InquiryEntity(Long gid) {
