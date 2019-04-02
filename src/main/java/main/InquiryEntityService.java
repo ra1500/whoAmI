@@ -1,9 +1,5 @@
 package main;
 
-import main.InquiryEntityDtoTransformer;
-import main.InquiryEntity;
-import main.RepositoryDAO;
-import main.InquiryEntityDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -13,11 +9,11 @@ public class InquiryEntityService {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private final RepositoryDAO inquiryEntityRepository;
+    private final InquiryRepositoryDAO inquiryEntityRepository;
 
     private final InquiryEntityDtoTransformer inquiryEntityDtoTransformer;
 
-    public InquiryEntityService(final RepositoryDAO inquiryEntityRepository, final InquiryEntityDtoTransformer inquiryEntityDtoTransformer) {
+    public InquiryEntityService(final InquiryRepositoryDAO inquiryEntityRepository, final InquiryEntityDtoTransformer inquiryEntityDtoTransformer) {
         this.inquiryEntityRepository = inquiryEntityRepository;
         this.inquiryEntityDtoTransformer = inquiryEntityDtoTransformer;
     }

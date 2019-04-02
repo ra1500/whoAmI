@@ -4,7 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface RepositoryDAO extends JpaRepository<InquiryEntity, Long> {
+public interface InquiryRepositoryDAO extends JpaRepository<InquiryEntity, Long> {
 
     InquiryEntity findOneByGid(Long gid);
 
