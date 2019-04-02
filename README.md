@@ -12,6 +12,8 @@ Run the application: `ApiApplication.java`
 
 [http://localhost:8080]()]
 
+Login -> user: admin  password: admin
+
 ### API Documentation (Swagger)
 
 [http://localhost:8080/swagger-ui.html]()

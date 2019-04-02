@@ -38,25 +38,25 @@ public class LoginConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                //.csrf().disable()
-                //.exceptionHandling()
-                //.authenticationEntryPoint(restAuthenticationEntryPoint)
+                .csrf().disable()  // cross-site request forgery. disabled for now. need to generate a code to feed into the html login form.
+                //.exceptionHandling()  // ?
+                //.authenticationEntryPoint(restAuthenticationEntryPoint)  this is handled via the successHandler below
                 //.and()
                 .authorizeRequests()
-                .antMatchers("/anonymous*").anonymous()
-                .antMatchers("/login*").permitAll()
+                //.antMatchers("/anonymous*").anonymous()     //not needed at this time
+                //.antMatchers("/foo.html").authenticated()   //not needed at this time
+                //.antMatchers("/foo.html").hasRole("ADMIN")  //not needed at this time
+                .antMatchers("/login*").permitAll()  //excludes 'login.html' page from requiring to be logged in
                 .anyRequest().authenticated()
-                //.antMatchers("/log.html").authenticated()
-                .antMatchers("/index.html").hasRole("ADMIN")
                 .and()
-                .formLogin()
-                //.loginPage("/login.html")
-                //.loginProcessingUrl("/login")
+                .formLogin()  // indicating the need for a login via a form
+                .loginPage("/login.html") // not index.html since site is now login required except for /login as specified in 'permitAll()" above.
+                .loginProcessingUrl("/do_login")  //in html form 'action="/do_login" as well in order to match here. This avoids the default of "/login" which may expose fact that using Spring Security.
                 .successHandler(myAuthenticationSuccessHandler())
-                //.failureHandler(myFailureHandler)  //add a failure class to implement or simply allow a re-direct in the successhandler?
+                //.failureHandler(myFailureHandler)  //add a failure landing page/url
                 .and()
-                .logout();
-                // .logoutSuccessUrl("/afterlogout.html");  //default reverts to '/'  otherwise set it here
+                .logout();  // .indicated in html via href to '/logout' unless otherwise specified in this method to a different url such as '/foo'
+                // .logoutSuccessUrl("/afterlogout.html");  //default reverts to '/login'  otherwise set it here
 
         http
                 .sessionManagement()
