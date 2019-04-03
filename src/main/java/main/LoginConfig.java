@@ -47,6 +47,8 @@ public class LoginConfig extends WebSecurityConfigurerAdapter {
                 //.antMatchers("/foo.html").authenticated()   //not needed at this time
                 //.antMatchers("/foo.html").hasRole("ADMIN")  //not needed at this time
                 .antMatchers("/login*").permitAll()  //excludes 'login.html' page from requiring to be logged in
+                .antMatchers("/createlogin.html").permitAll()
+                .antMatchers("/user*").permitAll()  // Need to setthis up so that only users created from the createlogin.html page can actually POST via this url path
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()  // indicating the need for a login via a form
