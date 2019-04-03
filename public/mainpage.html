@@ -10,7 +10,7 @@
                 type: "GET",
                 beforeSend: function(){$("#getresult").text("get failed. bad parameters above")},
                 url: "http://localhost:8080/fire/"+ $("#gettextgid").val() ,
-                success: function(data){$("#getresult").text("GET success! -- |gid: " + data.gid + "|  category: " + data.categoryId + "|  description: " + data.description + "|  CSVdata: " + data.rawCsvData + " |")},
+                success: function(data){$("#getresult").text(" gid: " + data.gid + "  category: " + data.categoryId + "  description: " + data.description + "  CSVdata: " + data.rawCsvData + " ")},
                 error: function(){$("#getresult").text("error at end of get")},
              });
          });
@@ -26,7 +26,7 @@
                 data: JSON.stringify({ "categoryId" : $("#posttextcategoryId").val(), "description" : $("#posttextdescription").val(), "rawCsvData": $("#posttextrawCsvData").val()}),
                 contentType : 'application/json',
                 dataType: "json",
-                success: function(data){$("#postresult").text("POST success! -- |gid: " + data.gid + "|  category: " + data.categoryId + "|  description: " + data.description + "|  CSVdata: " + data.rawCsvData + " |")},
+                success: function(data){$("#postresult").text("POSTed  gid: " + data.gid + "  category: " + data.categoryId + "  description: " + data.description + "  CSVdata: " + data.rawCsvData + " ")},
                 error: function(){$("#postresult").text("error at end of POST")},
              });
          });

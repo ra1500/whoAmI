@@ -15,7 +15,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Collection;
 
-public class MySimpleUrlAuthenticationSuccessHandler
+public class UrlAuthenticationSuccessHandler
         implements AuthenticationSuccessHandler {
 
     protected Log logger = LogFactory.getLog(this.getClass());
@@ -76,7 +76,7 @@ public class MySimpleUrlAuthenticationSuccessHandler
         if (session == null) {
             return;
         }
-        session.setMaxInactiveInterval(20);   //This is in seconds. Login/Session length. Set it here
+        session.setMaxInactiveInterval(300);   //This is in seconds. Login/Session length. Set it here
         session.removeAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
     }
 
