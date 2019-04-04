@@ -2,6 +2,7 @@ package main;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -19,10 +20,9 @@ public class UserEntityService {
     }
 
     // find for authentication by using UserDtoEntity from POST
-    public UserEntityDto getUserEntity(final UserEntityDto userEntityDto) {
-        return userEntityDtoTransformer.generate(userEntityRepository.findOneByUserNameAndPassword(userEntityDto.getUserName(), userEntityDto.getPassword()));
-    }
-
+    //public UserEntityDto getUserEntity(final UserEntityDto userEntityDto) {
+    //    return userEntityDtoTransformer.generate(userEntityRepository.findOneByUserNameAndPassword(userEntityDto.getUserName(), userEntityDto.getPassword()));
+    //}
 
     // get by Username AND Password
     public UserEntityDto getUserEntity(final String userName, final String password) {

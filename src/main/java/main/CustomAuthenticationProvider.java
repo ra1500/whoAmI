@@ -1,5 +1,7 @@
 package main;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -7,14 +9,15 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 @Component
 public class CustomAuthenticationProvider implements AuthenticationProvider {
 
-    private String user; // ryan put this in
-    private String pass; // ryan put this in
-
+    @Autowired //ryan
+    UserEntityService userEntityService;  //ryan
 
     @Override
     public Authentication authenticate(Authentication auth)
@@ -23,18 +26,34 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         String password = auth.getCredentials()
                 .toString();
 
+        System.out.println("before");
+
+        UserEntityDto foundUserEntityDto = userEntityService.getUserEntity(username,password);  //ryan
+        //System.out.println(foundUserEntityDto.getUserName());
+
+        System.out.println("after");
+
+        System.out.println(username);
+        System.out.println(password);
+
+
+        String user = "rr";  //ryan
+        String pass = "tt";  //ryan
+
+        System.out.println(user);
+        System.out.println(pass);
+
         if (user.equals(username) && pass.equals(password)) {
             return new UsernamePasswordAuthenticationToken
-                    (username, password, Collections.emptyList());
+                    (username, password, new ArrayList<>()); //
+                    //(username, password, Collections.emptyList());
         } else {
+            System.out.println("throwing exception in authenticate");
+
+
             throw new
                     BadCredentialsException("authentication failed");
         }
-    }
-
-    public void setFoundUserAndPassword(UserEntityDto foundUserEntityDto) { //method by ryan to stick in 'user' and 'pass'
-        this.user = foundUserEntityDto.getUserName();
-        this.pass = foundUserEntityDto.getPassword();
     }
 
     @Override

@@ -16,7 +16,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 public class LoginConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    CustomAuthenticationProvider customAuthProvider;
+    CustomAuthenticationProvider customAuthProvider;  //ryan
 
     @Bean
     public AuthenticationSuccessHandler myAuthenticationSuccessHandler(){
@@ -26,10 +26,9 @@ public class LoginConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 
-        //auth.authenticationProvider(customAuthProvider);
-
-        auth.inMemoryAuthentication()
-        .withUser("admin").password(encoder().encode("admin")).roles("ADMIN");
+        auth.authenticationProvider(customAuthProvider);
+        //auth.inMemoryAuthentication()
+        //.withUser("admin").password(encoder().encode("admin")).roles("ADMIN");
         //.and()
         //.withUser("user").password(encoder().encode("user")).roles("USER");
     }

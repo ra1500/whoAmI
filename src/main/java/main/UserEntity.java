@@ -24,6 +24,11 @@ public class UserEntity {
     @Column (nullable = false)
     private String password;
 
+    public UserEntity() {
+        super();
+    }
+
+
     public UserEntity (String userName, String password) {
         super();
         this.userName = userName;
