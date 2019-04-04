@@ -18,6 +18,12 @@ public class UserEntityService {
         this.userEntityDtoTransformer = userEntityDtoTransformer;
     }
 
+    // find for authentication by using UserDtoEntity from POST
+    public UserEntityDto getUserEntity(final UserEntityDto userEntityDto) {
+        return userEntityDtoTransformer.generate(userEntityRepository.findOneByUserNameAndPassword(userEntityDto.getUserName(), userEntityDto.getPassword()));
+    }
+
+
     // get by Username AND Password
     public UserEntityDto getUserEntity(final String userName, final String password) {
         return userEntityDtoTransformer.generate(userEntityRepository.findOneByUserNameAndPassword(userName, password));

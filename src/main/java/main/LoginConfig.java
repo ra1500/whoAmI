@@ -1,5 +1,6 @@
 package main;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -14,7 +15,8 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 @EnableWebSecurity
 public class LoginConfig extends WebSecurityConfigurerAdapter {
 
-    //private RestAuthenticationEntryPoint restAuthenticationEntryPoint = new RestAuthenticationEntryPoint();
+    @Autowired
+    CustomAuthenticationProvider customAuthProvider;
 
     @Bean
     public AuthenticationSuccessHandler myAuthenticationSuccessHandler(){
@@ -22,12 +24,14 @@ public class LoginConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Override
-    protected void configure(AuthenticationManagerBuilder auth)
-            throws Exception {
-                auth.inMemoryAuthentication()
-                .withUser("admin").password(encoder().encode("admin")).roles("ADMIN")
-                .and()
-                .withUser("user").password(encoder().encode("user")).roles("USER");
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+
+        //auth.authenticationProvider(customAuthProvider);
+
+        auth.inMemoryAuthentication()
+        .withUser("admin").password(encoder().encode("admin")).roles("ADMIN");
+        //.and()
+        //.withUser("user").password(encoder().encode("user")).roles("USER");
     }
 
     @Bean
@@ -53,7 +57,7 @@ public class LoginConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .formLogin()  // indicating the need for a login via a form
                 .loginPage("/login.html") // not index.html since site is now login required except for /login as specified in 'permitAll()" above.
-                .loginProcessingUrl("/do_login")  //in html form 'action="/do_login" as well in order to match here. This avoids the default of "/login" which may expose fact that using Spring Security.
+                .loginProcessingUrl("/do_login")  //in html form 'action="/do_login" as well in order to match here. This avoids the default of "/login" which may expose fact that I'm using Spring Security.
                 .successHandler(myAuthenticationSuccessHandler())
                 //.failureHandler(myFailureHandler)  //add a failure landing page/url
                 .and()
