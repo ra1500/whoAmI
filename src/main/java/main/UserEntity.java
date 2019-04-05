@@ -28,7 +28,6 @@ public class UserEntity {
         super();
     }
 
-
     public UserEntity (String userName, String password) {
         super();
         this.userName = userName;

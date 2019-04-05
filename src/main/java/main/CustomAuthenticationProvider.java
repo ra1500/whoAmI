@@ -16,8 +16,8 @@ import java.util.List;
 @Component
 public class CustomAuthenticationProvider implements AuthenticationProvider {
 
-    @Autowired //ryan
-    UserEntityService userEntityService;  //ryan
+    @Autowired //autowired?
+    UserEntityService userEntityService;  //used below
 
     @Override
     public Authentication authenticate(Authentication auth)
@@ -26,22 +26,14 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         String password = auth.getCredentials()
                 .toString();
 
-        System.out.println("before");
+        System.out.println("  ******before auth*******");
 
-        UserEntityDto foundUserEntityDto = userEntityService.getUserEntity(username,password);  //ryan
-        //System.out.println(foundUserEntityDto.getUserName());
+        UserEntityDto foundUserEntityDto = userEntityService.getUserEntity(username,password);  // returning null
+        String user = foundUserEntityDto.getUserName();
+        String pass = foundUserEntityDto.getPassword();
 
-        System.out.println("after");
-
-        System.out.println(username);
-        System.out.println(password);
-
-
-        String user = "rr";  //ryan
-        String pass = "tt";  //ryan
-
-        System.out.println(user);
-        System.out.println(pass);
+        //String user = "admin";  //hard coded here works
+        //String pass = "admin";  //hard coded here works
 
         if (user.equals(username) && pass.equals(password)) {
             return new UsernamePasswordAuthenticationToken
@@ -49,8 +41,6 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
                     //(username, password, Collections.emptyList());
         } else {
             System.out.println("throwing exception in authenticate");
-
-
             throw new
                     BadCredentialsException("authentication failed");
         }
