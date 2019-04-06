@@ -2,24 +2,6 @@
 <html lang="en">
 <head>
     <title>neural</title>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-
-<script>
-$(document).ready(function(){
-    $("#postbutton").click(function(){
-        $.ajax({
-            type: "POST",
-            beforeSend: function(){$("#postresult").text("POST failed before sent")},
-            url: "http://localhost:8080/do_login",
-            data: JSON.stringify({ "userName" : $("#posttextcategoryId").val(), "password" : $("#posttextdescription").val()}),
-            contentType : 'application/json',
-            dataType: "json",
-            success: function(data){$("#postresult").text("user: " + data.userName + "  pswrd: " + data.password)},
-            error: function(){$("#postresult").text("error at end of POST")},
-         });
-     });
- });
-</script>
 
 </head>
 <body>
@@ -49,12 +31,5 @@ $(document).ready(function(){
 </div>
 <a href="/createlogin.html" />create a login</a>
 
-<!--
-<div>
-    userName <input type="text" id="posttextcategoryId"><br>
-    password <input type="password" id="posttextdescription"><br>
-    <button id="postbutton">LOGIN 2 with JSON</button><br>
-    <p id="postresult">POST status/return:</p> <br>
-</div>-->
 </body>
 </html>

@@ -77,7 +77,7 @@ public class UrlAuthenticationSuccessHandler
         if (session == null) {
             return;
         }
-        session.setMaxInactiveInterval(300);   //This is in seconds. Login/Session length. Set it here
+        session.setMaxInactiveInterval(600);   //This is in seconds. Login/Session length. Set it here
         session.removeAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
     }
 
