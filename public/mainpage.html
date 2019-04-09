@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="/login.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script>
     $(document).ready(function(){
@@ -33,20 +34,25 @@
      });
     </script>
 
-    <title>neural</title>
+    <title>NeuralJuice</title>
 </head>
 <body>
 
+<div>
+    <p id="logo">
+        <img src="/loginjuice.jpg" alt="juiceglass" style="float:left;width:70px;height:70px;">
+        <b>NeuralJuice</b></p> <br>
+</div>
 
 <div>
-    post CategoryId <input type="text" id="posttextcategoryId"><br>
-    post Description <input type="text" id="posttextdescription"><br>
-    post CSV Data <input type="text" id="posttextrawCsvData"><br>
+    CategoryId <input type="text" id="posttextcategoryId"><br>
+    Description <input type="text" id="posttextdescription"><br>
+    CSV Data  <input type="text" id="posttextrawCsvData"><br>
     <button id="postbutton">post Inquiry</button><br>
     <p id="postresult">POST status/return:</p> <br>
 </div>
 <div>
-    Get by gid <input type="text" id="gettextgid"><br>
+    Get by Inquiry id <input type="text" id="gettextgid"><br>
     <button id="getbutton">get Inquiry</button><br>
     <p id="getresult">GET status/return:</p> <br>
 </div>
