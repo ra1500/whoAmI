@@ -3,28 +3,22 @@ package main;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.env.Environment;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
-
-import javax.servlet.ServletContext;
 
 import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringRunner.class)
+@TestPropertySource(locations = "classpath:TestConfiguration.properties")
 @SpringBootTest
 @ContextConfiguration(classes = {DBconfiguration.class, Environment.class, InquiryEntity.class, InquiryEntityDto.class, InquiryEntityService.class, InquiryEntityController.class, InquiryEntityDtoTransformer.class, Application.class,
                         InquiryEntityTest.class, AbstractRestController.class, SwaggerConfig.class})
 @ComponentScan({"main"})
-@TestPropertySource(locations = "classpath:TestConfiguration.properties")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class InquiryEntityTest {
 
@@ -59,7 +53,5 @@ public class InquiryEntityTest {
         //Delete
         inquiryRepositoryDAO.delete(savedInquiryEntity);
         assertEquals(0, inquiryRepositoryDAO.count());
-
-
     }
 }
