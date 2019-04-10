@@ -9,25 +9,24 @@
 
 <div>
     <p id="logo">
-        <img src="/loginjuice.jpg" alt="juiceglass" style="float:left;width:70px;height:70px;">
-        <b>NeuralJuice</b></p> <br>
+        <img src="/loginjuice.jpg" alt="juiceglass" id="logopic">
+        <b>NeuralJuice</b></p>
 </div>
 
-<p>Data analyzer. Enter data and predict output. <br>
+<p id="intro">Data analyzer. Enter data and predict output. <br>
     Input historical data + Input actual results data + Input fresh new data = Prediction<br>
-
 </p>
 
-<div>
+<div class="textboxt">
     <form name='f' action="/do_login" method='POST'>
         <table>
             <tr>
                 <td>User:</td>
-                <td><input type='text' name='username' value=''></td>
+                <td><input type='text' name='username' value='' maxlength="20"></td>
             </tr>
             <tr>
                 <td>Password:</td>
-                <td><input type='password' name='password' /></td>
+                <td><input type='password' name='password' maxlength="20"/></td>
             </tr>
             <tr>
                 <td><input name="submit" type="submit" value="submit" /></td>

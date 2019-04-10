@@ -19,7 +19,7 @@ public class InquiryEntity implements Serializable {
     @Column
     private Date created;
 
-    @Column
+    @Column(length = 5)
     private Long categoryId;
 
     @Column
@@ -28,7 +28,7 @@ public class InquiryEntity implements Serializable {
     @Column
     private String rawCsvData;
 
-    @Column
+    @Column(length = 20)
     private String username;
 
     public InquiryEntity() {

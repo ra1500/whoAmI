@@ -18,10 +18,10 @@ public class UserEntity {
     @Column
     private Date created;
 
-    @Column (unique = true, nullable = false)
+    @Column (unique = true, nullable = false, length = 20)
     private String userName;
 
-    @Column (nullable = false)
+    @Column (nullable = false, length = 20)
     private String password;
 
     public UserEntity() {

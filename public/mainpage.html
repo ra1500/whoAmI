@@ -10,10 +10,9 @@
         $("#getusername").val(function(){
             $.ajax({
                 type: "GET",
-                beforeSend: function(){$("#getusernameresult").text("get failed before send")},
                 url: "http://localhost:8080/username",
-                success: function(data){$("#getusername").text(data)},
-                error: function(){$("#getusernameresult").text("error at end of username get")},
+                success: function(data){$("#getusername").text("  user: " + data)},
+                error: function(){$("#getusernameresult").text("username error")},
              });
          });
      });
@@ -24,10 +23,10 @@
         $("#getbutton").click(function(){
             $.ajax({
                 type: "GET",
-                beforeSend: function(){$("#getresult").text("get failed. bad parameters above")},
+                beforeSend: function(){$("#getresult").text("no gid found")},
                 url: "http://localhost:8080/fire/"+ $("#gettextgid").val() ,
                 success: function(data){$("#getresult").text(" gid: " + data.gid + "  category: " + data.categoryId + "  description: " + data.description + "  CSVdata: " + data.rawCsvData + " username: " + data.username + " ")},
-                error: function(){$("#getresult").text("error at end of get")},
+                error: function(){$("#getresult").text("error. no such inquiry gid (or server error) ")},
              });
          });
      });
@@ -42,7 +41,6 @@
                 success: function(data){
                     $.ajax({
                         type: "POST",
-                        beforeSend: function(){$("#postresult").text("POST failed before sent")},
                         url: "http://localhost:8080/fire",
                         data: JSON.stringify({ "categoryId" : $("#posttextcategoryId").val(), "description" : $("#posttextdescription").val(), "rawCsvData": $("#posttextrawCsvData").val(),"username": data}),
                         contentType : 'application/json',
@@ -61,31 +59,29 @@
 
 <div>
     <p id="logo">
-        <img src="/loginjuice.jpg" alt="juiceglass" style="float:left;width:70px;height:70px;">
-        <b>NeuralJuice</b></p> <br>
+        <img src="/loginjuice.jpg" alt="juiceglass" id="logopic">
+        <b>NeuralJuice</b></p>
 </div>
-
 <div>
-    <p class="login" style="float:left;">logged in as:</p> <p class="login" id="getusername"></p><br>
+     <p class="login" id="getusername"></p>
 </div>
-
 <div>
-    CategoryId <input type="text" id="posttextcategoryId"><br>
-    Description <input type="text" id="posttextdescription"><br>
-    CSV Data  <input type="text" id="posttextrawCsvData"><br>
+    <a id="logout" href="/logout">Logout</a><p></p><br>
+</div>
+<div class="textboxt">
+    CategoryId <input type="text" id="posttextcategoryId" maxlength="5" value="number only"><br>
+    Description <input type="text" id="posttextdescription" maxlength="255"><br>
+    CSV Data  <input type="text" id="posttextrawCsvData" maxlength="255"><br>
     <button id="postbutton">post Inquiry</button><br>
     <p id="postresult">POST status/return:</p> <br>
 </div>
 
-<div>
-    Get by Inquiry id <input type="text" id="gettextgid"><br>
+<div class="textboxt">
+    Get by Inquiry id <input type="text" id="gettextgid" maxlength="20"><br>
     <button id="getbutton">get Inquiry</button><br>
-    <p id="getresult">GET status/return:</p> <br>
+    <p id="getresult">GET status/return:</p>
 </div>
 
-<div>
-    <br>
-    <a href="/logout">Logout</a>
-</div>
+
 </body>
 </html>

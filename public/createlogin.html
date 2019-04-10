@@ -7,12 +7,17 @@
 
     <script>
     $(document).ready(function(){
+        $("#posttextcategoryId").val("");
+        $("#posttextdescription").val("");
+     });
+    </script>
+    <script>
+    $(document).ready(function(){
         $("#getusername").val(function(){
             $.ajax({
                 type: "GET",
-                beforeSend: function(){$("#getusernameresult").text("get failed before send")},
                 url: "http://localhost:8080/username",
-                success: function(data){$("#getusername").text(data)},
+                success: function(data){$("#getusername").text("  user: " + data)},
                 error: function(){$("#getusernameresult").text("error at end of username get")},
              });
          });
@@ -24,13 +29,12 @@
         $("#postbutton").click(function(){
             $.ajax({
                 type: "POST",
-                beforeSend: function(){$("#postresult").text("POST failed before sent")},
                 url: "http://localhost:8080/user",
                 data: JSON.stringify({ "userName" : $("#posttextcategoryId").val(), "password" : $("#posttextdescription").val()}),
                 contentType : 'application/json',
                 dataType: "json",
-                success: function(data){$("#postresult").text("username and login created ->  username: " + data.userName + " "  )},
-                error: function(){$("#postresult").text("error at end of POST")},
+                success: function(data){$("#postresult").text("registered with username: " + data.userName + " "  )},
+                error: function(){$("#postresult").text("username taken. please try a different one")},
              });
          });
      });
@@ -42,21 +46,22 @@
 
 <div>
     <p id="logo">
-        <img src="/loginjuice.jpg" alt="juiceglass" style="float:left;width:70px;height:70px;">
-        <b>NeuralJuice</b></p> <br>
+        <img src="/loginjuice.jpg" alt="juiceglass" id="logopic">
+        <b>NeuralJuice</b></p>
 </div>
 <div>
-    <p class="login" style="float:left;">logged in as:</p> <p class="login" id="getusername"></p><br>
-</div><div>
-    Username <input type="text" id="posttextcategoryId"><br>
-    Password <input type="text" id="posttextdescription"><br>
-    <button id="postbutton">Create</button><br>
-    <p id="postresult">status</p> <br>
+    <p class="login" id="getusername"></p>
+</div>
+<div>
+    <a id="logout" href="/logout">Logout</a><p></p><br>
+</div>
+<div class="textboxt">
+    Username <input type="text" id="posttextcategoryId" maxlength="20" autocomplete="off"><br>
+    Password <input type="password" id="posttextdescription" maxlength="20"><br>
+    <button id="postbutton">Register</button><br>
+    <p id="postresult"></p> <br>
 </div>
 <a href="/login.html" />go to login/homepage</a><br>
-<div>
-    <br>
-    <a href="/logout" />Logout</a>
-</div>
+
 </body>
 </html>
