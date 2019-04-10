@@ -17,21 +17,17 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping(value = "fire",
-        produces = MediaType.APPLICATION_JSON_VALUE)
-@Api(description = "InquiryEntity endpoints",
-        tags = "InquiryEntity")
+@RequestMapping(value = "fire", produces = MediaType.APPLICATION_JSON_VALUE)
+@Api(description = "InquiryEntity endpoints", tags = "InquiryEntity")
 public class InquiryEntityController extends AbstractRestController {
 
     private InquiryEntityService inquiryEntityService;
 
     public InquiryEntityController(InquiryEntityService inquiryEntityService) {
-        this.inquiryEntityService = inquiryEntityService;
-    }
+        this.inquiryEntityService = inquiryEntityService; }
 
     @ApiOperation(value = "getInquiryEntity")
-    @RequestMapping(value = "/{gid}",
-            method = RequestMethod.GET)
+    @RequestMapping(value = "/{gid}", method = RequestMethod.GET)
     public ResponseEntity<InquiryEntityDto> getInquiryEntity(
             @PathVariable("gid")
             final Long gid) {
@@ -45,8 +41,7 @@ public class InquiryEntityController extends AbstractRestController {
         return ResponseEntity.ok(inquiryEntityDto);
     }
 
-    @RequestMapping(method = RequestMethod.POST,
-            consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<InquiryEntityDto> createInquiryEntity(
             @Valid
             @RequestBody

@@ -28,15 +28,19 @@ public class InquiryEntity implements Serializable {
     @Column
     private String rawCsvData;
 
+    @Column
+    private String username;
+
     public InquiryEntity() {
         super();
     }
 
-    public InquiryEntity(Long categoryId, String description, String rawCsvData) {
+    public InquiryEntity(Long categoryId, String description, String rawCsvData, String username) {
         super();
         this.categoryId = categoryId;
         this.description = description;
         this.rawCsvData = rawCsvData;
+        this.username = username;
     }
 
     public InquiryEntity(Long gid) {
@@ -65,13 +69,15 @@ public class InquiryEntity implements Serializable {
 
     public String getRawCsvData() { return rawCsvData; }
 
+    public String getUsername() { return username; }
+
     public void setDescription(String description) {
         this.description = description;
-    }
+    } // used for Crud update test
 
     @Override
     public String toString() {
-        return String.format("submission profile", gid, created, categoryId, description);
+        return String.format("inquiry profile", gid, created, categoryId, description, username);
     }
 
 }

@@ -25,6 +25,9 @@ public class InquiryEntityDto implements Serializable {
     @JsonProperty("rawCsvData")
     private String rawCsvData;
 
+    @JsonProperty("username")
+    private String username;
+
     public InquiryEntityDto() {
     }
 
@@ -49,22 +52,24 @@ public class InquiryEntityDto implements Serializable {
     }
 
     public void setCategoryId(final Long categoryId) {
-        this.categoryId = categoryId;
-    }
+        this.categoryId = categoryId; }
 
     public String getDescription() {
-        return description;
-    }
+        return description; }
 
     public void setDescription(final String description) {
-        this.description = description;
-    }
+        this.description = description; }
 
     public String getRawCsvData() {
-        return rawCsvData;
-    }
+        return rawCsvData; }
 
     public void setRawCsvData(final String rawCsvData) {
-        this.rawCsvData = rawCsvData;
-    }
+        this.rawCsvData = rawCsvData; }
+
+    public String getUsername() {
+        return username; }
+
+    public void setUsername(final String username) {
+        this.username = username; }
+
 }

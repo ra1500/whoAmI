@@ -4,6 +4,21 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href="/login.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <script>
+    $(document).ready(function(){
+        $("#getusername").val(function(){
+            $.ajax({
+                type: "GET",
+                beforeSend: function(){$("#getusernameresult").text("get failed before send")},
+                url: "http://localhost:8080/username",
+                success: function(data){$("#getusername").text(data)},
+                error: function(){$("#getusernameresult").text("error at end of username get")},
+             });
+         });
+     });
+    </script>
+
     <script>
     $(document).ready(function(){
         $("#getbutton").click(function(){
@@ -11,24 +26,30 @@
                 type: "GET",
                 beforeSend: function(){$("#getresult").text("get failed. bad parameters above")},
                 url: "http://localhost:8080/fire/"+ $("#gettextgid").val() ,
-                success: function(data){$("#getresult").text(" gid: " + data.gid + "  category: " + data.categoryId + "  description: " + data.description + "  CSVdata: " + data.rawCsvData + " ")},
+                success: function(data){$("#getresult").text(" gid: " + data.gid + "  category: " + data.categoryId + "  description: " + data.description + "  CSVdata: " + data.rawCsvData + " username: " + data.username + " ")},
                 error: function(){$("#getresult").text("error at end of get")},
              });
          });
      });
     </script>
+
     <script>
     $(document).ready(function(){
         $("#postbutton").click(function(){
             $.ajax({
-                type: "POST",
-                beforeSend: function(){$("#postresult").text("POST failed before sent")},
-                url: "http://localhost:8080/fire",
-                data: JSON.stringify({ "categoryId" : $("#posttextcategoryId").val(), "description" : $("#posttextdescription").val(), "rawCsvData": $("#posttextrawCsvData").val()}),
-                contentType : 'application/json',
-                dataType: "json",
-                success: function(data){$("#postresult").text("POSTed  gid: " + data.gid + "  category: " + data.categoryId + "  description: " + data.description + "  CSVdata: " + data.rawCsvData + " ")},
-                error: function(){$("#postresult").text("error at end of POST")},
+                type: "GET",
+                url: "http://localhost:8080/username",
+                success: function(data){
+                    $.ajax({
+                        type: "POST",
+                        beforeSend: function(){$("#postresult").text("POST failed before sent")},
+                        url: "http://localhost:8080/fire",
+                        data: JSON.stringify({ "categoryId" : $("#posttextcategoryId").val(), "description" : $("#posttextdescription").val(), "rawCsvData": $("#posttextrawCsvData").val(),"username": data}),
+                        contentType : 'application/json',
+                        dataType: "json",
+                        success: function(data){$("#postresult").text("POSTed  gid: " + data.gid + "  category: " + data.categoryId + "  description: " + data.description + "  CSVdata: " + data.rawCsvData + " username: " + data.username + " ")},
+                        error: function(){$("#postresult").text("error at end of POST")},
+             });},
              });
          });
      });
@@ -45,20 +66,26 @@
 </div>
 
 <div>
+    <p class="login" style="float:left;">logged in as:</p> <p class="login" id="getusername"></p><br>
+</div>
+
+<div>
     CategoryId <input type="text" id="posttextcategoryId"><br>
     Description <input type="text" id="posttextdescription"><br>
     CSV Data  <input type="text" id="posttextrawCsvData"><br>
     <button id="postbutton">post Inquiry</button><br>
     <p id="postresult">POST status/return:</p> <br>
 </div>
+
 <div>
     Get by Inquiry id <input type="text" id="gettextgid"><br>
     <button id="getbutton">get Inquiry</button><br>
     <p id="getresult">GET status/return:</p> <br>
 </div>
+
 <div>
     <br>
-    <a href="/logout" />Logout</a>
+    <a href="/logout">Logout</a>
 </div>
 </body>
 </html>

@@ -30,10 +30,11 @@ public class InquiryEntityTest {
         Long categoryId = 111l;
         String description = "JunitTest";
         String rawCsvData = "000,111";
+        String username = "karen";
         String newDescription = "JunitTestUpdateField";
 
         //Create - Save to db
-        InquiryEntity inquiryEntity = new InquiryEntity(categoryId,description,rawCsvData);
+        InquiryEntity inquiryEntity = new InquiryEntity(categoryId,description,rawCsvData, username);
         InquiryEntity savedInquiryEntity = inquiryRepositoryDAO.saveAndFlush(inquiryEntity);
         System.out.println(savedInquiryEntity.getGid());
         assertEquals(new Long(1), savedInquiryEntity.getGid());

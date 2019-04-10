@@ -21,11 +21,12 @@ public class InquiryEntityDtoTransformer {
         dto.setCategoryId(inquiryEntity.getCategoryId());
         dto.setDescription(inquiryEntity.getDescription());
         dto.setRawCsvData(inquiryEntity.getRawCsvData());
+        dto.setUsername(inquiryEntity.getUsername());
 
         return dto;
     }
 
     public InquiryEntity generate(final InquiryEntityDto dto) {
-        return new InquiryEntity(dto.getCategoryId(),dto.getDescription(),dto.getRawCsvData());
+        return new InquiryEntity(dto.getCategoryId(),dto.getDescription(),dto.getRawCsvData(), dto.getUsername());
     }
 }
