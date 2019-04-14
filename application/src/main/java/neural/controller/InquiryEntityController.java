@@ -1,6 +1,6 @@
 package neural.controller;
 
-// import main.Paths;     --use later if wish to have Paths restricted/opened via separate class--
+// import .Paths;     --use later if wish to have Paths restricted/opened via separate class--
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import model.InquiryEntityDto;
