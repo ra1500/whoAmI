@@ -6,13 +6,11 @@ Use MariaDB or MySQL and create a database `neural2`. Grant all privileges to `m
 
 `mvn clean package -DskipTests`
 
-IntelliJ edit your run configuration and in VM options specify '-Dspring.profiles.active=local'
+IntelliJ: edit your run configuration and in VM options specify '-Dspring.profiles.active=local'
 
-Run the application: `ApiApplication.java`
+Run the application: `Application.java`
 
-[http://localhost:8080]()]
-
-Login -> user: admin  password: admin
+[http://localhost:8080]()
 
 ### API Documentation (Swagger)
 
