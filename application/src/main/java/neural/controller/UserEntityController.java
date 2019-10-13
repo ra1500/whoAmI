@@ -1,26 +1,21 @@
 package neural.controller;
 
 // import Paths;     --use later if wish to have Paths restricted/opened via separate class--
+import core.services.UserEntityService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import model.UserEntityDto;
-import core.services.UserEntityService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+@CrossOrigin(origins = "http://localhost:3000/", maxAge = 3600)
 @RestController
-@RequestMapping(value = "user",
-        produces = MediaType.APPLICATION_JSON_VALUE)
-@Api(description = "UserEntity endpoints",
-        tags = "UserEntity")
+@RequestMapping(value = "user", produces = MediaType.APPLICATION_JSON_VALUE)
+@Api(description = "UserEntity endpoints", tags = "UserEntity")
 public class UserEntityController extends AbstractRestController {
 
     private UserEntityService userEntityService;
@@ -30,8 +25,7 @@ public class UserEntityController extends AbstractRestController {
     }
 
     @ApiOperation(value = "getUserEntity")
-    @RequestMapping(value = "/{userName}/{password}",
-            method = RequestMethod.GET)
+    @RequestMapping(value = "/{userName}/{password}", method = RequestMethod.GET)
     public ResponseEntity<UserEntityDto> getUserEntity(
             @PathVariable("userName")
             final String userName,
@@ -48,8 +42,7 @@ public class UserEntityController extends AbstractRestController {
         return ResponseEntity.ok(userEntityDto);
     }
 
-    @RequestMapping(method = RequestMethod.POST,
-            consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserEntityDto> createUserEntity(
             @Valid
             @RequestBody
