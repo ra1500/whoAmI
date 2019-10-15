@@ -1,3 +1,5 @@
+// THIS CLASS ISN'T USED. Can delete it anytime....
+
 package neural.controller;
 
 // import .Paths;     --use later if wish to have Paths restricted/opened via separate class--

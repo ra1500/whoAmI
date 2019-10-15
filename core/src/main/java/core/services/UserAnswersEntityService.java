@@ -26,7 +26,21 @@ public class UserAnswersEntityService {
         return userAnswersEntityDtoTransformer.generate(userAnswersEntityRepository.findOneByUserIdAndQuestionId(userId, questionId));
     }
 
+    // not currently used method
+    public UserAnswersEntityDto createUserAnswersEntity2(final UserAnswersEntityDto userAnswersEntityDto) {
+        UserAnswersEntity userAnswersEntity = userAnswersEntityRepository.saveAndFlush(userAnswersEntityDtoTransformer.generate(userAnswersEntityDto));
+        return userAnswersEntityDtoTransformer.generate(userAnswersEntity);
+    }
+
     public UserAnswersEntityDto createUserAnswersEntity(final UserAnswersEntityDto userAnswersEntityDto) {
+
+        Long userId = userAnswersEntityDto.getUserId();
+        Long questionId = userAnswersEntityDto.getQuestionId();
+
+        if (getUserAnswersEntity(userId, questionId) != null) {
+            userAnswersEntityRepository.deleteOneByUserIdAndQuestionId(userId, questionId);
+        }
+
         UserAnswersEntity userAnswersEntity = userAnswersEntityRepository.saveAndFlush(userAnswersEntityDtoTransformer.generate(userAnswersEntityDto));
         return userAnswersEntityDtoTransformer.generate(userAnswersEntity);
     }
