@@ -1,38 +1,55 @@
 package neural.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.stereotype.Component;
+import org.springframework.web.filter.GenericFilterBean;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import javax.naming.AuthenticationException;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
 
 @Configuration
 @EnableWebSecurity
 public class LoginConfig extends WebSecurityConfigurerAdapter {
 
-    //@Autowired
-    //CustomAuthenticationProvider customAuthProvider;  //ryan
+    @Autowired
+    CustomAuthenticationProvider customAuthProvider;
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.authenticationProvider(customAuthProvider);
 
-    //@Bean
-    //public AuthenticationSuccessHandler myAuthenticationSuccessHandler(){
-    //    return new UrlAuthenticationSuccessHandler();
-    //}
+        //{
+        //    auth.inMemoryAuthentication()
+        //            .withUser("admin")
+        //            .password(encoder().encode("admin"))
+        //            .authorities("ROLE_USER");
+        //}
+    }
 
-    //@Override
-    //protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+    @Autowired
+    private MyBasicAuthenticationEntryPoint authenticationEntryPoint;
 
-        //auth.authenticationProvider(customAuthProvider);
-        //auth.inMemoryAuthentication()
-        //.withUser("admin").password(encoder().encode("admin")).roles("ADMIN");
-        //.and()
-        //.withUser("user").password(encoder().encode("user")).roles("USER");
-    //}
-
-    //@Bean
-    //public PasswordEncoder encoder() {return new BCryptPasswordEncoder();}
+    @Bean
+    public PasswordEncoder encoder() {return new BCryptPasswordEncoder();}
 
     // CORS bean
     @Bean
@@ -48,37 +65,48 @@ public class LoginConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .csrf().disable();  // cross-site request forgery. disabled for now. need to generate a code to feed into the html login form.
-                //.exceptionHandling()  // ?
-                //.authenticationEntryPoint(restAuthenticationEntryPoint)  //this is handled via the successHandler below
-                //.and()
-                //.authorizeRequests()
-                //.antMatchers("/anonymous*").anonymous()     //not needed at this time
-                //.antMatchers("/foo.html").authenticated()   //not needed at this time
-                //.antMatchers("/foo.html").hasRole("ADMIN")  //not needed at this time
-                //.antMatchers("/*").permitAll();  //excludes 'login.html' page from requiring to be logged in
-                //.antMatchers("/createlogin.html").permitAll()
+                .csrf().disable()  // cross-site request forgery. disabled for now. need to generate a code to feed into the html login form.
+                .authorizeRequests()
                 //.antMatchers("/user*").permitAll()  // Need to set this up so that only users created from the createlogin.html page can actually POST via this url path
-                //.antMatchers("/").permitAll()
-                //.anyRequest().authenticated();
-                //.and()
-                //.formLogin()  // indicating the need for a login via a form
-                //.loginPage("/login.html") // not index.html since site is now login required except for /login as specified in 'permitAll()" above.
-                //.loginProcessingUrl("/do_login")  //in html form 'action="/do_login" as well in order to match here. This avoids the default of "/login" which may expose fact that I'm using Spring Security.
-                //.successHandler(myAuthenticationSuccessHandler())
-                //.failureHandler(myFailureHandler)  //add a failure landing page/url
-                //.and()
-                //.logout();  // .indicated in html via href to '/logout' unless otherwise specified in this method to a different url such as '/foo'
-                // .logoutSuccessUrl("/afterlogout.html");  //default reverts to '/login'  otherwise set it here
-
+                .antMatchers("/user/*").permitAll()
+                //.antMatchers("/**").permitAll() // gives all access without authentication
+                .anyRequest().authenticated()
+                .and()
+                .httpBasic()
+                .authenticationEntryPoint(authenticationEntryPoint); //JSON response instead of full 401 error.
+        //http
+        //        .addFilterAfter(new CustomFilter(), BasicAuthenticationFilter.class); //TODO
         http
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.NEVER);
-        //        .maximumSessions(2);  //maximum count of sessions
+        http
+                .cors(); // for CORS obviously
 
-        http // for CORS obviously
-                .cors();
+    }
 
+    @Component
+    public class MyBasicAuthenticationEntryPoint extends BasicAuthenticationEntryPoint {
 
+        //@Override
+        public void commence (HttpServletRequest request, HttpServletResponse response, AuthenticationException authEx)
+                throws IOException, ServletException {
+            response.addHeader("WWW-Authenticate", "Basic realm=" + getRealmName() + "");
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            PrintWriter writer = response.getWriter();
+            writer.println("HTTP Status 401 - " + authEx.getMessage());
+        }
+
+        @Override
+        public void afterPropertiesSet() throws Exception {
+            setRealmName("NeuralJuice");
+            super.afterPropertiesSet();
+        }
+    }
+
+    public class CustomFilter extends GenericFilterBean {
+        @Override
+        public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+            chain.doFilter(request, response);
+        }
     }
 }
