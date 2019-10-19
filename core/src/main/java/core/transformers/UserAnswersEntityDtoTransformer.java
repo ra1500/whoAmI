@@ -18,7 +18,7 @@ public class UserAnswersEntityDtoTransformer {
         UserAnswersEntityDto dto = new UserAnswersEntityDto();
         dto.setGid(userAnswersEntity.getGid());
         dto.setCreated(userAnswersEntity.getCreated());
-        dto.setUserId(userAnswersEntity.getUserId());
+        dto.setUserName(userAnswersEntity.getUserName());
         dto.setQuestionId(userAnswersEntity.getQuestionId());
         dto.setAnswer(userAnswersEntity.getAnswer());
         dto.setAnswerPoints(userAnswersEntity.getAnswerPoints());
@@ -28,6 +28,6 @@ public class UserAnswersEntityDtoTransformer {
     }
 
     public UserAnswersEntity generate(final UserAnswersEntityDto dto) {
-        return new UserAnswersEntity(dto.getUserId(),dto.getQuestionId(), dto.getQuestionSetVersion(),dto.getAnswerPoints(),dto.getAnswer());
+        return new UserAnswersEntity(dto.getUserName(),dto.getQuestionId(), dto.getQuestionSetVersion(),dto.getAnswerPoints(),dto.getAnswer());
     }
 }

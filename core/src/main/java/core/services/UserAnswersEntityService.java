@@ -22,8 +22,8 @@ public class UserAnswersEntityService {
         this.userAnswersEntityDtoTransformer = userAnswersEntityDtoTransformer;
     }
 
-    public UserAnswersEntityDto getUserAnswersEntity(final Long userId, final Long questionId) {
-        return userAnswersEntityDtoTransformer.generate(userAnswersEntityRepository.findOneByUserIdAndQuestionId(userId, questionId));
+    public UserAnswersEntityDto getUserAnswersEntity(final String userName, final Long questionId) {
+        return userAnswersEntityDtoTransformer.generate(userAnswersEntityRepository.findOneByUserNameAndQuestionId(userName, questionId));
     }
 
     // not currently used method
@@ -34,11 +34,11 @@ public class UserAnswersEntityService {
 
     public UserAnswersEntityDto createUserAnswersEntity(final UserAnswersEntityDto userAnswersEntityDto) {
 
-        Long userId = userAnswersEntityDto.getUserId();
+        String userName = userAnswersEntityDto.getUserName();
         Long questionId = userAnswersEntityDto.getQuestionId();
 
-        if (getUserAnswersEntity(userId, questionId) != null) {
-            userAnswersEntityRepository.deleteOneByUserIdAndQuestionId(userId, questionId);
+        if (getUserAnswersEntity(userName, questionId) != null) {
+            userAnswersEntityRepository.deleteOneByUserNameAndQuestionId(userName, questionId);
         }
 
         UserAnswersEntity userAnswersEntity = userAnswersEntityRepository.saveAndFlush(userAnswersEntityDtoTransformer.generate(userAnswersEntityDto));

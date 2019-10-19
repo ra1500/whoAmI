@@ -20,7 +20,7 @@ public class UserAnswersEntity implements Serializable {
     private Date created;
 
     @Column
-    private Long userId;
+    private String userName;
 
     @Column
     private Long questionId;
@@ -38,9 +38,9 @@ public class UserAnswersEntity implements Serializable {
         super();
     }
 
-    public UserAnswersEntity(Long userId, Long questionId, String answer, Long answerPoints, Long questionSetVersion) {
+    public UserAnswersEntity(String userName, Long questionId, String answer, Long answerPoints, Long questionSetVersion) {
         super();
-        this.userId = userId;
+        this.userName = userName;
         this.questionId = questionId;
         this.answer = answer;
         this.answerPoints = answerPoints;
@@ -52,15 +52,15 @@ public class UserAnswersEntity implements Serializable {
         this.gid = gid;
     }
 
-    public UserAnswersEntity(Long userId, Long questionId) {
+    public UserAnswersEntity(String userName, Long questionId) {
         super();
-        this.userId = userId;
+        this.userName = userName;
         this.questionId = questionId;
     }
 
-    public UserAnswersEntity(Long userId, Long questionId, Long questionSetVersion, Long answerPoints, String answer) {
+    public UserAnswersEntity(String userName, Long questionId, Long questionSetVersion, Long answerPoints, String answer) {
         super();
-        this.userId = userId;
+        this.userName = userName;
         this.questionId = questionId;
         this.questionSetVersion = questionSetVersion;
         this.answerPoints = answerPoints;
@@ -71,7 +71,7 @@ public class UserAnswersEntity implements Serializable {
 
     public Date getCreated() { return created; }
 
-    public Long getUserId() { return userId; }
+    public String getUserName() { return userName; }
 
     public Long getQuestionId() { return questionId; }
 
@@ -81,13 +81,13 @@ public class UserAnswersEntity implements Serializable {
 
     public Long getQuestionSetVersion() { return questionSetVersion; }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setUserName(String userName) {
+        this.userName = userName;
     } // used for Crud update test
 
     @Override
     public String toString() {
-        return String.format("UserAnswers profile", gid, created, userId, questionId, answer, answerPoints, questionSetVersion);
+        return String.format("UserAnswers profile", gid, created, userName, questionId, answer, answerPoints, questionSetVersion);
     }
 
 }

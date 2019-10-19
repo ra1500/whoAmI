@@ -7,11 +7,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -27,14 +23,26 @@ public class UserScoresAggregatesController extends AbstractRestController {
         this.userAnswersRepositoryDAO = userAnswersRepositoryDAO; }
 
     @ApiOperation(value = "getUserScoresAggregates")
-    @RequestMapping(value = "/{userId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/{userName}", method = RequestMethod.GET)
     public ResponseEntity<String> getUserScoresAggregate(
-            @PathVariable("userId") final Long userId) {
-        Long userScore = userAnswersRepositoryDAO.findUserScoresTotal(userId);
+            @PathVariable("userName") final String userName) {
+        Long userScore = userAnswersRepositoryDAO.findUserScoresTotal(userName);
         if (userScore == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT); }
         else {
             String userScoreJSON = "{\"userScore\":" + userScore + "}";
         return ResponseEntity.ok(userScoreJSON);}
     }
+    @ApiOperation(value = "getUserScoresAggregates")
+    @RequestMapping(value = "/scores", method = RequestMethod.GET)
+    public ResponseEntity<String> getUserScore(
+            @RequestParam("gid") final String userName) {
+        Long userScore = userAnswersRepositoryDAO.findUserScoresTotal(userName);
+        if (userScore == null) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT); }
+        else {
+            String userScoreJSON = "{\"userScore\":" + userScore + "}";
+            return ResponseEntity.ok(userScoreJSON);}
+    }
+
 }

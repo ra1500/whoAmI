@@ -11,11 +11,11 @@ import javax.transaction.Transactional;
 @Repository
 public interface UserAnswersRepositoryDAO extends JpaRepository<UserAnswersEntity, Long> {
 
-    UserAnswersEntity findOneByUserIdAndQuestionId(Long userId, Long questionId);
+    UserAnswersEntity findOneByUserNameAndQuestionId(String userName, Long questionId);
 
-    @Query("SELECT SUM(answerPoints) FROM UserAnswersEntity WHERE userId = :userId")
-    Long findUserScoresTotal(@Param("userId") Long userId);
+    @Query("SELECT SUM(answerPoints) FROM UserAnswersEntity WHERE userName = :userName")
+    Long findUserScoresTotal(@Param("userName") String userName);
 
     @Transactional
-    Integer deleteOneByUserIdAndQuestionId(Long userId, Long questionId);
+    Integer deleteOneByUserNameAndQuestionId(String userName, Long questionId);
 }

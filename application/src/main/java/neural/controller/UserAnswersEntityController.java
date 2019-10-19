@@ -25,10 +25,10 @@ public class UserAnswersEntityController extends AbstractRestController {
     }
 
     @ApiOperation(value = "getUserAnswersEntity")
-    @RequestMapping(value = "/{userId}/{questionId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/{userName}/{questionId}", method = RequestMethod.GET)
     public ResponseEntity<UserAnswersEntityDto> getUserAnswersEntity(
-            @PathVariable("userId")
-            final Long userId,
+            @PathVariable("userName")
+            final String userName,
 
             @PathVariable("questionSetVersion")
             final Long questionSetVersion,
@@ -36,7 +36,7 @@ public class UserAnswersEntityController extends AbstractRestController {
             @PathVariable("questionId")
             final Long questionId) {
 
-        UserAnswersEntityDto userAnswersEntityDto = userAnswersEntityService.getUserAnswersEntity(userId,questionId);
+        UserAnswersEntityDto userAnswersEntityDto = userAnswersEntityService.getUserAnswersEntity(userName,questionId);
 
         if (userAnswersEntityDto == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);

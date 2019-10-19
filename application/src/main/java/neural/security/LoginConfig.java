@@ -36,13 +36,6 @@ public class LoginConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.authenticationProvider(customAuthProvider);
-
-        //{
-        //    auth.inMemoryAuthentication()
-        //            .withUser("admin")
-        //            .password(encoder().encode("admin"))
-        //            .authorities("ROLE_USER");
-        //}
     }
 
     @Autowired
@@ -67,9 +60,10 @@ public class LoginConfig extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()  // cross-site request forgery. disabled for now. need to generate a code to feed into the html login form.
                 .authorizeRequests()
-                //.antMatchers("/user*").permitAll()  // Need to set this up so that only users created from the createlogin.html page can actually POST via this url path
                 .antMatchers("/user/*").permitAll()
-                //.antMatchers("/**").permitAll() // gives all access without authentication
+                .antMatchers("/max").permitAll() //max # questions in QuestionSet
+                .antMatchers("/us/scores*").permitAll()
+                .antMatchers("/**").permitAll() // gives all access without authentication
                 .anyRequest().authenticated()
                 .and()
                 .httpBasic()

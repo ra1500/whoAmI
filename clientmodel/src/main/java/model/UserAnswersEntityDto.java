@@ -16,8 +16,8 @@ public class UserAnswersEntityDto implements Serializable {
     @JsonProperty("created")
     private Date created;
 
-    @JsonProperty("userId")
-    private Long userId;
+    @JsonProperty("userName")
+    private String userName;
 
     @JsonProperty("questionId")
     private Long questionId;
@@ -50,9 +50,9 @@ public class UserAnswersEntityDto implements Serializable {
         this.created = created;
     }
 
-    public Long getUserId() { return userId; }
+    public String getUserName() { return userName; }
 
-    public void setUserId(final Long userId) { this.userId = userId; }
+    public void setUserName(final String userName) { this.userName = userName; }
 
     public Long getQuestionId() { return questionId; }
 
