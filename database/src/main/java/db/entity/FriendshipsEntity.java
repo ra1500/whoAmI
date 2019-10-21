@@ -1,5 +1,6 @@
 package db.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.apache.catalina.User;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -20,6 +21,7 @@ public class FriendshipsEntity implements Serializable {
     @Column
     private Date created;
 
+    @JsonManagedReference
     @ManyToOne
     @JoinColumn(name = "userName")
     private UserEntity userEntity;

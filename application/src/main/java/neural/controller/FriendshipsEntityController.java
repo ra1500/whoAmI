@@ -24,29 +24,29 @@ import javax.validation.Valid;
 public class FriendshipsEntityController extends AbstractRestController {
 
     private FriendshipsEntityService friendshipsEntityService;
-    private UserEntity userEntity;
+    private UserEntity userEntity;  // ? not needed?
 
     public FriendshipsEntityController(FriendshipsEntityService friendshipsEntityService) {
         this.friendshipsEntityService = friendshipsEntityService; }
 
-    // GET
-    @ApiOperation(value = "getFriendshipEntity")
-    @RequestMapping(value = "/{userName}", method = RequestMethod.GET)
-    public ResponseEntity<FriendshipsEntityDto> getFriendshipsEntity(
-            @PathVariable("userName")
-            final String userName) {
+    // GET a single friendship. not used.....
+    //@ApiOperation(value = "getFriendshipEntity")
+    //@RequestMapping(value = "/{userName}", method = RequestMethod.GET)
+    //public ResponseEntity<FriendshipsEntityDto> getFriendshipsEntity(
+    //        @PathVariable("userName")
+    //        final String userName) {
 
-        userEntity.setUserName(userName);
-        FriendshipsEntityDto friendshipsEntityDto = friendshipsEntityService.getFriendshipsEntity(userEntity);
+     //   userEntity.setUserName(userName); // not needed?
+     //   FriendshipsEntityDto friendshipsEntityDto = friendshipsEntityService.getFriendshipsEntity(userEntity);
 
-        if (friendshipsEntityDto == null) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
+     //   if (friendshipsEntityDto == null) {
+     //       return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+     //   }
 
-        return ResponseEntity.ok(friendshipsEntityDto);
-    }
+      //  return ResponseEntity.ok(friendshipsEntityDto);
+    //}
 
-    // POST
+    // POST a friendship
     @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<FriendshipsEntityDto> createFriendshipsEntity(
             @Valid

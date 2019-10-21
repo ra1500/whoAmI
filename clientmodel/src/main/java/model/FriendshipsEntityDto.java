@@ -2,6 +2,7 @@ package model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import db.entity.UserEntity;
 
 //import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -16,9 +17,9 @@ public class FriendshipsEntityDto implements Serializable {
     @JsonProperty("created")
     private Date created;
 
-    // Here, return the full UserEntityDto object since this is for GET
+    // Here, return the full UserEntity object since this is for GET
     @JsonProperty("userEntity")
-    private UserEntityDto userEntity;
+    private UserEntity userEntity;
 
     @JsonProperty("inviter")
     private String inviter;
@@ -54,9 +55,9 @@ public class FriendshipsEntityDto implements Serializable {
         this.created = created;
     }
 
-    public UserEntityDto getUserEntity() { return userEntity; }
+    public UserEntity getUserEntity() { return userEntity; }
 
-    public void setUserEntity(UserEntityDto userEntity) { this.userEntity = userEntity; }
+    public void setUserEntity(UserEntity userEntity) { this.userEntity = userEntity; }
 
     public String getInviter() {
         return inviter;

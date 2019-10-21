@@ -11,12 +11,17 @@ import org.springframework.stereotype.Component;
 @Component
 public class FriendshipsEntityDtoTransformer {
 
-    //private UserEntityDtoTransformer userEntityDtoTransformer; // used to setUserEntity when an outgoing DTO to client is made here.
-    private UserRepositoryDAO userRepositoryDAO;
+    // used in the 'mini' getUserEntity service below
+    private final UserRepositoryDAO userRepositoryDAO;
 
     public FriendshipsEntityDtoTransformer(UserRepositoryDAO userRepositoryDAO) {
         this.userRepositoryDAO = userRepositoryDAO;
-        //this.userEntityDtoTransformer = userEntityDtoTransformer;
+    }
+
+    // this is a 'mini' getUserEntity service
+    private UserEntity getUserEntityService(FriendshipsEntity friendshipsEntity) {
+        UserEntity userEntity = userRepositoryDAO.findOneByUserName(friendshipsEntity.getUserEntity().getUserName());
+        return userEntity;
     }
 
     // GET from db
@@ -28,12 +33,7 @@ public class FriendshipsEntityDtoTransformer {
         FriendshipsEntityDto dto = new FriendshipsEntityDto();
         dto.setGid(friendshipsEntity.getGid());
         dto.setCreated(friendshipsEntity.getCreated());
-
-        //
-        //userEntityDtoTransformer.generate(friendshipsEntity.getUserEntity());
-        //dto.setUserEntity(userEntityDtoTransformer.generate(friendshipsEntity.getUserEntity()));
-
-        //dto.setUserEntity(friendshipsEntity.getUserEntity());
+        dto.setUserEntity(getUserEntityService(friendshipsEntity)); // this ok since hibernate annotations alleviate infinite recursion @JsonManagedReference
         dto.setInviter(friendshipsEntity.getInviter());
         dto.setFriend(friendshipsEntity.getFriend());
         dto.setStatus(friendshipsEntity.getStatus());
@@ -43,9 +43,9 @@ public class FriendshipsEntityDtoTransformer {
         return dto;
     }
 
-    // POST to the db a new one
+    // POST to the db a new friendship
     public FriendshipsEntity generate(final FriendshipsEntityDtoPOST dto) {
-        UserEntity userEntity = userRepositoryDAO.findOneByUserName(dto.getUserName()); // works ok??
+        UserEntity userEntity = userRepositoryDAO.findOneByUserName(dto.getUserName());
         return new FriendshipsEntity(
                 userEntity,
                 dto.getInviter(),dto.getFriend(), dto.getStatus(),

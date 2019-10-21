@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-//@CrossOrigin(origins = "http://localhost:3000/", maxAge = 3600)
 @RestController
 @RequestMapping(value = "user", produces = MediaType.APPLICATION_JSON_VALUE)
 @Api(description = "UserEntity endpoints", tags = "UserEntity")
@@ -24,26 +23,25 @@ public class UserEntityController extends AbstractRestController {
         this.userEntityService = userEntityService;
     }
 
-    //TODO: This method not to be used. delete.
-    //@ApiOperation(value = "getUserEntity")
-    //@RequestMapping(value = "/{userName}/{password}", method = RequestMethod.GET)
-    //public ResponseEntity<UserEntityDto> getUserEntity(
-    //        @PathVariable("userName")
-    //        final String userName,
+    @ApiOperation(value = "getUserEntity")
+    @RequestMapping(value = "/{userName}", method = RequestMethod.GET)
+    public ResponseEntity<UserEntityDto> getUserEntity(
+            @PathVariable("userName")
+            final String userName) {
 
-    //        @PathVariable("password")
-    //        final String password) {
+        UserEntityDto userEntityDto = userEntityService.getUserEntity(userName);
+        userEntityDto.setPassword(null);
+        userEntityDto.setGid(null);
+        userEntityDto.setCreated(null);
 
-    //    UserEntityDto userEntityDto = userEntityService.getUserEntity(userName,password);
+        if (userEntityDto == null) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+         }
 
-    //    if (userEntityDto == null) {
-    //        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    //     }
+        return ResponseEntity.ok(userEntityDto);
+    }
 
-    //    return ResponseEntity.ok(userEntityDto);
-    //}
-
-    // Add a user
+    // POST to add a new user
     @RequestMapping(value = "/signup",method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserEntityDto> createUserEntity(
             @Valid
@@ -56,7 +54,7 @@ public class UserEntityController extends AbstractRestController {
         return ResponseEntity.ok(savedUserEntityDto);
     }
 
-    // from client Login form. Check if user exists. Return userId.
+    // POST from client Login form. Check if user exists. Return userId.
     @RequestMapping(value = "/userId",method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserEntityDto> verifyLoginUserEntity(
             @Valid

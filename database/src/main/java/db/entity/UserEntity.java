@@ -1,5 +1,6 @@
 package db.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -28,6 +29,7 @@ public class UserEntity {
     @Column (nullable = false, length = 20)
     private String password;
 
+    @JsonBackReference
     @OneToMany(mappedBy = "userEntity",
             fetch = FetchType.EAGER,
             cascade = CascadeType.ALL,
@@ -55,6 +57,10 @@ public class UserEntity {
     public String getPassword() { return password; }
 
     public List<FriendshipsEntity> getFriendsList() { return friendsList; }
+
+    public void setFriendsList(List<FriendshipsEntity> friendsList) {
+        this.friendsList = friendsList;
+    }
 
     @Override
     public String toString() {
