@@ -63,7 +63,7 @@ public class LoginConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/user/*").permitAll()
                 .antMatchers("/max").permitAll() //max # questions in QuestionSet
                 .antMatchers("/us/scores*").permitAll()
-                .antMatchers("/**").permitAll() // gives all access without authentication
+                //.antMatchers("/**").permitAll() // gives all access without authentication
                 .anyRequest().authenticated()
                 .and()
                 .httpBasic()

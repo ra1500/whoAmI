@@ -3,7 +3,9 @@ package db.entity;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table
@@ -18,11 +20,19 @@ public class UserEntity {
     @Column
     private Date created;
 
+
+
     @Column (unique = true, nullable = false, length = 20)
     private String userName;
 
     @Column (nullable = false, length = 20)
     private String password;
+
+    @OneToMany(mappedBy = "userEntity",
+            fetch = FetchType.EAGER,
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<FriendshipsEntity> friendsList = new ArrayList<>();
 
     public UserEntity() {
         super();
@@ -40,7 +50,11 @@ public class UserEntity {
 
     public String getUserName() { return userName; }
 
+    public void setUserName(String userName) { this.userName = userName; }
+
     public String getPassword() { return password; }
+
+    public List<FriendshipsEntity> getFriendsList() { return friendsList; }
 
     @Override
     public String toString() {

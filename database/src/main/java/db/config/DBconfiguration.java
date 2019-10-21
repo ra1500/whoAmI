@@ -1,6 +1,6 @@
 package db.config;
 
-import db.entity.InquiryEntity;
+import db.entity.FriendshipsEntity;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
@@ -28,7 +28,7 @@ public class DBconfiguration {
 
     private static final String HIBERNATE_PROPS_PREFIX = "spring.jpa";
 
-    protected static final String ENTITIES_PATH = InquiryEntity.class.getPackage()
+    protected static final String ENTITIES_PATH = FriendshipsEntity.class.getPackage()
             .getName();
 
     private HibernateProperties hibernateProperties;

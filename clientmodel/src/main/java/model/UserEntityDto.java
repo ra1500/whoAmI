@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 //import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserEntityDto implements Serializable {
@@ -21,6 +22,9 @@ public class UserEntityDto implements Serializable {
 
     @JsonProperty("password")
     private String password;
+
+    @JsonProperty("friendshipEntity")
+    private List<FriendshipsEntityDto> friendsList;
 
     public UserEntityDto() {
     }
@@ -48,4 +52,12 @@ public class UserEntityDto implements Serializable {
     public String getPassword() { return password; }
 
     public void setPassword(final String password) { this.password = password; }
+
+    public List<FriendshipsEntityDto> getFriendsList() {
+        return friendsList;
+    }
+
+    public void setFriendsList(List<FriendshipsEntityDto> friendsList) {
+        this.friendsList = friendsList;
+    }
 }

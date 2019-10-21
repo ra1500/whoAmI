@@ -34,6 +34,7 @@ public class QuestionSetVersionEntity {
 
     public Date getCreated() { return created; }
 
+    // should be List<QuestionsEntity> ?
     public String getQuestionIdList() { return questionIdList; }
 
     @Override
