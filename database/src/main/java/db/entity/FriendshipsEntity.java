@@ -21,7 +21,7 @@ public class FriendshipsEntity implements Serializable {
     @Column
     private Date created;
 
-    @JsonManagedReference
+    //@JsonManagedReference
     @ManyToOne
     @JoinColumn(name = "userName")
     private UserEntity userEntity;

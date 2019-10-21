@@ -18,11 +18,11 @@ public class FriendshipsEntityDtoTransformer {
         this.userRepositoryDAO = userRepositoryDAO;
     }
 
-    // this is a 'mini' getUserEntity service
-    private UserEntity getUserEntityService(FriendshipsEntity friendshipsEntity) {
-        UserEntity userEntity = userRepositoryDAO.findOneByUserName(friendshipsEntity.getUserEntity().getUserName());
-        return userEntity;
-    }
+    // this is a 'mini' getUserEntity service... not needed.....
+    //private UserEntity getUserEntityService(FriendshipsEntity friendshipsEntity) {
+    //    UserEntity userEntity = userRepositoryDAO.findOneByUserName(friendshipsEntity.getUserEntity().getUserName());
+    //    return userEntity;
+    //}
 
     // GET from db
     public FriendshipsEntityDto generate(final FriendshipsEntity friendshipsEntity) {
@@ -33,7 +33,7 @@ public class FriendshipsEntityDtoTransformer {
         FriendshipsEntityDto dto = new FriendshipsEntityDto();
         dto.setGid(friendshipsEntity.getGid());
         dto.setCreated(friendshipsEntity.getCreated());
-        dto.setUserEntity(getUserEntityService(friendshipsEntity)); // this ok since hibernate annotations alleviate infinite recursion @JsonManagedReference
+        //dto.setUserEntity(getUserEntityService(friendshipsEntity)); // not needed. hibernate does the magic
         dto.setInviter(friendshipsEntity.getInviter());
         dto.setFriend(friendshipsEntity.getFriend());
         dto.setStatus(friendshipsEntity.getStatus());

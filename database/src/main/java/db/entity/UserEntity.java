@@ -1,6 +1,7 @@
 package db.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -29,7 +30,8 @@ public class UserEntity {
     @Column (nullable = false, length = 20)
     private String password;
 
-    @JsonBackReference
+    //@JsonBackReference
+    @JsonIgnore
     @OneToMany(mappedBy = "userEntity",
             fetch = FetchType.EAGER,
             cascade = CascadeType.ALL,
