@@ -36,8 +36,8 @@ public class UserEntityDtoTransformer {
         }
 
         UserEntityDto dto = new UserEntityDto();
-        dto.setGid(userEntity.getGid());
-        dto.setCreated(userEntity.getCreated());
+        //dto.setGid(userEntity.getGid());
+        //dto.setCreated(userEntity.getCreated());
         dto.setUserName(userEntity.getUserName());
         dto.setPassword(userEntity.getPassword());
         dto.setFriendsList(getFriendshipsListService(userEntity));  // works?

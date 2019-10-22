@@ -14,8 +14,8 @@ public class FriendshipsEntityDto implements Serializable {
     @JsonProperty("gid")
     private Long gid;
 
-    @JsonProperty("created")
-    private Date created;
+    //@JsonProperty("created")
+    //private Date created;
 
     // Here, return the full UserEntity object since this is for GET
     @JsonProperty("userEntity")
@@ -47,13 +47,13 @@ public class FriendshipsEntityDto implements Serializable {
         this.gid = gid;
     }
 
-    public Date getCreated() {
-        return created;
-    }
+    //public Date getCreated() {
+    //    return created;
+    //}
 
-    public void setCreated(final Date created) {
-        this.created = created;
-    }
+    //public void setCreated(final Date created) {
+    //    this.created = created;
+    //}
 
     public UserEntity getUserEntity() { return userEntity; }
 

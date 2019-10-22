@@ -18,7 +18,7 @@ public class FriendshipsEntityDtoTransformer {
         this.userRepositoryDAO = userRepositoryDAO;
     }
 
-    // this is a 'mini' getUserEntity service... not needed.....
+    // this is a 'mini' getUserEntity service... not needed?
     //private UserEntity getUserEntityService(FriendshipsEntity friendshipsEntity) {
     //    UserEntity userEntity = userRepositoryDAO.findOneByUserName(friendshipsEntity.getUserEntity().getUserName());
     //    return userEntity;
@@ -32,8 +32,8 @@ public class FriendshipsEntityDtoTransformer {
 
         FriendshipsEntityDto dto = new FriendshipsEntityDto();
         dto.setGid(friendshipsEntity.getGid());
-        dto.setCreated(friendshipsEntity.getCreated());
-        //dto.setUserEntity(getUserEntityService(friendshipsEntity)); // not needed. hibernate does the magic
+        //dto.setCreated(friendshipsEntity.getCreated()); // no need to send out created date now
+        //dto.setUserEntity(getUserEntityService(friendshipsEntity)); // not needed?
         dto.setInviter(friendshipsEntity.getInviter());
         dto.setFriend(friendshipsEntity.getFriend());
         dto.setStatus(friendshipsEntity.getStatus());

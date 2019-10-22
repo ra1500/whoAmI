@@ -28,11 +28,10 @@ public class UserEntityController extends AbstractRestController {
     public ResponseEntity<UserEntityDto> getUserEntity(
             @PathVariable("userName")
             final String userName) {
-
+    //TODO: check that authorization token username same as requested userEntity otherwise block
         UserEntityDto userEntityDto = userEntityService.getUserEntity(userName);
         userEntityDto.setPassword(null);
-        userEntityDto.setGid(null);
-        userEntityDto.setCreated(null);
+
 
         if (userEntityDto == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -49,8 +48,6 @@ public class UserEntityController extends AbstractRestController {
             final UserEntityDto userEntityDto) {
         UserEntityDto savedUserEntityDto = userEntityService.createUserEntity(userEntityDto);
         savedUserEntityDto.setPassword(null);
-        savedUserEntityDto.setGid(null);
-        savedUserEntityDto.setCreated(null);
         return ResponseEntity.ok(savedUserEntityDto);
     }
 
@@ -65,8 +62,6 @@ public class UserEntityController extends AbstractRestController {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         //verifiedUserEntityDto.setPassword(null); TODO: stop sending password. userId and password should be encrypted
-        verifiedUserEntityDto.setGid(null);
-        verifiedUserEntityDto.setCreated(null);
         return ResponseEntity.ok(verifiedUserEntityDto);
     }
 }

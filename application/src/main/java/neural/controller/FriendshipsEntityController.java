@@ -52,7 +52,7 @@ public class FriendshipsEntityController extends AbstractRestController {
             @Valid
             @RequestBody
             final FriendshipsEntityDtoPOST friendshipsEntityDtoPOST) {
-        // Main entry before doubling below
+        // Main/first db entry before doubling below
         FriendshipsEntityDto savedFriendshipsEntityDtoPOST = friendshipsEntityService.createFriendshipsEntity(friendshipsEntityDtoPOST);
 
         // Doubled entry but friend becomes user and user becomes friend. This ensures a User has full control over their relationships. Thus the 'One User to Many Friends' instead of ManyToMany.

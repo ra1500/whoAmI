@@ -12,11 +12,11 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserEntityDto implements Serializable {
 
-    @JsonProperty("gid")
-    private Long gid;
+    //@JsonProperty("gid")
+    //private Long gid;
 
-    @JsonProperty("created")
-    private Date created;
+    //@JsonProperty("created")
+    //private Date created;
 
     @JsonProperty("userName")
     private String userName;
@@ -30,21 +30,21 @@ public class UserEntityDto implements Serializable {
     public UserEntityDto() {
     }
 
-    public Long getGid() {
-        return gid;
-    }
+    //public Long getGid() {
+    //    return gid;
+    //}
 
-    public void setGid(final Long gid) {
-        this.gid = gid;
-    }
+    //public void setGid(final Long gid) {
+    //    this.gid = gid;
+    //}
 
-    public Date getCreated() {
-        return created;
-    }
+    //public Date getCreated() {
+    //    return created;
+    //}
 
-    public void setCreated(final Date created) {
-        this.created = created;
-    }
+    //public void setCreated(final Date created) {
+    //    this.created = created;
+    //}
 
     public String getUserName() { return userName; }
 
