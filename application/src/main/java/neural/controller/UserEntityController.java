@@ -5,12 +5,18 @@ import core.services.UserEntityService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import model.UserEntityDto;
+import org.apache.catalina.filters.ExpiresFilter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
+import javax.servlet.http.HttpServletRequest;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 
 @RestController
 @RequestMapping(value = "user", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -24,19 +30,21 @@ public class UserEntityController extends AbstractRestController {
     }
 
     @ApiOperation(value = "getUserEntity")
-    @RequestMapping(value = "/{userName}", method = RequestMethod.GET)
+    @RequestMapping(value = "/", method = RequestMethod.GET)
     public ResponseEntity<UserEntityDto> getUserEntity(
-            @PathVariable("userName")
-            final String userName) {
-    //TODO: check that authorization token username same as requested userEntity otherwise block
-        UserEntityDto userEntityDto = userEntityService.getUserEntity(userName);
+            @RequestHeader("Authorization") String token)               {
+        String base64Credentials = token.substring("Basic".length()).trim();
+        byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
+        String credentials = new String(credDecoded, StandardCharsets.UTF_8);
+        // credentials = username:password
+        final String[] values = credentials.split(":", 2);
+        String user = values[0];
+
+        UserEntityDto userEntityDto = userEntityService.getUserEntity(user);
         userEntityDto.setPassword(null);
-
-
         if (userEntityDto == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
          }
-
         return ResponseEntity.ok(userEntityDto);
     }
 
@@ -47,11 +55,10 @@ public class UserEntityController extends AbstractRestController {
             @RequestBody
             final UserEntityDto userEntityDto) {
         UserEntityDto savedUserEntityDto = userEntityService.createUserEntity(userEntityDto);
-        savedUserEntityDto.setPassword(null);
         return ResponseEntity.ok(savedUserEntityDto);
     }
 
-    // POST from client Login form. Check if user exists. Return userId.
+    // POST from client Login form. Check if user exists. Return token.
     @RequestMapping(value = "/userId",method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserEntityDto> verifyLoginUserEntity(
             @Valid
@@ -61,7 +68,7 @@ public class UserEntityController extends AbstractRestController {
         if (verifiedUserEntityDto == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-        //verifiedUserEntityDto.setPassword(null); TODO: stop sending password. userId and password should be encrypted
         return ResponseEntity.ok(verifiedUserEntityDto);
     }
+
 }

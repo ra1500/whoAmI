@@ -11,8 +11,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 
-//@CrossOrigin(origins = "http://localhost:3000/", maxAge = 3600)
 @RestController
 @RequestMapping(value = "a", produces = MediaType.APPLICATION_JSON_VALUE)
 @Api(description = "UserAnswersEntity endpoints", tags = "UserAnswersEntity")
@@ -24,20 +25,21 @@ public class UserAnswersEntityController extends AbstractRestController {
         this.userAnswersEntityService = userAnswersEntityService;
     }
 
+    // not used currently....  but secured with token.
     @ApiOperation(value = "getUserAnswersEntity")
-    @RequestMapping(value = "/{userName}/{questionId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/{questionId}", method = RequestMethod.GET)
     public ResponseEntity<UserAnswersEntityDto> getUserAnswersEntity(
-            @PathVariable("userName")
-            final String userName,
+            @RequestHeader("Authorization") String token,
+            @PathVariable("questionSetVersion") final Long questionSetVersion,
+            @PathVariable("questionId") final Long questionId) {
+        String base64Credentials = token.substring("Basic".length()).trim();
+        byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
+        String credentials = new String(credDecoded, StandardCharsets.UTF_8);
+        // credentials = username:password
+        final String[] values = credentials.split(":", 2);
+        String user = values[0];
 
-            @PathVariable("questionSetVersion")
-            final Long questionSetVersion,
-
-            @PathVariable("questionId")
-            final Long questionId) {
-
-        UserAnswersEntityDto userAnswersEntityDto = userAnswersEntityService.getUserAnswersEntity(userName,questionId);
-
+        UserAnswersEntityDto userAnswersEntityDto = userAnswersEntityService.getUserAnswersEntity(user,questionId);
         if (userAnswersEntityDto == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
@@ -45,11 +47,24 @@ public class UserAnswersEntityController extends AbstractRestController {
         return ResponseEntity.ok(userAnswersEntityDto);
     }
 
+    // POST a user's answer to a question. secured with token's userName.
     @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserAnswersEntityDto> createUserAnswersEntity(
             @Valid
             @RequestBody
-            final UserAnswersEntityDto userAnswersEntityDto) {
+            final UserAnswersEntityDto userAnswersEntityDto,
+            @RequestHeader("Authorization") String token) {
+
+        String base64Credentials = token.substring("Basic".length()).trim();
+        byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
+        String credentials = new String(credDecoded, StandardCharsets.UTF_8);
+        // credentials = username:password
+        final String[] values = credentials.split(":", 2);
+        String user = values[0];
+
+        // userName from token
+        userAnswersEntityDto.setUserName(user);
+
         UserAnswersEntityDto savedUserAnswersEntityDto = userAnswersEntityService.createUserAnswersEntity(userAnswersEntityDto);
         return ResponseEntity.ok(savedUserAnswersEntityDto);
     }

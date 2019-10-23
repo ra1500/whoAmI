@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 
 @RestController
 @RequestMapping(value = "us", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -22,17 +24,26 @@ public class UserScoresAggregatesController extends AbstractRestController {
     public UserScoresAggregatesController(UserAnswersRepositoryDAO userAnswersRepositoryDAO) {
         this.userAnswersRepositoryDAO = userAnswersRepositoryDAO; }
 
+    // secured and private. used to render user's score.
     @ApiOperation(value = "getUserScoresAggregates")
-    @RequestMapping(value = "/{userName}", method = RequestMethod.GET)
+    @RequestMapping(value = "/", method = RequestMethod.GET)
     public ResponseEntity<String> getUserScoresAggregate(
-            @PathVariable("userName") final String userName) {
-        Long userScore = userAnswersRepositoryDAO.findUserScoresTotal(userName);
+            @RequestHeader("Authorization") String token) {
+        String base64Credentials = token.substring("Basic".length()).trim();
+        byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
+        String credentials = new String(credDecoded, StandardCharsets.UTF_8);
+        // credentials = username:password
+        final String[] values = credentials.split(":", 2);
+        String user = values[0];
+        Long userScore = userAnswersRepositoryDAO.findUserScoresTotal(user);
         if (userScore == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT); }
         else {
             String userScoreJSON = "{\"userScore\":" + userScore + "}";
         return ResponseEntity.ok(userScoreJSON);}
     }
+
+    // for use in the public URL. anyone can have access.
     @ApiOperation(value = "getUserScoresAggregates")
     @RequestMapping(value = "/scores", method = RequestMethod.GET)
     public ResponseEntity<String> getUserScore(

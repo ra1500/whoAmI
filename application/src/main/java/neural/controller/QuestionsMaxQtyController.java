@@ -26,6 +26,7 @@ public class QuestionsMaxQtyController extends AbstractRestController {
     public QuestionsMaxQtyController(QuestionsRepositoryDAO questionsRepositoryDAO) {
         this.questionsRepositoryDAO = questionsRepositoryDAO; }
 
+    // any requester with a token can access.
     @ApiOperation(value = "getMaxQtyQuestions")
     @RequestMapping(value = "", method = RequestMethod.GET)
     public ResponseEntity<String> getMaxQtyQuestions() {

@@ -10,13 +10,11 @@ import model.FriendshipsEntityDtoPOST;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 
 @RestController
 @RequestMapping(value = "f", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -29,29 +27,24 @@ public class FriendshipsEntityController extends AbstractRestController {
     public FriendshipsEntityController(FriendshipsEntityService friendshipsEntityService) {
         this.friendshipsEntityService = friendshipsEntityService; }
 
-    // GET a single friendship. not used.....
-    //@ApiOperation(value = "getFriendshipEntity")
-    //@RequestMapping(value = "/{userName}", method = RequestMethod.GET)
-    //public ResponseEntity<FriendshipsEntityDto> getFriendshipsEntity(
-    //        @PathVariable("userName")
-    //        final String userName) {
-
-     //   userEntity.setUserName(userName); // not needed?
-     //   FriendshipsEntityDto friendshipsEntityDto = friendshipsEntityService.getFriendshipsEntity(userEntity);
-
-     //   if (friendshipsEntityDto == null) {
-     //       return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-     //   }
-
-      //  return ResponseEntity.ok(friendshipsEntityDto);
-    //}
-
     // POST a friendship
     @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<FriendshipsEntityDto> createFriendshipsEntity(
+            @RequestHeader("Authorization") String token,
             @Valid
             @RequestBody
             final FriendshipsEntityDtoPOST friendshipsEntityDtoPOST) {
+
+        String base64Credentials = token.substring("Basic".length()).trim();
+        byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
+        String credentials = new String(credDecoded, StandardCharsets.UTF_8);
+        // credentials = username:password
+        final String[] values = credentials.split(":", 2);
+        String user = values[0];
+
+        // setting/securing userName as obtained from the Authorization token.
+        friendshipsEntityDtoPOST.setUserName(user);
+
         // Main/first db entry before doubling below
         FriendshipsEntityDto savedFriendshipsEntityDtoPOST = friendshipsEntityService.createFriendshipsEntity(friendshipsEntityDtoPOST);
 

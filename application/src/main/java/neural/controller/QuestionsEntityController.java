@@ -27,6 +27,7 @@ public class QuestionsEntityController extends AbstractRestController {
     public QuestionsEntityController(QuestionsEntityService questionsEntityService) {
         this.questionsEntityService = questionsEntityService; }
 
+    // get an single question. any user with a token can access.
     @ApiOperation(value = "getQuestionsEntity")
     @RequestMapping(value = "/{gid}", method = RequestMethod.GET)
     public ResponseEntity<QuestionsEntityDto> getQuestionsEntity(
