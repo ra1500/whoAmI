@@ -35,6 +35,7 @@ public class UserScoresAggregatesController extends AbstractRestController {
         // credentials = username:password
         final String[] values = credentials.split(":", 2);
         String user = values[0];
+
         Long userScore = userAnswersRepositoryDAO.findUserScoresTotal(user);
         if (userScore == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT); }
@@ -49,11 +50,12 @@ public class UserScoresAggregatesController extends AbstractRestController {
     public ResponseEntity<String> getUserScore(
             @RequestParam("gid") final String userName) {
         Long userScore = userAnswersRepositoryDAO.findUserScoresTotal(userName);
-        if (userScore == null) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT); }
-        else {
+        if (userScore > 0) {
             String userScoreJSON = "{\"userScore\":" + userScore + "}";
             return ResponseEntity.ok(userScoreJSON);}
+        // this else does not work. can't evaluate if expression if SQL finds nothing
+        else {
+            String userScoreJSON = "{\"userScore\": 0 }";
+            return ResponseEntity.ok(userScoreJSON);}
     }
-
 }

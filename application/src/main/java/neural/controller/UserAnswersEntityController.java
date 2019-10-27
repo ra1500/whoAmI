@@ -2,6 +2,7 @@ package neural.controller;
 
 // import Paths;     --use later if wish to have Paths restricted/opened via separate class--
 import core.services.UserAnswersEntityService;
+import db.repository.UserAnswersRepositoryDAO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import model.UserAnswersEntityDto;
@@ -20,9 +21,11 @@ import java.util.Base64;
 public class UserAnswersEntityController extends AbstractRestController {
 
     private UserAnswersEntityService userAnswersEntityService;
+    private UserAnswersRepositoryDAO userAnswersRepositoryDAO; // used for delete. shortcut to the repository.
 
-    public UserAnswersEntityController(UserAnswersEntityService userAnswersEntityService) {
+    public UserAnswersEntityController(UserAnswersEntityService userAnswersEntityService, UserAnswersRepositoryDAO userAnswersRepositoryDAO) {
         this.userAnswersEntityService = userAnswersEntityService;
+        this.userAnswersRepositoryDAO = userAnswersRepositoryDAO;
     }
 
     // not used currently....  but secured with token.
@@ -67,5 +70,25 @@ public class UserAnswersEntityController extends AbstractRestController {
 
         UserAnswersEntityDto savedUserAnswersEntityDto = userAnswersEntityService.createUserAnswersEntity(userAnswersEntityDto);
         return ResponseEntity.ok(savedUserAnswersEntityDto);
+    }
+
+    // POST delete all of a user's answers
+    @RequestMapping(value = "/del",method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> deleteAllUserAnswers(
+            @Valid
+            @RequestBody
+            final UserAnswersEntityDto userAnswersEntityDto,
+            @RequestHeader("Authorization") String token) {
+
+        String base64Credentials = token.substring("Basic".length()).trim();
+        byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
+        String credentials = new String(credDecoded, StandardCharsets.UTF_8);
+        // credentials = username:password
+        final String[] values = credentials.split(":", 2);
+        String user = values[0];
+
+        userAnswersRepositoryDAO.deleteAllByUserNameAndQuestionSetVersion(user, userAnswersEntityDto.getQuestionSetVersion());
+        String allDeleted = "{ all gone }";
+        return ResponseEntity.ok(allDeleted);
     }
 }

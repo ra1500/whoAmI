@@ -8,8 +8,8 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
+@Table(uniqueConstraints= @UniqueConstraint(columnNames={"userName", "friend"}))
 @Entity
-@Table
 public class FriendshipsEntity implements Serializable {
 
     @Id  //JPA indicating primary key

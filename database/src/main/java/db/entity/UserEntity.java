@@ -22,8 +22,6 @@ public class UserEntity {
     @Column
     private Date created;
 
-
-
     @Column (unique = true, nullable = false, length = 20)
     private String userName;
 
@@ -46,6 +44,11 @@ public class UserEntity {
         super();
         this.userName = userName;
         this.password = password;
+    }
+
+    public UserEntity (String userName) {
+        super();
+        this.userName = userName;
     }
 
     public Long getGid() { return gid; }
