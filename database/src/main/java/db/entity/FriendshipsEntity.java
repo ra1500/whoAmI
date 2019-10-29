@@ -33,7 +33,7 @@ public class FriendshipsEntity implements Serializable {
     private String friend;
 
     @Column(length = 20)
-    private String status; // pending, connected, declined, cancelled
+    private String connectionStatus; // pending, connected, declined, cancelled
 
     @Column(length = 20)
     private String connectionType; //friend, colleague, family, online
@@ -45,13 +45,13 @@ public class FriendshipsEntity implements Serializable {
         super();
     }
 
-    public FriendshipsEntity(UserEntity userEntity, String inviter, String friend, String status,
+    public FriendshipsEntity(UserEntity userEntity, String inviter, String friend, String connectionStatus,
                              String connectionType, String visibilityPermission) {
         super();
         this.userEntity = userEntity;
         this.inviter = inviter;
         this.friend = friend;
-        this.status = status;
+        this.connectionStatus = connectionStatus;
         this.connectionType = connectionType;
         this.visibilityPermission = visibilityPermission;
     }
@@ -76,7 +76,7 @@ public class FriendshipsEntity implements Serializable {
 
     public String getFriend() { return friend; }
 
-    public String getStatus() { return status; }
+    public String getConnectionStatus() { return connectionStatus; }
 
     public String getConnectionType() { return connectionType; }
 
@@ -88,7 +88,7 @@ public class FriendshipsEntity implements Serializable {
 
     @Override
     public String toString() {
-        return String.format("friendships profile", gid, created, userEntity.getUserName(), inviter, friend, status,
+        return String.format("friendships profile", gid, created, userEntity.getUserName(), inviter, friend, connectionStatus,
                 connectionType, visibilityPermission);
     }
 

@@ -26,8 +26,8 @@ public class FriendshipsEntityDtoPOST implements Serializable {
     @JsonProperty("friend")
     private String friend;
 
-    @JsonProperty("status")
-    private String status;
+    @JsonProperty("connectionStatus")
+    private String connectionStatus;
 
     @JsonProperty("connectionType")
     private String connectionType;
@@ -74,12 +74,12 @@ public class FriendshipsEntityDtoPOST implements Serializable {
         this.friend = friend;
     }
 
-    public String getStatus() {
-        return status;
+    public String getConnectionStatus() {
+        return connectionStatus;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setConnectionStatus(String connectionStatus) {
+        this.connectionStatus = connectionStatus;
     }
 
     public String getConnectionType() {

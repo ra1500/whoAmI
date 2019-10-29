@@ -22,10 +22,10 @@ public class FriendshipsEntityService {
         this.friendshipsEntityDtoTransformer = friendshipsEntityDtoTransformer;
     }
 
-    // for GET. not used currently. can't use just a userEntity. need to also specify 'friend'.
-    //public FriendshipsEntityDto getFriendshipsEntity(final UserEntity userEntity) {
-    //    return friendshipsEntityDtoTransformer.generate(friendshipsRepositoryDAO.findAllByUserEntity(userEntity));
-    //}
+    // for GET.
+    public FriendshipsEntityDto getFriendshipsEntity(final UserEntity userEntity, final String friend) {
+        return friendshipsEntityDtoTransformer.generate(friendshipsRepositoryDAO.findOneByUserEntityAndFriend(userEntity, friend));
+    }
 
     // for POST
     public FriendshipsEntityDto createFriendshipsEntity(final FriendshipsEntityDtoPOST friendshipsEntityDtoPOST) {

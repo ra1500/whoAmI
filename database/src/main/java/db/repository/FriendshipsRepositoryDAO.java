@@ -11,6 +11,6 @@ import java.util.List;
 public interface FriendshipsRepositoryDAO extends JpaRepository<FriendshipsEntity, Long> {
 
     FriendshipsEntity findOneByGid(Long gid);
-    FriendshipsEntity findOneByUserEntity(UserEntity userEntity);
+    FriendshipsEntity findOneByUserEntityAndFriend(UserEntity userEntity, String friend);
     List<FriendshipsEntity> findAllByUserEntity(UserEntity userEntity);
 }

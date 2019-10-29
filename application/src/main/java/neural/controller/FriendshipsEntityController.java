@@ -74,4 +74,34 @@ public class FriendshipsEntityController extends AbstractRestController {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } // end else
     }
+
+    // get an single friendship
+    @ApiOperation(value = "getQuestionsEntity")
+    @RequestMapping(value = "/{ct}", method = RequestMethod.GET)
+    public ResponseEntity<FriendshipsEntityDto> getFriendshipsEntity(
+            @RequestHeader("Authorization") String token,
+            @PathVariable("ct")
+            final String ct) {
+        String base64Credentials = token.substring("Basic".length()).trim();
+        byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
+        String credentials = new String(credDecoded, StandardCharsets.UTF_8);
+        // credentials = username:password
+        final String[] values = credentials.split(":", 2);
+        String user = values[0];
+
+        // userEntity service.
+        UserEntity userEntity = userRepositoryDAO.findOneByUserName(user);
+
+        FriendshipsEntityDto friendshipsEntityDto = friendshipsEntityService.getFriendshipsEntity(userEntity, ct);
+
+        if (friendshipsEntityDto == null) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        return ResponseEntity.ok(friendshipsEntityDto);
+    }
+
+
+
+
 }

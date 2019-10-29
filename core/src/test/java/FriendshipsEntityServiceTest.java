@@ -22,7 +22,7 @@ public class FriendshipsEntityServiceTest {
     static UserEntity userEntity = new UserEntity(userName,password);
 
     private static final FriendshipsEntity friendshipsEntity =
-            new FriendshipsEntity(userEntity, "mockInviter", "mockFriend", "mockStatus", "mockConnectionType", "mockVisibilityPermission");
+            new FriendshipsEntity(userEntity, "mockInviter", "mockFriend", "mockConnectionStatus", "mockConnectionType", "mockVisibilityPermission");
 
     private static final FriendshipsEntityDto FRIENDSHIPS_ENTITY_DTO =
             new FriendshipsEntityDto();

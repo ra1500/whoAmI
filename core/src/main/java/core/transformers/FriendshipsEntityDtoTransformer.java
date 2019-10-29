@@ -36,7 +36,7 @@ public class FriendshipsEntityDtoTransformer {
         //dto.setUserEntity(getUserEntityService(friendshipsEntity)); // not needed?
         dto.setInviter(friendshipsEntity.getInviter());
         dto.setFriend(friendshipsEntity.getFriend());
-        dto.setStatus(friendshipsEntity.getStatus());
+        dto.setConnectionStatus(friendshipsEntity.getConnectionStatus());
         dto.setConnectionType(friendshipsEntity.getConnectionType());
         dto.setVisibilityPermission(friendshipsEntity.getVisibilityPermission());
 
@@ -48,7 +48,7 @@ public class FriendshipsEntityDtoTransformer {
         UserEntity userEntity = userRepositoryDAO.findOneByUserName(dto.getUserName());
         return new FriendshipsEntity(
                 userEntity,
-                dto.getInviter(),dto.getFriend(), dto.getStatus(),
+                dto.getInviter(),dto.getFriend(), dto.getConnectionStatus(),
                 dto.getConnectionType(),dto.getVisibilityPermission());
     }
 }

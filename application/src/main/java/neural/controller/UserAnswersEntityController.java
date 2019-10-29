@@ -28,13 +28,13 @@ public class UserAnswersEntityController extends AbstractRestController {
         this.userAnswersRepositoryDAO = userAnswersRepositoryDAO;
     }
 
-    // not used currently....  but secured with token.
+    // GET a user's answer to a question
     @ApiOperation(value = "getUserAnswersEntity")
-    @RequestMapping(value = "/{questionId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/{qId}/{qsId}", method = RequestMethod.GET)
     public ResponseEntity<UserAnswersEntityDto> getUserAnswersEntity(
             @RequestHeader("Authorization") String token,
-            @PathVariable("questionSetVersion") final Long questionSetVersion,
-            @PathVariable("questionId") final Long questionId) {
+            @PathVariable("qsId") final Long questionSetVersion,
+            @PathVariable("qId") final Long questionId) {
         String base64Credentials = token.substring("Basic".length()).trim();
         byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
         String credentials = new String(credDecoded, StandardCharsets.UTF_8);

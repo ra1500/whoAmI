@@ -35,14 +35,14 @@ public class FriendshipsEntityTest {
         String password = "pswrd";
         UserEntity userEntity = new UserEntity(userName,password);
         String friend = "GeorgeTheFriend";
-        String status = "connected";
+        String connectionStatus = "connected";
         String inviter = "GeorgeInvitedKaren";
         String connectionType = "colleague";
         String visibilityPermission = "private";
         String newFriend = "JunitTestUpdateField";
 
         //Create - Save to db
-        FriendshipsEntity friendshipsEntity = new FriendshipsEntity(userEntity,inviter,friend,status,connectionType,visibilityPermission );
+        FriendshipsEntity friendshipsEntity = new FriendshipsEntity(userEntity,inviter,friend,connectionStatus,connectionType,visibilityPermission );
         FriendshipsEntity savedFriendshipsEntity = friendshipsRepositoryDAO.saveAndFlush(friendshipsEntity);
         System.out.println(savedFriendshipsEntity.getGid());
         assertEquals(new Long(1), savedFriendshipsEntity.getGid());
@@ -51,7 +51,7 @@ public class FriendshipsEntityTest {
         //Read
         FriendshipsEntity foundFriendshipsEntity = friendshipsRepositoryDAO.findOneByGid(new Long(1));
         assertEquals(friendshipsEntity.getFriend(),foundFriendshipsEntity.getFriend() );
-        assertEquals(friendshipsEntity.getStatus(),foundFriendshipsEntity.getStatus() );
+        assertEquals(friendshipsEntity.getConnectionStatus(),foundFriendshipsEntity.getConnectionStatus() );
         assertEquals(friendshipsEntity.getConnectionType(),foundFriendshipsEntity.getConnectionType() );
 
         //Update - update saved entity
