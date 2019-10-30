@@ -10,6 +10,7 @@ public class QuestionsEntityDtoTransformer {
     public QuestionsEntityDtoTransformer() {
     }
 
+    // GET from db
     public QuestionsEntityDto generate(final QuestionsEntity questionsEntity) {
         if (questionsEntity == null || questionsEntity.getGid() == null) {
             return null;
@@ -18,6 +19,7 @@ public class QuestionsEntityDtoTransformer {
         QuestionsEntityDto dto = new QuestionsEntityDto();
         dto.setGid(questionsEntity.getGid());
         dto.setCreated(questionsEntity.getCreated());
+
         dto.setQuestion(questionsEntity.getQuestion());
         dto.setCategory(questionsEntity.getCategory());
         dto.setMaxPoints(questionsEntity.getMaxPoints());
@@ -37,7 +39,8 @@ public class QuestionsEntityDtoTransformer {
         return dto;
     }
 
-    public QuestionsEntity generate(final QuestionsEntityDto dto) {
-        return new QuestionsEntity(dto.getQuestion(),dto.getCategory(),dto.getMaxPoints(),dto.getAnswer1(),dto.getAnswer1Points(),dto.getAnswer2(),dto.getAnswer2Points(),dto.getAnswer3(),dto.getAnswer3Points(),dto.getAnswer4(),dto.getAnswer4Points(),dto.getAnswer5(),dto.getAnswer5Points(),dto.getAnswer6(),dto.getAnswer6Points());
-    }
+    // POST (not used)
+    //public QuestionsEntity generate(final QuestionsEntityDto dto) {
+    //    return new QuestionsEntity(dto.getQuestion(),dto.getCategory(),dto.getMaxPoints(),dto.getAnswer1(),dto.getAnswer1Points(),dto.getAnswer2(),dto.getAnswer2Points(),dto.getAnswer3(),dto.getAnswer3Points(),dto.getAnswer4(),dto.getAnswer4Points(),dto.getAnswer5(),dto.getAnswer5Points(),dto.getAnswer6(),dto.getAnswer6Points());
+    //}
 }

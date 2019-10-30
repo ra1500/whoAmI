@@ -28,7 +28,6 @@ public class UserEntity {
     @Column (nullable = false, length = 20)
     private String password;
 
-    //@JsonBackReference
     @JsonIgnore
     @OneToMany(mappedBy = "userEntity",
             fetch = FetchType.EAGER,

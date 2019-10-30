@@ -40,7 +40,7 @@ public class UserEntityDtoTransformer {
         //dto.setCreated(userEntity.getCreated());
         dto.setUserName(userEntity.getUserName());
         dto.setPassword(userEntity.getPassword());
-        dto.setFriendsList(getFriendshipsListService(userEntity));  // works?
+        dto.setFriendsList(getFriendshipsListService(userEntity));
 
         //dto.setFriendsList(userEntity.getFriendsList()
         //            .stream()

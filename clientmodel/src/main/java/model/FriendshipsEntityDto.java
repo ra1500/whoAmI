@@ -51,10 +51,6 @@ public class FriendshipsEntityDto implements Serializable {
     //    return created;
     //}
 
-    //public void setCreated(final Date created) {
-    //    this.created = created;
-    //}
-
     public UserEntity getUserEntity() { return userEntity; }
 
     public void setUserEntity(UserEntity userEntity) { this.userEntity = userEntity; }

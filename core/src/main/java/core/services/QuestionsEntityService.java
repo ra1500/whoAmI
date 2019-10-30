@@ -26,8 +26,9 @@ public class QuestionsEntityService {
         return questionsEntityDtoTransformer.generate(questionsEntityRepository.findOneByGid(gid));
     }
 
-    public QuestionsEntityDto createQuestionsEntity(final QuestionsEntityDto questionsEntityDto) {
-        QuestionsEntity questionsEntity = questionsEntityRepository.saveAndFlush(questionsEntityDtoTransformer.generate(questionsEntityDto));
-        return questionsEntityDtoTransformer.generate(questionsEntity);
-    }
+    // POST (not used)
+    //public QuestionsEntityDto createQuestionsEntity(final QuestionsEntityDto questionsEntityDto) {
+    //    QuestionsEntity questionsEntity = questionsEntityRepository.saveAndFlush(questionsEntityDtoTransformer.generate(questionsEntityDto));
+    //    return questionsEntityDtoTransformer.generate(questionsEntity);
+    //}
 }

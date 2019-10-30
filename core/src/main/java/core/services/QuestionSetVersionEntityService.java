@@ -26,8 +26,8 @@ public class QuestionSetVersionEntityService {
         return questionSetVersionEntityDtoTransformer.generate(questionSetVersionEntityRepository.findOneByGid(gid));
     }
 
-    public QuestionSetVersionEntityDto createQuestionSetVersionEntity(final QuestionSetVersionEntityDto questionSetVersionEntityDto) {
-        QuestionSetVersionEntity questionSetVersionEntity = questionSetVersionEntityRepository.saveAndFlush(questionSetVersionEntityDtoTransformer.generate(questionSetVersionEntityDto));
-        return questionSetVersionEntityDtoTransformer.generate(questionSetVersionEntity);
-    }
+    //public QuestionSetVersionEntityDto createQuestionSetVersionEntity(final QuestionSetVersionEntityDto questionSetVersionEntityDto) {
+    //    QuestionSetVersionEntity questionSetVersionEntity = questionSetVersionEntityRepository.saveAndFlush(questionSetVersionEntityDtoTransformer.generate(questionSetVersionEntityDto));
+    //    return questionSetVersionEntityDtoTransformer.generate(questionSetVersionEntity);
+    //}
 }

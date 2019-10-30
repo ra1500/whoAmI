@@ -42,10 +42,6 @@ public class UserEntityDto implements Serializable {
     //    return created;
     //}
 
-    //public void setCreated(final Date created) {
-    //    this.created = created;
-    //}
-
     public String getUserName() { return userName; }
 
     public void setUserName(final String userName) { this.userName = userName; }

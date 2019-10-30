@@ -23,7 +23,6 @@ public class FriendshipsEntity implements Serializable {
     @Column
     private Date created;
 
-    //@JsonManagedReference
     @ManyToOne
     @JoinColumn(name = "userName")
     private UserEntity userEntity;
@@ -35,13 +34,13 @@ public class FriendshipsEntity implements Serializable {
     private String friend;
 
     @Column(length = 20)
-    private String connectionStatus; // pending, connected, declined, cancelled
+    private String connectionStatus;
 
     @Column(length = 20)
-    private String connectionType; //friend, colleague, family, online
+    private String connectionType;
 
     @Column(length = 20)
-    private String visibilityPermission; // fullyhide, fullyopen, limited
+    private String visibilityPermission;
 
     public FriendshipsEntity() {
         super();

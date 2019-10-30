@@ -12,12 +12,17 @@ public class QuestionsEntity implements Serializable {
 
     @Id  //JPA indicating primary key
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column
     private Long gid;
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column
     private Date created;
+
+    @ManyToOne
+    @JoinColumn(name = "gid", insertable = false, updatable = false)
+    private QuestionSetVersionEntity questionSetVersionEntity;
 
     @Column
     private String question;
@@ -78,18 +83,37 @@ public class QuestionsEntity implements Serializable {
         this.question = question;
     }
 
-    public QuestionsEntity(String question, String category, Long maxPoints, String answer1, Long answer1Points,
+    public QuestionsEntity(QuestionSetVersionEntity questionSetVersionEntity, String question, String category, Long maxPoints, String answer1, Long answer1Points,
                            String answer2, Long answer2Points, String answer3, Long answer3Points, String answer4,
                            Long answer4Points, String answer5, Long answer5Points, String answer6, Long answer6Points)
     {
         super();
+        this.questionSetVersionEntity = questionSetVersionEntity;
         this.question = question;
+        this.category = category;
+        this.maxPoints = maxPoints;
+        this.answer1 = answer1;
+        this.answer1Points = answer1Points;
+        this.answer2 = answer2;
+        this.answer2Points = answer2Points;
+        this.answer3 = answer3;
+        this.answer3Points = answer3Points;
+        this.answer4 = answer4;
+        this.answer4Points = answer4Points;
+        this.answer5 = answer5;
+        this.answer5Points = answer5Points;
+        this.answer6 = answer6;
+        this.answer6Points = answer6Points;
     }
 
 
     public Long getGid() { return gid; }
 
     public Date getCreated() { return created; }
+
+    public QuestionSetVersionEntity getQuestionSetVersionEntity() {
+        return questionSetVersionEntity;
+    }
 
     public String getQuestion() { return question; }
 
