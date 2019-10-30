@@ -32,4 +32,20 @@ public class FriendshipsEntityService {
         FriendshipsEntity friendshipsEntity = friendshipsRepositoryDAO.saveAndFlush(friendshipsEntityDtoTransformer.generate(friendshipsEntityDtoPOST));
         return friendshipsEntityDtoTransformer.generate(friendshipsEntity);
     }
+
+    // for PATCH  // TODO: is this just returning the same object to the client as the client sent in instead of coming from the updated db?
+    public FriendshipsEntityDto patchFriendshipsEntity(final FriendshipsEntityDtoPOST friendshipsEntityDtoPOST) {
+        FriendshipsEntity friendshipsEntity = friendshipsRepositoryDAO.findOneByGid(friendshipsEntityDtoPOST.getGid());
+        friendshipsEntity.setConnectionType(friendshipsEntityDtoPOST.getConnectionType());
+        friendshipsEntity.setConnectionStatus(friendshipsEntityDtoPOST.getConnectionStatus());
+        friendshipsEntity.setVisibilityPermission(friendshipsEntityDtoPOST.getVisibilityPermission());
+        friendshipsRepositoryDAO.save(friendshipsEntity);
+        return friendshipsEntityDtoTransformer.generate(friendshipsEntity);
+    }
+
+    // for DELETE.
+    public Integer deleteFriendshipsEntity(final Long gid) {
+        Integer deletedFriendshipsEntity = friendshipsRepositoryDAO.deleteOneByGid(gid);
+        return deletedFriendshipsEntity;
+    }
 }

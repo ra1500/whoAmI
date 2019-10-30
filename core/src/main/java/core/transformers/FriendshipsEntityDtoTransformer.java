@@ -51,4 +51,9 @@ public class FriendshipsEntityDtoTransformer {
                 dto.getInviter(),dto.getFriend(), dto.getConnectionStatus(),
                 dto.getConnectionType(),dto.getVisibilityPermission());
     }
+
+    // PATCH to the db an update
+    public FriendshipsEntity patch(final FriendshipsEntityDtoPOST dto) {
+        return new FriendshipsEntity(dto.getGid());
+    }
 }

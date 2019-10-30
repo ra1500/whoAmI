@@ -29,6 +29,7 @@ public class UserEntityController extends AbstractRestController {
         this.userEntityService = userEntityService;
     }
 
+    // GET a user (and user's friendships)
     @ApiOperation(value = "getUserEntity")
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public ResponseEntity<UserEntityDto> getUserEntity(

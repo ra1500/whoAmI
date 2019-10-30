@@ -3,11 +3,13 @@ package db.entity;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.apache.catalina.User;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
+@DynamicUpdate // needed for patch?
 @Table(uniqueConstraints= @UniqueConstraint(columnNames={"userName", "friend"}))
 @Entity
 public class FriendshipsEntity implements Serializable {
@@ -56,6 +58,17 @@ public class FriendshipsEntity implements Serializable {
         this.visibilityPermission = visibilityPermission;
     }
 
+    public FriendshipsEntity(UserEntity userEntity, String inviter, String friend, String connectionStatus,
+                             Long gid) {
+        super();
+        this.userEntity = userEntity;
+        this.inviter = inviter;
+        this.friend = friend;
+        this.connectionStatus = connectionStatus;
+        this.connectionType = connectionType;
+        this.visibilityPermission = visibilityPermission;
+    }
+
     public FriendshipsEntity(Long gid) {
         super();
         this.gid = gid;
@@ -81,6 +94,18 @@ public class FriendshipsEntity implements Serializable {
     public String getConnectionType() { return connectionType; }
 
     public String getVisibilityPermission() { return visibilityPermission; }
+
+    public void setVisibilityPermission(String visibilityPermission) {
+        this.visibilityPermission = visibilityPermission;
+    }
+
+    public void setConnectionType(String connectionType) {
+        this.connectionType = connectionType;
+    }
+
+    public void setConnectionStatus(String connectionStatus) {
+        this.connectionStatus = connectionStatus;
+    }
 
     public void setFriend(String friend) {
         this.friend = friend;

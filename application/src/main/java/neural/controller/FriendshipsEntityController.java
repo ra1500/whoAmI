@@ -75,7 +75,7 @@ public class FriendshipsEntityController extends AbstractRestController {
         } // end else
     }
 
-    // get an single friendship
+    // get a single friendship
     @ApiOperation(value = "getQuestionsEntity")
     @RequestMapping(value = "/{ct}", method = RequestMethod.GET)
     public ResponseEntity<FriendshipsEntityDto> getFriendshipsEntity(
@@ -97,11 +97,99 @@ public class FriendshipsEntityController extends AbstractRestController {
         if (friendshipsEntityDto == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-
         return ResponseEntity.ok(friendshipsEntityDto);
     }
 
+    // PATCH a friendship to change connectionStatus
+    @RequestMapping(method = RequestMethod.PATCH, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<FriendshipsEntityDto> patchConnectionStatus(
+            @RequestHeader("Authorization") String token,
+            @Valid
+            @RequestBody
+            final FriendshipsEntityDtoPOST friendshipsEntityDtoPOST) {
 
+            // getting userName from Authorization token to secure endpoint.
+            String base64Credentials = token.substring("Basic".length()).trim();
+            byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
+            String credentials = new String(credDecoded, StandardCharsets.UTF_8);
+            // credentials = username:password
+            final String[] values = credentials.split(":", 2);
+            String user = values[0];
 
+            // setting/securing DTO userName as obtained from the Authorization token.
+            friendshipsEntityDtoPOST.setUserName(user);
+
+            // Main/first db entry before doubling below
+            FriendshipsEntityDto patchedFriendshipsEntityDtoPOST = friendshipsEntityService.patchFriendshipsEntity(friendshipsEntityDtoPOST);
+
+            // Doubled entry but friend becomes user and user becomes friend.
+            // Thus 'One User to Many Friends' instead of ManyToMany.
+            String friendToUser = friendshipsEntityDtoPOST.getFriend();
+            String userToFriend = friendshipsEntityDtoPOST.getUserName();
+            FriendshipsEntityDtoPOST friendshipsEntityDtoPOSTdouble = friendshipsEntityDtoPOST;
+            friendshipsEntityDtoPOSTdouble.setFriend(userToFriend);
+            friendshipsEntityDtoPOSTdouble.setUserName(friendToUser);
+
+            // userEntity service.
+            UserEntity userEntity = userRepositoryDAO.findOneByUserName(friendshipsEntityDtoPOSTdouble.getUserName());
+
+            // need to get the GID for the 2nd entry update.
+            FriendshipsEntityDto friendshipsEntityDto = friendshipsEntityService.getFriendshipsEntity(userEntity, friendshipsEntityDtoPOSTdouble.getFriend());
+
+            // dizzying setting of GID so that can update 2nd entry.
+            friendshipsEntityDtoPOSTdouble.setGid(friendshipsEntityDto.getGid());
+
+            FriendshipsEntityDto patchedFriendshipsEntityDtoPOSTdouble = friendshipsEntityService.patchFriendshipsEntity(friendshipsEntityDtoPOSTdouble);
+            return ResponseEntity.ok(patchedFriendshipsEntityDtoPOST);
+    }
+
+    // PATCH a friendship to change connectionType or Privacy/Visibility
+    @RequestMapping(value = "/adj", method = RequestMethod.PATCH, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<FriendshipsEntityDto> patchTypeOrPrivacy(
+            @RequestHeader("Authorization") String token,
+            @Valid
+            @RequestBody
+            final FriendshipsEntityDtoPOST friendshipsEntityDtoPOST) {
+
+        // getting userName from Authorization token to secure endpoint.
+        String base64Credentials = token.substring("Basic".length()).trim();
+        byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
+        String credentials = new String(credDecoded, StandardCharsets.UTF_8);
+        // credentials = username:password
+        final String[] values = credentials.split(":", 2);
+        String user = values[0];
+
+        // setting/securing DTO userName as obtained from the Authorization token.
+        friendshipsEntityDtoPOST.setUserName(user);
+
+        // Main/first db entry before doubling below
+        FriendshipsEntityDto patchedFriendshipsEntityDtoPOST = friendshipsEntityService.patchFriendshipsEntity(friendshipsEntityDtoPOST);
+
+        return ResponseEntity.ok(patchedFriendshipsEntityDtoPOST);
+    }
+
+    // DELETE a friendship. User side only.
+    @RequestMapping(value = "/d", method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Integer> deleteAfriendship(
+            @RequestHeader("Authorization") String token,
+            @Valid
+            @RequestBody
+            final FriendshipsEntityDtoPOST friendshipsEntityDtoPOST) {
+
+        // getting userName from Authorization token to secure endpoint.
+        String base64Credentials = token.substring("Basic".length()).trim();
+        byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
+        String credentials = new String(credDecoded, StandardCharsets.UTF_8);
+        // credentials = username:password
+        final String[] values = credentials.split(":", 2);
+        String user = values[0];
+
+        // setting/securing DTO userName as obtained from the Authorization token.
+        friendshipsEntityDtoPOST.setUserName(user);
+
+        Integer deletedFriendshipsEntity = friendshipsEntityService.deleteFriendshipsEntity(friendshipsEntityDtoPOST.getGid());
+
+        return ResponseEntity.ok(deletedFriendshipsEntity);
+    }
 
 }

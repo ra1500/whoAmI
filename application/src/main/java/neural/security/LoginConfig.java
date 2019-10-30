@@ -14,6 +14,9 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationEn
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.filter.GenericFilterBean;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -27,6 +30,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Arrays;
+import java.util.Collections;
 
 @Configuration
 @EnableWebSecurity
@@ -48,6 +53,8 @@ public class LoginConfig extends WebSecurityConfigurerAdapter {
     // CORS bean
     @Bean
     public WebMvcConfigurer corsConfigurer() {
+        //final CorsConfiguration config = new CorsConfiguration();
+        //config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "OPTIONS", "DELETE", "PATCH"));
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
@@ -55,6 +62,19 @@ public class LoginConfig extends WebSecurityConfigurerAdapter {
             }
         };
     }
+
+    // CORS filter.
+    //@Bean
+    //public CorsFilter corsFilter() {
+    //    final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    //    final CorsConfiguration config = new CorsConfiguration();
+    //    config.setAllowCredentials(true);
+    //    config.setAllowedOrigins(Collections.singletonList("*"));
+    //    config.setAllowedHeaders(Arrays.asList("Origin", "Content-Type", "Accept"));
+    //    config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "OPTIONS", "DELETE", "PATCH"));
+    //    source.registerCorsConfiguration("/**", config);
+    //    return new CorsFilter(source);
+    // }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
