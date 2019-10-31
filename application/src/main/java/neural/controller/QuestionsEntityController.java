@@ -11,13 +11,11 @@ import core.services.QuestionsEntityService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 
 @RestController
 @RequestMapping(value = "q", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -37,11 +35,22 @@ public class QuestionsEntityController extends AbstractRestController {
     @ApiOperation(value = "getQuestionsEntity")
     @RequestMapping(value = "/{qsid}/{qid}", method = RequestMethod.GET)
     public ResponseEntity<QuestionsEntityDto> getQuestionsEntity(
+            @RequestHeader("Authorization") String token,
+
             @PathVariable("qsid")
             final Integer setNumber,
 
             @PathVariable("qid")
             final Integer sequenceNumber) {
+
+
+        // secured by token
+        String base64Credentials = token.substring("Basic".length()).trim();
+        byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
+        String credentials = new String(credDecoded, StandardCharsets.UTF_8);
+        // credentials = username:password
+        final String[] values = credentials.split(":", 2);
+        String user = values[0];
 
         // QuestionSetVersionEntity service.
         QuestionSetVersionEntity questionSetVersionEntity = questionSetVersionRepositoryDAO.findOneBySetNumber(setNumber);
@@ -54,19 +63,5 @@ public class QuestionsEntityController extends AbstractRestController {
 
         return ResponseEntity.ok(questionsEntityDto);
     }
-
-//    @ApiOperation(value = "getQuestionsQuantity")
-//    @RequestMapping(value = "/qty", method = RequestMethod.GET)
-//    public ResponseEntity<Long> getQuestionsQuantity() {
-//
-//        Long qty;
-//        qty = QuestionsRepositoryDAO.findMaxGid();
-//
-//        if (qty == null) {
-//            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-//        }
-//
-//        return ResponseEntity.ok(qty);
-//    }
     
 }

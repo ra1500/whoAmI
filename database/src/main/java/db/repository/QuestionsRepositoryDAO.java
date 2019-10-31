@@ -16,10 +16,17 @@ public interface QuestionsRepositoryDAO extends JpaRepository<QuestionsEntity, L
     QuestionsEntity findOneByQuestionSetVersionEntityAndSequenceNumber(QuestionSetVersionEntity questionSetVersionEntity, Integer sequenceNumber);
     List<QuestionsEntity> findAllByQuestionSetVersionEntity(QuestionSetVersionEntity questionSetVersionEntity);
 
-    @Query("SELECT MAX(sequenceNumber) FROM QuestionsEntity")
-    Integer findMaxQtyQuestions();
+    // delete. not used....
+    //@Query("SELECT MAX(sequenceNumber) FROM QuestionsEntity")
+    //Integer findMaxQtyQuestions2();
 
-    @Query("SELECT MIN(sequenceNumber) FROM QuestionsEntity")
-    Integer findMinQtyQuestions();
+    // indexed parameter (first method parameter is indicated as ?1)
+    @Query("SELECT MAX(sequenceNumber) FROM QuestionsEntity WHERE setNumber = ?1")
+    Integer findMaxQtyQuestions(Integer setNumber);
+
+    //@Query("SELECT SUM(maxPoints) FROM QuestionsEntity WHERE setNumber = ?1")
+    //Long MaxPointsForSetNumber(Integer setNumber);
+
+
 }
 
