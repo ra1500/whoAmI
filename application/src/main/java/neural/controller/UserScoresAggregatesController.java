@@ -24,11 +24,12 @@ public class UserScoresAggregatesController extends AbstractRestController {
     public UserScoresAggregatesController(UserAnswersRepositoryDAO userAnswersRepositoryDAO) {
         this.userAnswersRepositoryDAO = userAnswersRepositoryDAO; }
 
-    // secured and private. used to render user's score.
+    // GET. secured and private. used to render user's score.
     @ApiOperation(value = "getUserScoresAggregates")
-    @RequestMapping(value = "/", method = RequestMethod.GET)
+    @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<String> getUserScoresAggregate(
-            @RequestHeader("Authorization") String token) {
+            @RequestHeader("Authorization") String token,
+            @RequestParam("sv") final Long questionSetVersion) {
         String base64Credentials = token.substring("Basic".length()).trim();
         byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
         String credentials = new String(credDecoded, StandardCharsets.UTF_8);
@@ -36,7 +37,7 @@ public class UserScoresAggregatesController extends AbstractRestController {
         final String[] values = credentials.split(":", 2);
         String user = values[0];
 
-        Long userScore = userAnswersRepositoryDAO.findUserScoresTotal(user);
+        Long userScore = userAnswersRepositoryDAO.findUserScoresTotal(user, questionSetVersion);
         if (userScore == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT); }
         else {
@@ -44,12 +45,13 @@ public class UserScoresAggregatesController extends AbstractRestController {
         return ResponseEntity.ok(userScoreJSON);}
     }
 
-    // for use in the public URL. anyone can have access.
+    // GET for use in the public URL. anyone can access.
     @ApiOperation(value = "getUserScoresAggregates")
     @RequestMapping(value = "/scores", method = RequestMethod.GET)
     public ResponseEntity<String> getUserScore(
-            @RequestParam("gid") final String userName) {
-        Long userScore = userAnswersRepositoryDAO.findUserScoresTotal(userName);
+            @RequestParam("gid") final String userName,
+            @RequestParam("sv") final Long questionSetVersion) {
+        Long userScore = userAnswersRepositoryDAO.findUserScoresTotal(userName, questionSetVersion);
         if (userScore > 0) {
             String userScoreJSON = "{\"userScore\":" + userScore + "}";
             return ResponseEntity.ok(userScoreJSON);}

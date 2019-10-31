@@ -24,8 +24,8 @@ public interface QuestionsRepositoryDAO extends JpaRepository<QuestionsEntity, L
     @Query("SELECT MAX(sequenceNumber) FROM QuestionsEntity WHERE setNumber = ?1")
     Integer findMaxQtyQuestions(Integer setNumber);
 
-    //@Query("SELECT SUM(maxPoints) FROM QuestionsEntity WHERE setNumber = ?1")
-    //Long MaxPointsForSetNumber(Integer setNumber);
+    @Query("SELECT SUM(maxPoints) FROM QuestionsEntity WHERE setNumber = ?1")
+    Long PointsForSetNumber(Integer setNumber);
 
 
 }

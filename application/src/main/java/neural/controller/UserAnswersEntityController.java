@@ -42,7 +42,7 @@ public class UserAnswersEntityController extends AbstractRestController {
         final String[] values = credentials.split(":", 2);
         String user = values[0];
 
-        UserAnswersEntityDto userAnswersEntityDto = userAnswersEntityService.getUserAnswersEntity(user,questionId);
+        UserAnswersEntityDto userAnswersEntityDto = userAnswersEntityService.getUserAnswersEntity(user,questionSetVersion, questionId );
         if (userAnswersEntityDto == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }

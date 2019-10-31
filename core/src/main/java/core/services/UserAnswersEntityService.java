@@ -22,8 +22,9 @@ public class UserAnswersEntityService {
         this.userAnswersEntityDtoTransformer = userAnswersEntityDtoTransformer;
     }
 
-    public UserAnswersEntityDto getUserAnswersEntity(final String userName, final Long questionId) {
-        return userAnswersEntityDtoTransformer.generate(userAnswersEntityRepository.findOneByUserNameAndQuestionId(userName, questionId));
+    // GET an answer
+    public UserAnswersEntityDto getUserAnswersEntity(final String userName, final Long questionSetVersion, final Long questionId) {
+        return userAnswersEntityDtoTransformer.generate(userAnswersEntityRepository.findOneByUserNameAndQuestionSetVersionAndQuestionId(userName, questionSetVersion, questionId));
     }
 
     // not currently used method
@@ -32,13 +33,15 @@ public class UserAnswersEntityService {
         return userAnswersEntityDtoTransformer.generate(userAnswersEntity);
     }
 
+    // POST a user's answer (updates as well manually by deleting) TODO: make this an update with save(), not delete and replace.
     public UserAnswersEntityDto createUserAnswersEntity(final UserAnswersEntityDto userAnswersEntityDto) {
 
         String userName = userAnswersEntityDto.getUserName();
         Long questionId = userAnswersEntityDto.getQuestionId();
+        Long questionSetVersion = userAnswersEntityDto.getQuestionSetVersion();
 
-        if (getUserAnswersEntity(userName, questionId) != null) {
-            userAnswersEntityRepository.deleteOneByUserNameAndQuestionId(userName, questionId);
+        if (getUserAnswersEntity(userName, questionSetVersion, questionId) != null) {
+            userAnswersEntityRepository.deleteOneByUserNameAndQuestionSetVersionAndQuestionId(userName, questionSetVersion, questionId);
         }
 
         UserAnswersEntity userAnswersEntity = userAnswersEntityRepository.saveAndFlush(userAnswersEntityDtoTransformer.generate(userAnswersEntityDto));

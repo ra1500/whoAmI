@@ -24,9 +24,9 @@ public class QuestionsMaxQtyController extends AbstractRestController {
     public QuestionsMaxQtyController(QuestionsRepositoryDAO questionsRepositoryDAO) {
         this.questionsRepositoryDAO = questionsRepositoryDAO; }
 
-    // GET qty of questions
+    // GET qty, max points of questions. also get category, description, title,
     @ApiOperation(value = "getMaxQtyQuestions")
-    @RequestMapping(value = "", method = RequestMethod.GET)
+    @RequestMapping( method = RequestMethod.GET)
     public ResponseEntity<String> getMaxQtyQuestions(
         @RequestHeader("Authorization") String token,
         @RequestParam("sn") final Integer setNumber) {
@@ -40,34 +40,38 @@ public class QuestionsMaxQtyController extends AbstractRestController {
         String user = values[0];
 
         Integer maxQtyQuestions = questionsRepositoryDAO.findMaxQtyQuestions(setNumber);
+        Long maxPoints = questionsRepositoryDAO.PointsForSetNumber(setNumber);
+
         if (maxQtyQuestions == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT); }
         else {
-            String maxQtyQuestionsJSON = "{\"maxQtyQuestions\":" + maxQtyQuestions + "}";
+            String maxQtyQuestionsJSON = "{\"maxQtyQuestions\":" + maxQtyQuestions + ", \"maxPoints\":" + maxPoints + "}";
             return ResponseEntity.ok(maxQtyQuestionsJSON);}
     }
 
     // GET maxPoints of a set of questions
-    //@ApiOperation(value = "getMaxQtyQuestions")
-    //@RequestMapping(value = "", method = RequestMethod.GET)
-    //public ResponseEntity<String> getMaxPoints(
-    //        @RequestHeader("Authorization") String token,
-    //        @RequestParam("snp") final Integer setNumber) {
+//    @ApiOperation(value = "getMaxPoints")
+//    @RequestMapping(value = "/p", method = RequestMethod.GET)
+//    public ResponseEntity<String> getMaxPoints(
+//            @RequestHeader("Authorization") String token,
+//            @RequestParam("snp") final Integer setNumber) {
 
         // secured by token
-    //    String base64Credentials = token.substring("Basic".length()).trim();
-    //    byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
-    //    String credentials = new String(credDecoded, StandardCharsets.UTF_8);
-        // credentials = username:password
-    //    final String[] values = credentials.split(":", 2);
-    //    String user = values[0];
+//        String base64Credentials = token.substring("Basic".length()).trim();
+//        byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
+//        String credentials = new String(credDecoded, StandardCharsets.UTF_8);
+//        // credentials = username:password
+//        final String[] values = credentials.split(":", 2);
+//        String user = values[0];
 
-     //   Long maxPoints = questionsRepositoryDAO.MaxPointsForSetNumber(setNumber);
-     //   if (maxPoints == null) {
-     //       return new ResponseEntity<>(HttpStatus.NO_CONTENT); }
-     //   else {
-     //       String maxQtyQuestionsJSON = "{\"maxPoints\":" + maxPoints + "}";
-     //       return ResponseEntity.ok(maxQtyQuestionsJSON);}
-    //}
+//        Long maxPoints = questionsRepositoryDAO.PointsForSetNumber(setNumber);
+
+//        if (maxPoints == null) {
+//            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+//        } else {
+//            String maxPointsJSON = "{\"maxPoints\":" + maxPoints + "}";
+//            return ResponseEntity.ok(maxPointsJSON);
+//        }
+//    }
 }
 
