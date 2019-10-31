@@ -21,8 +21,11 @@ public class QuestionsEntity implements Serializable {
     private Date created;
 
     @ManyToOne
-    @JoinColumn(name = "gid", insertable = false, updatable = false)
+    @JoinColumn(name = "setNumber")
     private QuestionSetVersionEntity questionSetVersionEntity;
+
+    @Column
+    private Integer sequenceNumber;
 
     @Column
     private String question;
@@ -110,6 +113,14 @@ public class QuestionsEntity implements Serializable {
     public Long getGid() { return gid; }
 
     public Date getCreated() { return created; }
+
+    public Integer getSequenceNumber() {
+        return sequenceNumber;
+    }
+
+    public void setSequenceNumber(Integer sequenceNumber) {
+        this.sequenceNumber = sequenceNumber;
+    }
 
     public QuestionSetVersionEntity getQuestionSetVersionEntity() {
         return questionSetVersionEntity;

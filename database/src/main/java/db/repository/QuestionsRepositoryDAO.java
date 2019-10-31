@@ -13,10 +13,13 @@ import java.util.List;
 public interface QuestionsRepositoryDAO extends JpaRepository<QuestionsEntity, Long> {
 
     QuestionsEntity findOneByGid(Long gid);
-
+    QuestionsEntity findOneByQuestionSetVersionEntityAndSequenceNumber(QuestionSetVersionEntity questionSetVersionEntity, Integer sequenceNumber);
     List<QuestionsEntity> findAllByQuestionSetVersionEntity(QuestionSetVersionEntity questionSetVersionEntity);
 
-    @Query("SELECT MAX(gid) FROM QuestionsEntity")
-    Long findMaxQtyQuestions();
+    @Query("SELECT MAX(sequenceNumber) FROM QuestionsEntity")
+    Integer findMaxQtyQuestions();
+
+    @Query("SELECT MIN(sequenceNumber) FROM QuestionsEntity")
+    Integer findMinQtyQuestions();
 }
 

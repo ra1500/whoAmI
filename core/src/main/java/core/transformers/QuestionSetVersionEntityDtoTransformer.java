@@ -35,8 +35,10 @@ public class QuestionSetVersionEntityDtoTransformer {
 
         QuestionSetVersionEntityDto dto = new QuestionSetVersionEntityDto();
         dto.setGid(questionSetVersionEntity.getGid());
+        dto.setSetNumber(questionSetVersionEntity.getSetNumber());
+
         //dto.setCreated(questionSetVersionEntity.getCreated());
-        dto.setQuestionsList(getQuestionsListService(questionSetVersionEntity));
+        //dto.setQuestionsList(getQuestionsListService(questionSetVersionEntity));
         dto.setTitle(questionSetVersionEntity.getTitle());
         dto.setVersion(questionSetVersionEntity.getVersion());
         dto.setCategory(questionSetVersionEntity.getCategory());

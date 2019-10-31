@@ -30,7 +30,7 @@ public class QuestionsMaxQtyController extends AbstractRestController {
     @ApiOperation(value = "getMaxQtyQuestions")
     @RequestMapping(value = "", method = RequestMethod.GET)
     public ResponseEntity<String> getMaxQtyQuestions() {
-        Long maxQtyQuestions = questionsRepositoryDAO.findMaxQtyQuestions();
+        Integer maxQtyQuestions = questionsRepositoryDAO.findMaxQtyQuestions();
         if (maxQtyQuestions == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT); }
         else {

@@ -1,6 +1,8 @@
 package neural.controller;
 
 // import .Paths;     --use later if wish to have Paths restricted/opened via separate class--
+import db.entity.QuestionSetVersionEntity;
+import db.repository.QuestionSetVersionRepositoryDAO;
 import db.repository.QuestionsRepositoryDAO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -24,17 +26,27 @@ public class QuestionsEntityController extends AbstractRestController {
 
     private QuestionsEntityService questionsEntityService;
 
-    public QuestionsEntityController(QuestionsEntityService questionsEntityService) {
-        this.questionsEntityService = questionsEntityService; }
+    // use in micro-service in GET
+    private QuestionSetVersionRepositoryDAO questionSetVersionRepositoryDAO;
+
+    public QuestionsEntityController(QuestionsEntityService questionsEntityService, QuestionSetVersionRepositoryDAO questionSetVersionRepositoryDAO) {
+        this.questionsEntityService = questionsEntityService;
+        this.questionSetVersionRepositoryDAO = questionSetVersionRepositoryDAO; }
 
     // get an single question. any user with a token can access.
     @ApiOperation(value = "getQuestionsEntity")
-    @RequestMapping(value = "/{gid}", method = RequestMethod.GET)
+    @RequestMapping(value = "/{qsid}/{qid}", method = RequestMethod.GET)
     public ResponseEntity<QuestionsEntityDto> getQuestionsEntity(
-            @PathVariable("gid")
-            final Long gid) {
+            @PathVariable("qsid")
+            final Integer setNumber,
 
-        QuestionsEntityDto questionsEntityDto = questionsEntityService.getQuestionsEntity(gid);
+            @PathVariable("qid")
+            final Integer sequenceNumber) {
+
+        // QuestionSetVersionEntity service.
+        QuestionSetVersionEntity questionSetVersionEntity = questionSetVersionRepositoryDAO.findOneBySetNumber(setNumber);
+
+        QuestionsEntityDto questionsEntityDto = questionsEntityService.getQuestionsEntity(questionSetVersionEntity, sequenceNumber);
 
         if (questionsEntityDto == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);

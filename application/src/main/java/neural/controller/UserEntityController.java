@@ -34,6 +34,7 @@ public class UserEntityController extends AbstractRestController {
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public ResponseEntity<UserEntityDto> getUserEntity(
             @RequestHeader("Authorization") String token)               {
+
         String base64Credentials = token.substring("Basic".length()).trim();
         byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
         String credentials = new String(credDecoded, StandardCharsets.UTF_8);

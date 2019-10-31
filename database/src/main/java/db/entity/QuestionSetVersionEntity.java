@@ -21,6 +21,9 @@ public class QuestionSetVersionEntity {
     @Column
     private Date created;
 
+    @Column
+    private Integer setNumber;
+
     @JsonIgnore
     @OneToMany(mappedBy = "questionSetVersionEntity",
             fetch = FetchType.EAGER,
@@ -49,9 +52,22 @@ public class QuestionSetVersionEntity {
         this.gid = gid;
     }
 
+    public QuestionSetVersionEntity (Integer setNumber) {
+        super();
+        this.setNumber = setNumber;
+    }
+
     public Long getGid() { return gid; }
 
     public Date getCreated() { return created; }
+
+    public Integer getSetNumber() {
+        return setNumber;
+    }
+
+    public void setSetNumber(Integer setNumber) {
+        this.setNumber = setNumber;
+    }
 
     public List<QuestionsEntity> getQuestionsList() {
         return questionsList;
@@ -95,7 +111,7 @@ public class QuestionSetVersionEntity {
 
     @Override
     public String toString() {
-        return String.format("QuestionSetVersion Profile", gid, created, title, version, category, description, questionsList);
+        return String.format("QuestionSetVersion Profile", gid, created, setNumber, version, category, description, questionsList);
     }
 
 }

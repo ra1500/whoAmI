@@ -2,6 +2,7 @@ package model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import db.entity.QuestionSetVersionEntity;
 
 //import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -15,6 +16,13 @@ public class QuestionsEntityDto implements Serializable {
 
     @JsonProperty("created")
     private Date created;
+
+    // Here, return the full QuestionSetVersionEntity object since this is for GET
+    @JsonProperty("questionSetVersionEntity")
+    private QuestionSetVersionEntity questionSetVersionEntity;
+
+    @JsonProperty("sequenceNumber")
+    private Integer sequenceNumber;
 
     @JsonProperty("question")
     private String question;
@@ -78,6 +86,14 @@ public class QuestionsEntityDto implements Serializable {
 
     public void setCreated(final Date created) {
         this.created = created;
+    }
+
+    public Integer getSequenceNumber() {
+        return sequenceNumber;
+    }
+
+    public void setSequenceNumber(Integer sequenceNumber) {
+        this.sequenceNumber = sequenceNumber;
     }
 
     public String getQuestion() { return question; }

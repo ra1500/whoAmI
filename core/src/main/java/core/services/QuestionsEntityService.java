@@ -1,6 +1,7 @@
 package core.services;
 
 import core.transformers.QuestionsEntityDtoTransformer;
+import db.entity.QuestionSetVersionEntity;
 import db.entity.QuestionsEntity;
 import db.repository.QuestionsRepositoryDAO;
 import model.QuestionsEntityDto;
@@ -22,8 +23,9 @@ public class QuestionsEntityService {
         this.questionsEntityDtoTransformer = questionsEntityDtoTransformer;
     }
 
-    public QuestionsEntityDto getQuestionsEntity(final Long gid) {
-        return questionsEntityDtoTransformer.generate(questionsEntityRepository.findOneByGid(gid));
+    // GET a question
+    public QuestionsEntityDto getQuestionsEntity(final QuestionSetVersionEntity questionSetVersionEntity, Integer sequenceNumber) {
+        return questionsEntityDtoTransformer.generate(questionsEntityRepository.findOneByQuestionSetVersionEntityAndSequenceNumber(questionSetVersionEntity, sequenceNumber));
     }
 
     // POST (not used)

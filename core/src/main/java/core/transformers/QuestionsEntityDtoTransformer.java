@@ -20,6 +20,8 @@ public class QuestionsEntityDtoTransformer {
         dto.setGid(questionsEntity.getGid());
         dto.setCreated(questionsEntity.getCreated());
 
+        //dto.set   questionSetVersionNumber
+        dto.setSequenceNumber(questionsEntity.getSequenceNumber());
         dto.setQuestion(questionsEntity.getQuestion());
         dto.setCategory(questionsEntity.getCategory());
         dto.setMaxPoints(questionsEntity.getMaxPoints());

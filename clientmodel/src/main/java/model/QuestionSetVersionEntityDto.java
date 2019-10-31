@@ -18,8 +18,11 @@ public class QuestionSetVersionEntityDto implements Serializable {
     //@JsonProperty("created")
     //private Date created;
 
-    @JsonProperty("questionsList")
-    private List<QuestionsEntity> questionsList;
+    @JsonProperty("setNumber")
+    private Integer setNumber;
+
+    //@JsonProperty("questionsList")
+    //private List<QuestionsEntity> questionsList;
 
     @JsonProperty("version")
     private String version;
@@ -52,13 +55,22 @@ public class QuestionSetVersionEntityDto implements Serializable {
     //    this.created = created;
     //}
 
-    public List<QuestionsEntity> getQuestionsList() {
-        return questionsList;
+
+    public Integer getSetNumber() {
+        return setNumber;
     }
 
-    public void setQuestionsList(List<QuestionsEntity> questionsList) {
-        this.questionsList = questionsList;
+    public void setSetNumber(Integer setNumber) {
+        this.setNumber = setNumber;
     }
+
+    //public List<QuestionsEntity> getQuestionsList() {
+    //    return questionsList;
+    //}
+
+    //public void setQuestionsList(List<QuestionsEntity> questionsList) {
+    //    this.questionsList = questionsList;
+    //}
 
     public String getVersion() {
         return version;
