@@ -30,7 +30,8 @@ public class UserScoresAggregatesController extends AbstractRestController {
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<String> getUserScoresAggregate(
             @RequestHeader("Authorization") String token,
-            @RequestParam("sv") final Long questionSetVersion) {
+            @RequestParam("sv") final Long questionSetVersion,
+            @RequestParam("au") final String auditee) {
         String base64Credentials = token.substring("Basic".length()).trim();
         byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
         String credentials = new String(credDecoded, StandardCharsets.UTF_8);
@@ -38,7 +39,7 @@ public class UserScoresAggregatesController extends AbstractRestController {
         final String[] values = credentials.split(":", 2);
         String user = values[0];
 
-        Long userScore = userAnswersRepositoryDAO.findUserScoresTotal(user, questionSetVersion);
+        Long userScore = userAnswersRepositoryDAO.findUserScoresTotal(user, auditee, questionSetVersion);
         if (userScore == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT); }
         else {
@@ -56,7 +57,8 @@ public class UserScoresAggregatesController extends AbstractRestController {
         // Checking Permissions
         //UserEntity userEntity = findOneByUser
 
-        Long userScore = userAnswersRepositoryDAO.findUserScoresTotal(userName, questionSetVersion);
+        String auditee = userName;
+        Long userScore = userAnswersRepositoryDAO.findUserScoresTotal(userName, auditee, questionSetVersion);
         if (userScore > 0) {
             String userScoreJSON = "{\"userScore\":" + userScore + "}";
             return ResponseEntity.ok(userScoreJSON);}

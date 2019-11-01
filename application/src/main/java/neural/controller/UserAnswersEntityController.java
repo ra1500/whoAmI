@@ -30,9 +30,10 @@ public class UserAnswersEntityController extends AbstractRestController {
 
     // GET a user's answer to a question
     @ApiOperation(value = "getUserAnswersEntity")
-    @RequestMapping(value = "/{qId}/{qsId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/{qId}/{qsId}/{au}", method = RequestMethod.GET)
     public ResponseEntity<UserAnswersEntityDto> getUserAnswersEntity(
             @RequestHeader("Authorization") String token,
+            @PathVariable("au") final String auditee,
             @PathVariable("qsId") final Long questionSetVersion,
             @PathVariable("qId") final Long questionId) {
         String base64Credentials = token.substring("Basic".length()).trim();
@@ -42,7 +43,7 @@ public class UserAnswersEntityController extends AbstractRestController {
         final String[] values = credentials.split(":", 2);
         String user = values[0];
 
-        UserAnswersEntityDto userAnswersEntityDto = userAnswersEntityService.getUserAnswersEntity(user,questionSetVersion, questionId );
+        UserAnswersEntityDto userAnswersEntityDto = userAnswersEntityService.getUserAnswersEntity(user, auditee, questionSetVersion, questionId );
         if (userAnswersEntityDto == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
@@ -87,7 +88,7 @@ public class UserAnswersEntityController extends AbstractRestController {
         final String[] values = credentials.split(":", 2);
         String user = values[0];
 
-        userAnswersRepositoryDAO.deleteAllByUserNameAndQuestionSetVersion(user, userAnswersEntityDto.getQuestionSetVersion());
+        userAnswersRepositoryDAO.deleteAllByUserNameAndAuditeeAndQuestionSetVersion(user, userAnswersEntityDto.getAuditee(), userAnswersEntityDto.getQuestionSetVersion());
         String allDeleted = "{ all gone }";
         return ResponseEntity.ok(allDeleted);
     }

@@ -1,7 +1,6 @@
 package db.entity;
 
 import org.hibernate.annotations.CreationTimestamp;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -28,23 +27,32 @@ public class UserAnswersEntity implements Serializable {
     @Column
     private String answer;
 
-    @Column(length = 3)
+    @Column(length = 4)
     private Long answerPoints;
 
     @Column
     private Long questionSetVersion;
 
+    @Column
+    private String auditee;
+
+    @Column
+    private String comments;
+
     public UserAnswersEntity() {
         super();
     }
 
-    public UserAnswersEntity(String userName, Long questionId, String answer, Long answerPoints, Long questionSetVersion) {
+    public UserAnswersEntity(String userName, Long questionId, String answer, Long answerPoints, Long questionSetVersion,
+            String auditee, String comments) {
         super();
         this.userName = userName;
         this.questionId = questionId;
         this.answer = answer;
         this.answerPoints = answerPoints;
         this.questionSetVersion = questionSetVersion;
+        this.auditee = auditee;
+        this.comments = comments;
     }
 
     public UserAnswersEntity(Long gid) {
@@ -56,6 +64,14 @@ public class UserAnswersEntity implements Serializable {
         super();
         this.userName = userName;
         this.questionId = questionId;
+    }
+
+    public UserAnswersEntity(String userName, String auditee, Long questionSetVersion, Long questionId) {
+        super();
+        this.userName = userName;
+        this.auditee = auditee;
+        this.userName = userName;
+        this.questionSetVersion = questionSetVersion;
     }
 
     public UserAnswersEntity(String userName, Long questionId, Long questionSetVersion, Long answerPoints, String answer) {
@@ -84,6 +100,22 @@ public class UserAnswersEntity implements Serializable {
     public void setUserName(String userName) {
         this.userName = userName;
     } // used for Crud update test
+
+    public String getAuditee() {
+        return auditee;
+    }
+
+    public void setAuditee(String auditee) {
+        this.auditee = auditee;
+    }
+
+    public String getComments() {
+        return comments;
+    }
+
+    public void setComments(String comments) {
+        this.comments = comments;
+    }
 
     @Override
     public String toString() {

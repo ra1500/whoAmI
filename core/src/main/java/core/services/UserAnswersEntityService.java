@@ -23,8 +23,8 @@ public class UserAnswersEntityService {
     }
 
     // GET an answer
-    public UserAnswersEntityDto getUserAnswersEntity(final String userName, final Long questionSetVersion, final Long questionId) {
-        return userAnswersEntityDtoTransformer.generate(userAnswersEntityRepository.findOneByUserNameAndQuestionSetVersionAndQuestionId(userName, questionSetVersion, questionId));
+    public UserAnswersEntityDto getUserAnswersEntity(final String userName, final String auditee, final Long questionSetVersion, final Long questionId) {
+        return userAnswersEntityDtoTransformer.generate(userAnswersEntityRepository.findOneByUserNameAndAuditeeAndQuestionSetVersionAndQuestionId(userName, auditee, questionSetVersion, questionId));
     }
 
     // not currently used method
@@ -37,11 +37,12 @@ public class UserAnswersEntityService {
     public UserAnswersEntityDto createUserAnswersEntity(final UserAnswersEntityDto userAnswersEntityDto) {
 
         String userName = userAnswersEntityDto.getUserName();
+        String auditee = userAnswersEntityDto.getAuditee();
         Long questionId = userAnswersEntityDto.getQuestionId();
         Long questionSetVersion = userAnswersEntityDto.getQuestionSetVersion();
 
-        if (getUserAnswersEntity(userName, questionSetVersion, questionId) != null) {
-            userAnswersEntityRepository.deleteOneByUserNameAndQuestionSetVersionAndQuestionId(userName, questionSetVersion, questionId);
+        if (getUserAnswersEntity(userName, auditee, questionSetVersion, questionId) != null) {
+            userAnswersEntityRepository.deleteOneByUserNameAndAuditeeAndQuestionSetVersionAndQuestionId(userName, auditee, questionSetVersion, questionId);
         }
 
         UserAnswersEntity userAnswersEntity = userAnswersEntityRepository.saveAndFlush(userAnswersEntityDtoTransformer.generate(userAnswersEntityDto));

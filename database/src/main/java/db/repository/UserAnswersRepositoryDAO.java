@@ -10,15 +10,15 @@ import javax.transaction.Transactional;
 @Repository
 public interface UserAnswersRepositoryDAO extends JpaRepository<UserAnswersEntity, Long> {
 
-    UserAnswersEntity findOneByUserNameAndQuestionSetVersionAndQuestionId(String userName, Long questionSetVersion, Long questionId);
+    UserAnswersEntity findOneByUserNameAndAuditeeAndQuestionSetVersionAndQuestionId(String userName, String auditee, Long questionSetVersion, Long questionId);
 
-    @Query("SELECT SUM(answerPoints) FROM UserAnswersEntity WHERE userName = :userName AND questionSetVersion = :questionSetVersion")
-    Long findUserScoresTotal(@Param("userName") String userName, @Param("questionSetVersion") Long questionSetVersion);
-
-    @Transactional
-    Integer deleteOneByUserNameAndQuestionSetVersionAndQuestionId(String userName, Long questionSetVersion,Long questionId);
+    @Query("SELECT SUM(answerPoints) FROM UserAnswersEntity WHERE userName = :userName AND questionSetVersion = :questionSetVersion AND auditee = :auditee")
+    Long findUserScoresTotal(@Param("userName") String userName, @Param("auditee") String auditee, @Param("questionSetVersion") Long questionSetVersion);
 
     @Transactional
-    Integer deleteAllByUserNameAndQuestionSetVersion(String userName, Long questionSetVersion);
+    Integer deleteOneByUserNameAndAuditeeAndQuestionSetVersionAndQuestionId(String userName, String auditee,Long questionSetVersion,Long questionId);
+
+    @Transactional
+    Integer deleteAllByUserNameAndAuditeeAndQuestionSetVersion(String userName, String auditee, Long questionSetVersion);
 
 }

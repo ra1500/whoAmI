@@ -10,6 +10,7 @@ public class UserAnswersEntityDtoTransformer {
     public UserAnswersEntityDtoTransformer() {
     }
 
+    // GET
     public UserAnswersEntityDto generate(final UserAnswersEntity userAnswersEntity) {
         if (userAnswersEntity == null || userAnswersEntity.getGid() == null) {
             return null;
@@ -23,11 +24,14 @@ public class UserAnswersEntityDtoTransformer {
         dto.setAnswer(userAnswersEntity.getAnswer());
         dto.setAnswerPoints(userAnswersEntity.getAnswerPoints());
         dto.setQuestionSetVersion(userAnswersEntity.getQuestionSetVersion());
+        dto.setAuditee(userAnswersEntity.getAuditee());
+        dto.setComments(userAnswersEntity.getComments());
 
         return dto;
     }
 
     public UserAnswersEntity generate(final UserAnswersEntityDto dto) {
-        return new UserAnswersEntity(dto.getUserName(),dto.getQuestionId(), dto.getQuestionSetVersion(),dto.getAnswerPoints(),dto.getAnswer());
+        return new UserAnswersEntity(dto.getUserName(),dto.getQuestionId(), dto.getAnswer(), dto.getAnswerPoints(),
+                dto.getQuestionSetVersion(), dto.getAuditee(), dto.getComments());
     }
 }

@@ -31,6 +31,12 @@ public class UserAnswersEntityDto implements Serializable {
     @JsonProperty("questionSetVersion")
     private Long questionSetVersion;
 
+    @JsonProperty("auditee")
+    private String auditee;
+
+    @JsonProperty("comments")
+    private String comments;
+
     public UserAnswersEntityDto() {
     }
 
@@ -69,4 +75,20 @@ public class UserAnswersEntityDto implements Serializable {
     public Long getQuestionSetVersion() { return questionSetVersion; }
 
     public void setQuestionSetVersion(final Long questionSetVersion) { this.questionSetVersion = questionSetVersion; }
+
+    public String getAuditee() {
+        return auditee;
+    }
+
+    public void setAuditee(String auditee) {
+        this.auditee = auditee;
+    }
+
+    public String getComments() {
+        return comments;
+    }
+
+    public void setComments(String comments) {
+        this.comments = comments;
+    }
 }
