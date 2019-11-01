@@ -1,6 +1,7 @@
 package neural.controller;
 
 // import .Paths;     --use later if wish to have Paths restricted/opened via separate class--
+import db.entity.UserEntity;
 import db.repository.UserAnswersRepositoryDAO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -51,6 +52,10 @@ public class UserScoresAggregatesController extends AbstractRestController {
     public ResponseEntity<String> getUserScore(
             @RequestParam("gid") final String userName,
             @RequestParam("sv") final Long questionSetVersion) {
+
+        // Checking Permissions
+        //UserEntity userEntity = findOneByUser
+
         Long userScore = userAnswersRepositoryDAO.findUserScoresTotal(userName, questionSetVersion);
         if (userScore > 0) {
             String userScoreJSON = "{\"userScore\":" + userScore + "}";

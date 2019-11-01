@@ -162,7 +162,7 @@ public class FriendshipsEntityController extends AbstractRestController {
         // setting/securing DTO userName as obtained from the Authorization token.
         friendshipsEntityDtoPOST.setUserName(user);
 
-        // Main/first db entry before doubling below
+        //
         FriendshipsEntityDto patchedFriendshipsEntityDtoPOST = friendshipsEntityService.patchFriendshipsEntity(friendshipsEntityDtoPOST);
 
         return ResponseEntity.ok(patchedFriendshipsEntityDtoPOST);

@@ -50,6 +50,29 @@ public class UserEntityController extends AbstractRestController {
         return ResponseEntity.ok(userEntityDto);
     }
 
+    // GET a user (without the friendships load). so user knows publicProfile privacy setting.
+    @ApiOperation(value = "getUserEntity")
+    @RequestMapping(value = "/pr", method = RequestMethod.GET)
+    public ResponseEntity<UserEntityDto> getUserEntity2(
+            @RequestHeader("Authorization") String token)               {
+
+        String base64Credentials = token.substring("Basic".length()).trim();
+        byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
+        String credentials = new String(credDecoded, StandardCharsets.UTF_8);
+        // credentials = username:password
+        final String[] values = credentials.split(":", 2);
+        String user = values[0];
+
+        UserEntityDto userEntityDto = userEntityService.getUserEntity(user);
+        userEntityDto.setPassword(null);
+        userEntityDto.setFriendsList(null);
+        userEntityDto.setUserName(null);
+        if (userEntityDto == null) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return ResponseEntity.ok(userEntityDto);
+    }
+
     // POST to add a new user
     @RequestMapping(value = "/signup",method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserEntityDto> createUserEntity(
@@ -73,4 +96,30 @@ public class UserEntityController extends AbstractRestController {
         return ResponseEntity.ok(verifiedUserEntityDto);
     }
 
+    // PATCH a user's publicProfile privacy setting
+    @RequestMapping(value = "/up", method = RequestMethod.PATCH, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<UserEntityDto> patchPublicProfile(
+            @RequestHeader("Authorization") String token,
+            @Valid
+            @RequestBody
+            final UserEntityDto userEntityDto) {
+
+        // getting userName from Authorization token to secure endpoint.
+        String base64Credentials = token.substring("Basic".length()).trim();
+        byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
+        String credentials = new String(credDecoded, StandardCharsets.UTF_8);
+        // credentials = username:password
+        final String[] values = credentials.split(":", 2);
+        String user = values[0];
+        String password = values[1];
+
+        // setting/securing DTO userName as obtained from the Authorization token.
+        userEntityDto.setUserName(user);
+        userEntityDto.setPassword(password); // password cannot be null for a post/patch
+
+        UserEntityDto patchedUserEntityDto = userEntityService.patchUserEntity(userEntityDto);
+        patchedUserEntityDto.setPassword(null); //outgoing dto shouldnt have the password.
+
+        return ResponseEntity.ok(patchedUserEntityDto);
+    }
 }

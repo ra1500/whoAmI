@@ -22,16 +22,27 @@ public class UserEntityService {
         this.userEntityDtoTransformer = userEntityDtoTransformer;
     }
 
+    // GET
     public UserEntityDto getUserEntity(final String userName, final String password) {
         return userEntityDtoTransformer.generate(userEntityRepository.findOneByUserNameAndPassword(userName, password));
     }
 
+    // GET
     public UserEntityDto getUserEntity(final String userName) {
         return userEntityDtoTransformer.generate(userEntityRepository.findOneByUserName(userName));
     }
 
+    // POST
     public UserEntityDto createUserEntity(final UserEntityDto userEntityDto) {
         UserEntity userEntity = userEntityRepository.saveAndFlush(userEntityDtoTransformer.generate(userEntityDto));
+        return userEntityDtoTransformer.generate(userEntity);
+    }
+
+    // PATCH
+    public UserEntityDto patchUserEntity(final UserEntityDto userEntityDto) {
+        UserEntity userEntity = userEntityRepository.findOneByUserName(userEntityDto.getUserName());
+        userEntity.setPublicProfile(userEntityDto.getPublicProfile());
+        userEntityRepository.save(userEntity);
         return userEntityDtoTransformer.generate(userEntity);
     }
 }

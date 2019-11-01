@@ -24,6 +24,9 @@ public class UserEntityDto implements Serializable {
     @JsonProperty("password")
     private String password;
 
+    @JsonProperty("publicProfile")
+    private String publicProfile;
+
     @JsonProperty("friendsList")
     private List<FriendshipsEntity> friendsList;
 
@@ -49,6 +52,14 @@ public class UserEntityDto implements Serializable {
     public String getPassword() { return password; }
 
     public void setPassword(final String password) { this.password = password; }
+
+    public String getPublicProfile() {
+        return publicProfile;
+    }
+
+    public void setPublicProfile(String publicProfile) {
+        this.publicProfile = publicProfile;
+    }
 
     public List<FriendshipsEntity> getFriendsList() {
         return friendsList;

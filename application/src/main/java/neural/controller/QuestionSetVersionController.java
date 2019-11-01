@@ -22,7 +22,7 @@ public class QuestionSetVersionController extends AbstractRestController {
     public QuestionSetVersionController(QuestionSetVersionEntityService questionSetVersionEntityService) {
         this.questionSetVersionEntityService = questionSetVersionEntityService; }
 
-    // GET questionSet which contains many questions.
+    // GET questionSetVersion. DTO excludes List<Questions> to reduce load.
     @ApiOperation(value = "getQuestionsEntity")
     @RequestMapping(value = "/{qsid}", method = RequestMethod.GET)
     public ResponseEntity<QuestionSetVersionEntityDto> getQuestionSetVersionEntity(
