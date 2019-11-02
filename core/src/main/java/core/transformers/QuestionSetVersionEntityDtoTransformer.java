@@ -43,6 +43,7 @@ public class QuestionSetVersionEntityDtoTransformer {
         dto.setVersion(questionSetVersionEntity.getVersion());
         dto.setCategory(questionSetVersionEntity.getCategory());
         dto.setDescription(questionSetVersionEntity.getDescription());
+        dto.setCreativeSource(questionSetVersionEntity.getCreativeSource());
 
         return dto;
     }

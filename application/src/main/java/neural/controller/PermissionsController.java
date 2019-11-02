@@ -48,7 +48,7 @@ public class PermissionsController extends AbstractRestController {
         return ResponseEntity.ok(permissionsEntityDto);
     }
 
-    // POST
+    // POST/PATCH  posts a new one, updates an existing one
     @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PermissionsEntityDto> createPermissionsEntity(
             @Valid

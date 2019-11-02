@@ -36,6 +36,9 @@ public class QuestionSetVersionEntityDto implements Serializable {
     @JsonProperty("category")
     private String category;
 
+    @JsonProperty("creativeSource")
+    private String creativeSource;
+
     public QuestionSetVersionEntityDto() {
     }
 
@@ -102,5 +105,13 @@ public class QuestionSetVersionEntityDto implements Serializable {
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    public String getCreativeSource() {
+        return creativeSource;
+    }
+
+    public void setCreativeSource(String creativeSource) {
+        this.creativeSource = creativeSource;
     }
 }

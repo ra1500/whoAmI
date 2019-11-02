@@ -25,7 +25,7 @@ public class UserScoresAggregatesController extends AbstractRestController {
     public UserScoresAggregatesController(UserAnswersRepositoryDAO userAnswersRepositoryDAO) {
         this.userAnswersRepositoryDAO = userAnswersRepositoryDAO; }
 
-    // GET. secured and private. used to render user's score.
+    // GET. Private Profile Page.
     @ApiOperation(value = "getUserScoresAggregates")
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<String> getUserScoresAggregate(

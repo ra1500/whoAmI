@@ -43,6 +43,9 @@ public class QuestionSetVersionEntity {
     @Column (length = 40)
     private String category;
 
+    @Column (length = 40)
+    private String creativeSource;
+
     public QuestionSetVersionEntity() {
         super();
     }
@@ -109,9 +112,17 @@ public class QuestionSetVersionEntity {
         this.category = category;
     }
 
+    public String getCreativeSource() {
+        return creativeSource;
+    }
+
+    public void setCreativeSource(String creativeSource) {
+        this.creativeSource = creativeSource;
+    }
+
     @Override
     public String toString() {
-        return String.format("QuestionSetVersion Profile", gid, created, setNumber, version, category, description, questionsList);
+        return String.format("QuestionSetVersion Profile", gid, created, setNumber, version, category, description, questionsList, creativeSource);
     }
 
 }

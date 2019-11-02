@@ -105,6 +105,22 @@ public class UserAnswersEntity implements Serializable {
         return auditee;
     }
 
+    public void setQuestionId(Long questionId) {
+        this.questionId = questionId;
+    }
+
+    public void setAnswer(String answer) {
+        this.answer = answer;
+    }
+
+    public void setAnswerPoints(Long answerPoints) {
+        this.answerPoints = answerPoints;
+    }
+
+    public void setQuestionSetVersion(Long questionSetVersion) {
+        this.questionSetVersion = questionSetVersion;
+    }
+
     public void setAuditee(String auditee) {
         this.auditee = auditee;
     }

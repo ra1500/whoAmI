@@ -33,19 +33,24 @@ public class UserAnswersEntityService {
         return userAnswersEntityDtoTransformer.generate(userAnswersEntity);
     }
 
-    // POST a user's answer (updates as well manually by deleting) TODO: make this an update with save(), not delete and replace.
+    // POST/PATCH a user's answer. If not found, POST, else if found, PATCH.
     public UserAnswersEntityDto createUserAnswersEntity(final UserAnswersEntityDto userAnswersEntityDto) {
+        UserAnswersEntity userAnswersEntity = userAnswersEntityRepository.findOneByUserNameAndAuditeeAndQuestionSetVersionAndQuestionId(userAnswersEntityDto.getUserName(), userAnswersEntityDto.getAuditee(), userAnswersEntityDto.getQuestionSetVersion(), userAnswersEntityDto.getQuestionId());
 
-        String userName = userAnswersEntityDto.getUserName();
-        String auditee = userAnswersEntityDto.getAuditee();
-        Long questionId = userAnswersEntityDto.getQuestionId();
-        Long questionSetVersion = userAnswersEntityDto.getQuestionSetVersion();
-
-        if (getUserAnswersEntity(userName, auditee, questionSetVersion, questionId) != null) {
-            userAnswersEntityRepository.deleteOneByUserNameAndAuditeeAndQuestionSetVersionAndQuestionId(userName, auditee, questionSetVersion, questionId);
+        if (userAnswersEntity == null) {
+            UserAnswersEntity newUserAnswersEntity = userAnswersEntityRepository.saveAndFlush(userAnswersEntityDtoTransformer.generate(userAnswersEntityDto));
+            return userAnswersEntityDtoTransformer.generate(newUserAnswersEntity);
         }
-
-        UserAnswersEntity userAnswersEntity = userAnswersEntityRepository.saveAndFlush(userAnswersEntityDtoTransformer.generate(userAnswersEntityDto));
-        return userAnswersEntityDtoTransformer.generate(userAnswersEntity);
+        else {
+            userAnswersEntity.setAuditee(userAnswersEntityDto.getAuditee());
+            userAnswersEntity.setAnswer(userAnswersEntityDto.getAnswer());
+            userAnswersEntity.setUserName(userAnswersEntityDto.getUserName());
+            userAnswersEntity.setAnswerPoints(userAnswersEntityDto.getAnswerPoints());
+            userAnswersEntity.setComments(userAnswersEntityDto.getComments());
+            userAnswersEntity.setQuestionId(userAnswersEntityDto.getQuestionId());
+            userAnswersEntity.setQuestionSetVersion(userAnswersEntityDto.getQuestionSetVersion());
+            userAnswersEntityRepository.save(userAnswersEntity);
+            return userAnswersEntityDtoTransformer.generate(userAnswersEntity);
+        }
     }
 }

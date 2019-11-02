@@ -22,8 +22,8 @@ public class PermissionsEntityDto implements Serializable {
     @JsonProperty("auditee")
     private String auditee;
 
-    @JsonProperty("networkProfilePagePermission")
-    private String networkProfilePagePermission;
+    @JsonProperty("profilePageGroup")
+    private String profilePageGroup;
 
     @JsonProperty("questionSetVersion")
     private Long questionSetVersion;
@@ -50,12 +50,12 @@ public class PermissionsEntityDto implements Serializable {
         this.auditee = auditee;
     }
 
-    public String getNetworkProfilePagePermission() {
-        return networkProfilePagePermission;
+    public String getProfilePageGroup() {
+        return profilePageGroup;
     }
 
-    public void setNetworkProfilePagePermission(String networkProfilePagePermission) {
-        this.networkProfilePagePermission = networkProfilePagePermission;
+    public void setProfilePageGroup(String profilePageGroup) {
+        this.profilePageGroup = profilePageGroup;
     }
 
     public Long getQuestionSetVersion() {

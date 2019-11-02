@@ -25,7 +25,7 @@ public class PermissionsEntity implements Serializable {
     private String auditee;
 
     @Column
-    private String networkProfilePagePermission;
+    private String profilePageGroup;
 
     @Column
     private Long questionSetVersion;
@@ -37,11 +37,11 @@ public class PermissionsEntity implements Serializable {
         super();
     }
 
-    public PermissionsEntity(String userName, String auditee, String networkProfilePagePermission, Long questionSetVersion, String tbd) {
+    public PermissionsEntity(String userName, String auditee, String profilePageGroup, Long questionSetVersion, String tbd) {
         super();
         this.userName = userName;
         this.auditee = auditee;
-        this.networkProfilePagePermission = networkProfilePagePermission;
+        this.profilePageGroup = profilePageGroup;
         this.questionSetVersion = questionSetVersion;
         this.tbd = tbd;
     }
@@ -78,12 +78,12 @@ public class PermissionsEntity implements Serializable {
         this.auditee = auditee;
     }
 
-    public String getNetworkProfilePagePermission() {
-        return networkProfilePagePermission;
+    public String getProfilePageGroup() {
+        return profilePageGroup;
     }
 
-    public void setNetworkProfilePagePermission(String networkProfilePagePermission) {
-        this.networkProfilePagePermission = networkProfilePagePermission;
+    public void setProfilePageGroup(String profilePageGroup) {
+        this.profilePageGroup = profilePageGroup;
     }
 
     public Long getQuestionSetVersion() {
@@ -104,7 +104,7 @@ public class PermissionsEntity implements Serializable {
 
     @Override
     public String toString() {
-        return String.format("Permissions profile", gid, created, userName, auditee, networkProfilePagePermission,
+        return String.format("Permissions profile", gid, created, userName, auditee, profilePageGroup,
                 questionSetVersion, tbd);
     }
 

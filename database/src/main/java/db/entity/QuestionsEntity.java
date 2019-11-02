@@ -25,6 +25,9 @@ public class QuestionsEntity implements Serializable {
     private QuestionSetVersionEntity questionSetVersionEntity;
 
     @Column
+    private String creativeSource;
+
+    @Column
     private Integer sequenceNumber;
 
     @Column
@@ -86,7 +89,8 @@ public class QuestionsEntity implements Serializable {
         this.question = question;
     }
 
-    public QuestionsEntity(QuestionSetVersionEntity questionSetVersionEntity, String question, String category, Long maxPoints, String answer1, Long answer1Points,
+    public QuestionsEntity(QuestionSetVersionEntity questionSetVersionEntity, String question, String category,
+                           Long maxPoints, String answer1, Long answer1Points,
                            String answer2, Long answer2Points, String answer3, Long answer3Points, String answer4,
                            Long answer4Points, String answer5, Long answer5Points, String answer6, Long answer6Points)
     {

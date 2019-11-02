@@ -32,18 +32,31 @@ public class PermissionsEntityService {
     //    return permissionsEntityDtoTransformer.generate(permissionsRepositoryDAO.findOneByUserNameAndAuditee(userName, auditee));
     //}
 
-    // POST
+    // POST/PATCH  post if not found, otherwise patch.
     public PermissionsEntityDto createPermissionsEntity(final PermissionsEntityDto permissionsEntityDto) {
-        PermissionsEntity permissionsEntity = permissionsRepositoryDAO.saveAndFlush(permissionsEntityDtoTransformer.generate(permissionsEntityDto));
-        return permissionsEntityDtoTransformer.generate(permissionsEntity);
+        PermissionsEntity permissionsEntity = permissionsRepositoryDAO.findOneByUserNameAndAuditeeAndQuestionSetVersion(permissionsEntityDto.getUserName(), permissionsEntityDto.getAuditee(), permissionsEntityDto.getQuestionSetVersion());
+
+        if (permissionsEntity == null) {
+            PermissionsEntity newPermissionsEntity = permissionsRepositoryDAO.saveAndFlush(permissionsEntityDtoTransformer.generate(permissionsEntityDto));
+            return permissionsEntityDtoTransformer.generate(newPermissionsEntity);
+        }
+        else {
+            permissionsEntity.setUserName(permissionsEntityDto.getUserName());
+            permissionsEntity.setAuditee(permissionsEntityDto.getAuditee());
+            permissionsEntity.setProfilePageGroup(permissionsEntityDto.getProfilePageGroup());
+            permissionsEntity.setQuestionSetVersion(permissionsEntityDto.getQuestionSetVersion());
+            permissionsEntity.setTbd(permissionsEntityDto.getTbd());
+            permissionsRepositoryDAO.save(permissionsEntity);
+            return permissionsEntityDtoTransformer.generate(permissionsEntity);
+        }
     }
 
-    // PATCH (not currently used, updates InNetwork Permission
-    public PermissionsEntityDto patchPermissionsEntity(final PermissionsEntityDto permissionsEntityDto) {
-        PermissionsEntity permissionsEntity = permissionsRepositoryDAO.findOneByUserNameAndAuditeeAndQuestionSetVersion(permissionsEntityDto.getUserName(),
-                permissionsEntityDto.getAuditee(), permissionsEntityDto.getQuestionSetVersion());
-        permissionsEntity.setNetworkProfilePagePermission(permissionsEntityDto.getNetworkProfilePagePermission());
-        permissionsRepositoryDAO.save(permissionsEntity);
-        return permissionsEntityDtoTransformer.generate(permissionsEntity);
-    }
+    // PATCH (not currently used, updates InNetwork Permission)
+    //public PermissionsEntityDto patchPermissionsEntity(final PermissionsEntityDto permissionsEntityDto) {
+    //    PermissionsEntity permissionsEntity = permissionsRepositoryDAO.findOneByUserNameAndAuditeeAndQuestionSetVersion(permissionsEntityDto.getUserName(),
+    //            permissionsEntityDto.getAuditee(), permissionsEntityDto.getQuestionSetVersion());
+    //    permissionsEntity.setProfilePageGroup(permissionsEntityDto.getProfilePageGroup());
+    //    permissionsRepositoryDAO.save(permissionsEntity);
+    //    return permissionsEntityDtoTransformer.generate(permissionsEntity);
+    //}
 }
