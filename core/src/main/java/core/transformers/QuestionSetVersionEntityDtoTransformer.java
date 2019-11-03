@@ -6,7 +6,7 @@ import db.repository.QuestionsRepositoryDAO;
 import model.QuestionSetVersionEntityDto;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
+import java.util.Set;
 
 @Component
 public class QuestionSetVersionEntityDtoTransformer {
@@ -22,9 +22,9 @@ public class QuestionSetVersionEntityDtoTransformer {
     }
 
     // this is a 'mini' getQuestionsEntities service
-    private List<QuestionsEntity> getQuestionsListService(QuestionSetVersionEntity questionSetVersionEntity) {
-        List<QuestionsEntity> questionsList = questionsRepositoryDAO.findAllByQuestionSetVersionEntity(questionSetVersionEntity);
-        return questionsList;
+    private Set<QuestionsEntity> getQuestionsSetService(QuestionSetVersionEntity questionSetVersionEntity) {
+        Set<QuestionsEntity> questionsSet = questionsRepositoryDAO.findAllByQuestionSetVersionEntity(questionSetVersionEntity);
+        return questionsSet;
     }
 
     // GET
@@ -38,7 +38,7 @@ public class QuestionSetVersionEntityDtoTransformer {
         dto.setSetNumber(questionSetVersionEntity.getSetNumber());
 
         //dto.setCreated(questionSetVersionEntity.getCreated());
-        //dto.setQuestionsList(getQuestionsListService(questionSetVersionEntity));
+        //dto.setQuestionsSet(getQuestionsSetService(questionSetVersionEntity));
         dto.setTitle(questionSetVersionEntity.getTitle());
         dto.setVersion(questionSetVersionEntity.getVersion());
         dto.setCategory(questionSetVersionEntity.getCategory());

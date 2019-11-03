@@ -4,9 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Table
@@ -26,10 +24,10 @@ public class QuestionSetVersionEntity {
 
     @JsonIgnore
     @OneToMany(mappedBy = "questionSetVersionEntity",
-            fetch = FetchType.EAGER,
+            fetch = FetchType.LAZY,
             cascade = CascadeType.ALL,
             orphanRemoval = true)
-    private List<QuestionsEntity> questionsList = new ArrayList<>();
+    private Set<QuestionsEntity> questionsSet = new HashSet<>();
 
     @Column (length = 20)
     private String version;
@@ -72,12 +70,12 @@ public class QuestionSetVersionEntity {
         this.setNumber = setNumber;
     }
 
-    public List<QuestionsEntity> getQuestionsList() {
-        return questionsList;
+    public Set<QuestionsEntity> getQuestionsSet() {
+        return questionsSet;
     }
 
-    public void setQuestionsList(List<QuestionsEntity> questionsList) {
-        this.questionsList = questionsList;
+    public void setQuestionsSet(Set<QuestionsEntity> questionsSet) {
+        this.questionsSet = questionsSet;
     }
 
     public String getVersion() {
@@ -122,7 +120,7 @@ public class QuestionSetVersionEntity {
 
     @Override
     public String toString() {
-        return String.format("QuestionSetVersion Profile", gid, created, setNumber, version, category, description, questionsList, creativeSource);
+        return String.format("QuestionSetVersion Profile", gid, created, setNumber, version, category, description, questionsSet, creativeSource);
     }
 
 }

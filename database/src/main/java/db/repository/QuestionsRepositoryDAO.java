@@ -7,14 +7,14 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
+import java.util.Set;
 
 @Repository
 public interface QuestionsRepositoryDAO extends JpaRepository<QuestionsEntity, Long> {
 
     QuestionsEntity findOneByGid(Long gid);
     QuestionsEntity findOneByQuestionSetVersionEntityAndSequenceNumber(QuestionSetVersionEntity questionSetVersionEntity, Integer sequenceNumber);
-    List<QuestionsEntity> findAllByQuestionSetVersionEntity(QuestionSetVersionEntity questionSetVersionEntity);
+    Set<QuestionsEntity> findAllByQuestionSetVersionEntity(QuestionSetVersionEntity questionSetVersionEntity);
 
     // delete. not used....
     //@Query("SELECT MAX(sequenceNumber) FROM QuestionsEntity")

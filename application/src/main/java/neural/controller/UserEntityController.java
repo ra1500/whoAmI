@@ -65,7 +65,7 @@ public class UserEntityController extends AbstractRestController {
 
         UserEntityDto userEntityDto = userEntityService.getUserEntity(user);
         userEntityDto.setPassword(null);
-        userEntityDto.setFriendsList(null);
+        userEntityDto.setFriendsSet(null);
         userEntityDto.setUserName(null);
         if (userEntityDto == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);

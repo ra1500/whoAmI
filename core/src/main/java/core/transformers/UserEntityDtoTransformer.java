@@ -7,7 +7,7 @@ import model.UserEntityDto;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
@@ -24,9 +24,9 @@ public class UserEntityDtoTransformer {
     }
 
     // this is a 'mini' getFriendshipsEntities service
-    private List<FriendshipsEntity> getFriendshipsListService(UserEntity userEntity) {
-        List<FriendshipsEntity> friendshipsList = friendshipsRepositoryDAO.findAllByUserEntity(userEntity);
-        return friendshipsList;
+    private Set<FriendshipsEntity> getFriendshipsSetService(UserEntity userEntity) {
+        Set<FriendshipsEntity> friendshipsSet = friendshipsRepositoryDAO.findAllByUserEntity(userEntity);
+        return friendshipsSet;
     }
 
     // GET
@@ -41,9 +41,9 @@ public class UserEntityDtoTransformer {
         dto.setUserName(userEntity.getUserName());
         dto.setPassword(userEntity.getPassword());
         dto.setPublicProfile(userEntity.getPublicProfile());
-        dto.setFriendsList(getFriendshipsListService(userEntity));
+        dto.setFriendsSet(getFriendshipsSetService(userEntity));
 
-        //dto.setFriendsList(userEntity.getFriendsList()
+        //dto.setFriendsSet(userEntity.getFriendsSet()
         //            .stream()
         //            .map(friendshipsEntityDtoTransformer::generate)
         //            .sorted()

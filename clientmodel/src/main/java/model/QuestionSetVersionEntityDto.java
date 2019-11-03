@@ -7,7 +7,7 @@ import db.entity.QuestionsEntity;
 //import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
+import java.util.Set;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class QuestionSetVersionEntityDto implements Serializable {
@@ -22,7 +22,7 @@ public class QuestionSetVersionEntityDto implements Serializable {
     private Integer setNumber;
 
     //@JsonProperty("questionsList")
-    //private List<QuestionsEntity> questionsList;
+    //private Set<QuestionsEntity> questionsSet;
 
     @JsonProperty("version")
     private String version;
@@ -67,12 +67,12 @@ public class QuestionSetVersionEntityDto implements Serializable {
         this.setNumber = setNumber;
     }
 
-    //public List<QuestionsEntity> getQuestionsList() {
-    //    return questionsList;
+    //public Set<QuestionsEntity> getQuestionsSet() {
+    //    return questionsSet;
     //}
 
-    //public void setQuestionsList(List<QuestionsEntity> questionsList) {
-    //    this.questionsList = questionsList;
+    //public void setQuestionsSet(Set<QuestionsEntity> questionsSet) {
+    //    this.questionsSet = questionsSet;
     //}
 
     public String getVersion() {

@@ -7,7 +7,7 @@ import db.entity.FriendshipsEntity;
 //import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
+import java.util.Set;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserEntityDto implements Serializable {
@@ -28,7 +28,7 @@ public class UserEntityDto implements Serializable {
     private String publicProfile;
 
     @JsonProperty("friendsList")
-    private List<FriendshipsEntity> friendsList;
+    private Set<FriendshipsEntity> friendsSet;
 
     public UserEntityDto() {
     }
@@ -61,11 +61,11 @@ public class UserEntityDto implements Serializable {
         this.publicProfile = publicProfile;
     }
 
-    public List<FriendshipsEntity> getFriendsList() {
-        return friendsList;
+    public Set<FriendshipsEntity> getFriendsSet() {
+        return friendsSet;
     }
 
-    public void setFriendsList(List<FriendshipsEntity> friendsList) {
-        this.friendsList = friendsList;
+    public void setFriendsSet(Set<FriendshipsEntity> friendsSet) {
+        this.friendsSet = friendsSet;
     }
 }

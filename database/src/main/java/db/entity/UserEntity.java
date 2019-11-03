@@ -8,7 +8,8 @@ import org.hibernate.annotations.DynamicUpdate;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @DynamicUpdate
 @Table(uniqueConstraints= @UniqueConstraint(columnNames={"userName"}))
@@ -38,7 +39,7 @@ public class UserEntity {
             fetch = FetchType.EAGER,
             cascade = CascadeType.ALL,
             orphanRemoval = true)
-    private List<FriendshipsEntity> friendsList = new ArrayList<>();
+    private Set<FriendshipsEntity> friendsSet = new HashSet<>();
 
     public UserEntity() {
         super();
@@ -73,10 +74,10 @@ public class UserEntity {
         this.publicProfile = publicProfile;
     }
 
-    public List<FriendshipsEntity> getFriendsList() { return friendsList; }
+    public Set<FriendshipsEntity> getFriendsSet() { return friendsSet; }
 
-    public void setFriendsList(List<FriendshipsEntity> friendsList) {
-        this.friendsList = friendsList;
+    public void setFriendsSet(Set<FriendshipsEntity> friendsSet) {
+        this.friendsSet = friendsSet;
     }
 
     @Override
