@@ -38,10 +38,10 @@ public class QuestionsEntityController extends AbstractRestController {
             @RequestHeader("Authorization") String token,
 
             @PathVariable("qsid")
-            final Integer setNumber,
+            final Long setNumber,
 
             @PathVariable("qid")
-            final Integer sequenceNumber) {
+            final Long sequenceNumber) {
 
 
         // secured by token

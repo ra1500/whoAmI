@@ -20,7 +20,7 @@ public class QuestionSetVersionEntity {
     private Date created;
 
     @Column
-    private Integer setNumber;
+    private Long setNumber;
 
     @JsonIgnore
     @OneToMany(mappedBy = "questionSetVersionEntity",
@@ -48,12 +48,7 @@ public class QuestionSetVersionEntity {
         super();
     }
 
-    public QuestionSetVersionEntity (Long gid) {
-        super();
-        this.gid = gid;
-    }
-
-    public QuestionSetVersionEntity (Integer setNumber) {
+    public QuestionSetVersionEntity (Long setNumber) {
         super();
         this.setNumber = setNumber;
     }
@@ -62,11 +57,11 @@ public class QuestionSetVersionEntity {
 
     public Date getCreated() { return created; }
 
-    public Integer getSetNumber() {
+    public Long getSetNumber() {
         return setNumber;
     }
 
-    public void setSetNumber(Integer setNumber) {
+    public void setSetNumber(Long setNumber) {
         this.setNumber = setNumber;
     }
 

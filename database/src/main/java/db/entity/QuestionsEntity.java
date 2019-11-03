@@ -28,7 +28,7 @@ public class QuestionsEntity implements Serializable {
     private String creativeSource;
 
     @Column
-    private Integer sequenceNumber;
+    private Long sequenceNumber;
 
     @Column
     private String question;
@@ -118,11 +118,11 @@ public class QuestionsEntity implements Serializable {
 
     public Date getCreated() { return created; }
 
-    public Integer getSequenceNumber() {
+    public Long getSequenceNumber() {
         return sequenceNumber;
     }
 
-    public void setSequenceNumber(Integer sequenceNumber) {
+    public void setSequenceNumber(Long sequenceNumber) {
         this.sequenceNumber = sequenceNumber;
     }
 

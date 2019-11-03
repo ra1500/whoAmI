@@ -22,7 +22,7 @@ public class QuestionsEntityDto implements Serializable {
     private QuestionSetVersionEntity questionSetVersionEntity;
 
     @JsonProperty("sequenceNumber")
-    private Integer sequenceNumber;
+    private Long sequenceNumber;
 
     @JsonProperty("question")
     private String question;
@@ -88,11 +88,11 @@ public class QuestionsEntityDto implements Serializable {
         this.created = created;
     }
 
-    public Integer getSequenceNumber() {
+    public Long getSequenceNumber() {
         return sequenceNumber;
     }
 
-    public void setSequenceNumber(Integer sequenceNumber) {
+    public void setSequenceNumber(Long sequenceNumber) {
         this.sequenceNumber = sequenceNumber;
     }
 

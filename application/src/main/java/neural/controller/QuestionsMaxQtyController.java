@@ -29,7 +29,7 @@ public class QuestionsMaxQtyController extends AbstractRestController {
     @RequestMapping( method = RequestMethod.GET)
     public ResponseEntity<String> getMaxQtyQuestions(
         @RequestHeader("Authorization") String token,
-        @RequestParam("sn") final Integer setNumber) {
+        @RequestParam("sn") final Long setNumber) {
 
         // secured by token
         String base64Credentials = token.substring("Basic".length()).trim();
@@ -39,7 +39,7 @@ public class QuestionsMaxQtyController extends AbstractRestController {
         final String[] values = credentials.split(":", 2);
         String user = values[0];
 
-        Integer maxQtyQuestions = questionsRepositoryDAO.findMaxQtyQuestions(setNumber);
+        Long maxQtyQuestions = questionsRepositoryDAO.findMaxQtyQuestions(setNumber);
         Long maxPoints = questionsRepositoryDAO.PointsForSetNumber(setNumber);
 
         if (maxQtyQuestions == null) {
@@ -54,7 +54,7 @@ public class QuestionsMaxQtyController extends AbstractRestController {
 //    @RequestMapping(value = "/p", method = RequestMethod.GET)
 //    public ResponseEntity<String> getMaxPoints(
 //            @RequestHeader("Authorization") String token,
-//            @RequestParam("snp") final Integer setNumber) {
+//            @RequestParam("snp") final Long setNumber) {
 
         // secured by token
 //        String base64Credentials = token.substring("Basic".length()).trim();

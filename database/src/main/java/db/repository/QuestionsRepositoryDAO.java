@@ -13,19 +13,19 @@ import java.util.Set;
 public interface QuestionsRepositoryDAO extends JpaRepository<QuestionsEntity, Long> {
 
     QuestionsEntity findOneByGid(Long gid);
-    QuestionsEntity findOneByQuestionSetVersionEntityAndSequenceNumber(QuestionSetVersionEntity questionSetVersionEntity, Integer sequenceNumber);
+    QuestionsEntity findOneByQuestionSetVersionEntityAndSequenceNumber(QuestionSetVersionEntity questionSetVersionEntity, Long sequenceNumber);
     Set<QuestionsEntity> findAllByQuestionSetVersionEntity(QuestionSetVersionEntity questionSetVersionEntity);
 
     // delete. not used....
     //@Query("SELECT MAX(sequenceNumber) FROM QuestionsEntity")
-    //Integer findMaxQtyQuestions2();
+    //Long findMaxQtyQuestions2();
 
     // indexed parameter (first method parameter is indicated as ?1)
     @Query("SELECT MAX(sequenceNumber) FROM QuestionsEntity WHERE setNumber = ?1")
-    Integer findMaxQtyQuestions(Integer setNumber);
+    Long findMaxQtyQuestions(Long setNumber);
 
     @Query("SELECT SUM(maxPoints) FROM QuestionsEntity WHERE setNumber = ?1")
-    Long PointsForSetNumber(Integer setNumber);
+    Long PointsForSetNumber(Long setNumber);
 
 
 }

@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 public interface QuestionSetVersionRepositoryDAO extends JpaRepository<QuestionSetVersionEntity, Long> {
 
     //QuestionSetVersionEntity findOneByGid(Long gid);
-    QuestionSetVersionEntity findOneBySetNumber(Integer SetNumber);
+    QuestionSetVersionEntity findOneBySetNumber(Long SetNumber);
 
 }

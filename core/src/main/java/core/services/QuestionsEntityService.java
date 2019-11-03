@@ -24,7 +24,7 @@ public class QuestionsEntityService {
     }
 
     // GET a question
-    public QuestionsEntityDto getQuestionsEntity(final QuestionSetVersionEntity questionSetVersionEntity, Integer sequenceNumber) {
+    public QuestionsEntityDto getQuestionsEntity(final QuestionSetVersionEntity questionSetVersionEntity, Long sequenceNumber) {
         return questionsEntityDtoTransformer.generate(questionsEntityRepository.findOneByQuestionSetVersionEntityAndSequenceNumber(questionSetVersionEntity, sequenceNumber));
     }
 

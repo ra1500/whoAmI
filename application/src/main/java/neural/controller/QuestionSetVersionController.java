@@ -29,7 +29,7 @@ public class QuestionSetVersionController extends AbstractRestController {
             @RequestHeader("Authorization") String token,
 
             @PathVariable("qsid") //questionSetNumber
-            final Integer qsid) {
+            final Long qsid) {
 
         // secured by token
         String base64Credentials = token.substring("Basic".length()).trim();

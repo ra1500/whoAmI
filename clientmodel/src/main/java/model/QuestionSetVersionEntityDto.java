@@ -19,7 +19,7 @@ public class QuestionSetVersionEntityDto implements Serializable {
     //private Date created;
 
     @JsonProperty("setNumber")
-    private Integer setNumber;
+    private Long setNumber;
 
     //@JsonProperty("questionsList")
     //private Set<QuestionsEntity> questionsSet;
@@ -59,11 +59,11 @@ public class QuestionSetVersionEntityDto implements Serializable {
     //}
 
 
-    public Integer getSetNumber() {
+    public Long getSetNumber() {
         return setNumber;
     }
 
-    public void setSetNumber(Integer setNumber) {
+    public void setSetNumber(Long setNumber) {
         this.setNumber = setNumber;
     }
 

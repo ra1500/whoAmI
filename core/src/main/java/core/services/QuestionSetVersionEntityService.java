@@ -22,7 +22,7 @@ public class QuestionSetVersionEntityService {
         this.questionSetVersionEntityDtoTransformer = questionSetVersionEntityDtoTransformer;
     }
 
-    public QuestionSetVersionEntityDto getQuestionSetVersionEntity(final Integer setNumber) {
+    public QuestionSetVersionEntityDto getQuestionSetVersionEntity(final Long setNumber) {
         return questionSetVersionEntityDtoTransformer.generate(questionSetVersionEntityRepository.findOneBySetNumber(setNumber));
     }
 
