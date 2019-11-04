@@ -2,15 +2,16 @@ package db.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.CreationTimestamp;
-
+import java.io.Serializable;
 import javax.persistence.*;
 import java.util.*;
 
 @Entity
 @Table
-public class QuestionSetVersionEntity {
+public class QuestionSetVersionEntity implements Serializable{
 
     @Id  //JPA indicating primary key
+    @Column
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long gid;
 
@@ -22,7 +23,7 @@ public class QuestionSetVersionEntity {
     @ManyToMany(mappedBy = "questionSetVersionEntities", fetch = FetchType.EAGER)
     private Set<PermissionsEntity> permissionsEntities = new HashSet<>();
 
-    @Column
+    @Column(name = "questionSetVersion")
     private Long questionSetVersion;
 
     @JsonIgnore
@@ -54,6 +55,11 @@ public class QuestionSetVersionEntity {
     public QuestionSetVersionEntity (Long questionSetVersion) {
         super();
         this.questionSetVersion = questionSetVersion;
+    }
+
+    public QuestionSetVersionEntity(String title, Long questionSetVersion) {
+        this.questionSetVersion = questionSetVersion;
+        this.title = title;
     }
 
     public Set<PermissionsEntity> getPermissionsEntities() {

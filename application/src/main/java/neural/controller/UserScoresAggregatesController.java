@@ -2,6 +2,7 @@ package neural.controller;
 
 // import .Paths;     --use later if wish to have Paths restricted/opened via separate class--
 import db.entity.PermissionsEntity;
+import db.entity.QuestionSetVersionEntity;
 import db.entity.UserEntity;
 import db.repository.PermissionsRepositoryDAO;
 import db.repository.QuestionSetVersionRepositoryDAO;
@@ -94,6 +95,10 @@ public class UserScoresAggregatesController extends AbstractRestController {
         String user = values[0];
 
         Set<PermissionsEntity> permissionsEntity = permissionsRepositoryDAO.findAllByUserName(user);
+
+        //Set<PermissionsEntity> permissionsEntity = permissionsRepositoryDAO.findOneByUserName(user);
+        //Set<QuestionSetVersionEntity> questionSetVersionEntities = questionSetVersionRepositoryDAO.findAllByPermissionsEntity(permissionsEntity);
+        //Set<PermissionsEntity> privateQsets = permissionsRepositoryDAO.findAllByUserName(user);// works.
 
         if (permissionsEntity == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);

@@ -22,7 +22,8 @@ public class PermissionsEntityDtoTransformer {
         dto.setUserName(permissionsEntity.getUserName());
         dto.setAuditee(permissionsEntity.getAuditee());
         dto.setProfilePageGroup(permissionsEntity.getProfilePageGroup());
-        dto.setQuestionSetVersion(permissionsEntity.getQuestionSetVersion());
+        //dto.setQuestionSetVersion(permissionsEntity.getQuestionSetVersion());
+        dto.setQuestionSetVersionEntitySet(permissionsEntity.getQuestionSetVersionEntities());
         dto.setTbd(permissionsEntity.getTbd());
 
         return dto;

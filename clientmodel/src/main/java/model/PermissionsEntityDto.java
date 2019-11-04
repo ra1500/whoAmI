@@ -3,6 +3,8 @@ package model;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import db.entity.PermissionsEntity;
+import db.entity.QuestionSetVersionEntity;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
@@ -32,7 +34,7 @@ public class PermissionsEntityDto implements Serializable {
     private String tbd;
 
     @JsonProperty("qSets")
-    private Set<QuestionSetVersionEntityDto> questionSetVersionEntityDtoSet;
+    private Set<QuestionSetVersionEntity> questionSetVersionEntitySet;
 
     public PermissionsEntityDto() {
     }
@@ -41,12 +43,12 @@ public class PermissionsEntityDto implements Serializable {
         return userName;
     }
 
-    public Set<QuestionSetVersionEntityDto> getQuestionSetVersionEntityDtoSet() {
-        return questionSetVersionEntityDtoSet;
+    public Set<QuestionSetVersionEntity> getQuestionSetVersionEntitySet() {
+        return questionSetVersionEntitySet;
     }
 
-    public void setQuestionSetVersionEntityDtoSet(Set<QuestionSetVersionEntityDto> questionSetVersionEntityDtoSet) {
-        this.questionSetVersionEntityDtoSet = questionSetVersionEntityDtoSet;
+    public void setQuestionSetVersionEntitySet(Set<QuestionSetVersionEntity> questionSetVersionEntitySet) {
+        this.questionSetVersionEntitySet = questionSetVersionEntitySet;
     }
 
     public void setUserName(String userName) {

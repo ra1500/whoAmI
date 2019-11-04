@@ -44,7 +44,7 @@ public class PermissionsEntityService {
             permissionsEntity.setUserName(permissionsEntityDto.getUserName());
             permissionsEntity.setAuditee(permissionsEntityDto.getAuditee());
             permissionsEntity.setProfilePageGroup(permissionsEntityDto.getProfilePageGroup());
-            permissionsEntity.setQuestionSetVersion(permissionsEntityDto.getQuestionSetVersion());
+            permissionsEntity.setQuestionSetVersion(permissionsEntityDto.getQuestionSetVersion()); // needs to pull from db, not the incoming permission.
             permissionsEntity.setTbd(permissionsEntityDto.getTbd());
             permissionsRepositoryDAO.save(permissionsEntity);
             return permissionsEntityDtoTransformer.generate(permissionsEntity);

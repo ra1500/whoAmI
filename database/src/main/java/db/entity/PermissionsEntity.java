@@ -13,6 +13,7 @@ public class PermissionsEntity implements Serializable {
 
     @Id  //JPA indicating primary key
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "gid")
     private Long gid;
 
     @CreationTimestamp
@@ -23,12 +24,12 @@ public class PermissionsEntity implements Serializable {
     @ManyToMany(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
     @JoinTable(
             name = "permissions_questionSets",
-            joinColumns = { @JoinColumn(name = "questionSetVersion") },
-            inverseJoinColumns = { @JoinColumn(name = "gid") }
+            joinColumns = { @JoinColumn(name = "pset", referencedColumnName = "questionSetVersion") },
+            inverseJoinColumns = { @JoinColumn(name = "qset", referencedColumnName = "gid") }
     )
     Set<QuestionSetVersionEntity> questionSetVersionEntities = new HashSet<>();
 
-    @Column
+    @Column(name = "userName")
     private String userName;
 
     @Column
@@ -37,7 +38,7 @@ public class PermissionsEntity implements Serializable {
     @Column
     private String profilePageGroup;
 
-    @Column
+    @Column(name = "questionSetVersion")
     private Long questionSetVersion;
 
     @Column  // not used currently. available for future use.
@@ -66,6 +67,13 @@ public class PermissionsEntity implements Serializable {
         this.questionSetVersion = questionSetVersion;
         this.tbd = tbd;
     }
+
+    public PermissionsEntity(String userName, String auditee, Long questionSetVersion) {
+        this.userName = userName;
+        this.auditee = auditee;
+        this.questionSetVersion = questionSetVersion;
+    }
+
     public Set<QuestionSetVersionEntity> getQuestionSetVersionEntities() {
         return questionSetVersionEntities;
     }
