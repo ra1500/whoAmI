@@ -31,11 +31,22 @@ public class PermissionsEntityDto implements Serializable {
     @JsonProperty("tbd")
     private String tbd;
 
+    @JsonProperty("qSets")
+    private Set<QuestionSetVersionEntityDto> questionSetVersionEntityDtoSet;
+
     public PermissionsEntityDto() {
     }
 
     public String getUserName() {
         return userName;
+    }
+
+    public Set<QuestionSetVersionEntityDto> getQuestionSetVersionEntityDtoSet() {
+        return questionSetVersionEntityDtoSet;
+    }
+
+    public void setQuestionSetVersionEntityDtoSet(Set<QuestionSetVersionEntityDto> questionSetVersionEntityDtoSet) {
+        this.questionSetVersionEntityDtoSet = questionSetVersionEntityDtoSet;
     }
 
     public void setUserName(String userName) {

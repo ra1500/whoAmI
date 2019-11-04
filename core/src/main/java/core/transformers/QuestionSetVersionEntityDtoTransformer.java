@@ -34,9 +34,8 @@ public class QuestionSetVersionEntityDtoTransformer {
         }
 
         QuestionSetVersionEntityDto dto = new QuestionSetVersionEntityDto();
-        dto.setGid(questionSetVersionEntity.getGid());
-        dto.setSetNumber(questionSetVersionEntity.getSetNumber());
-
+        //dto.setGid(questionSetVersionEntity.getGid());
+        dto.setQuestionSetVersion(questionSetVersionEntity.getQuestionSetVersion());
         //dto.setCreated(questionSetVersionEntity.getCreated());
         //dto.setQuestionsSet(getQuestionsSetService(questionSetVersionEntity));
         dto.setTitle(questionSetVersionEntity.getTitle());
@@ -49,7 +48,7 @@ public class QuestionSetVersionEntityDtoTransformer {
     }
 
     // POST
-    //public QuestionSetVersionEntity generate(final QuestionSetVersionEntityDto dto) {
-    //    return new QuestionSetVersionEntity(dto.getGid());
-    //}
+    public QuestionSetVersionEntity generate(final QuestionSetVersionEntityDto dto) {
+        return new QuestionSetVersionEntity(dto.getGid());
+    }
 }

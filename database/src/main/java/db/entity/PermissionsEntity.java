@@ -4,6 +4,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table
@@ -17,6 +19,14 @@ public class PermissionsEntity implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     @Column
     private Date created;
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
+    @JoinTable(
+            name = "permissions_questionSets",
+            joinColumns = { @JoinColumn(name = "questionSetVersion") },
+            inverseJoinColumns = { @JoinColumn(name = "gid") }
+    )
+    Set<QuestionSetVersionEntity> questionSetVersionEntities = new HashSet<>();
 
     @Column
     private String userName;
@@ -37,13 +47,31 @@ public class PermissionsEntity implements Serializable {
         super();
     }
 
-    public PermissionsEntity(String userName, String auditee, String profilePageGroup, Long questionSetVersion, String tbd) {
-        super();
+    public PermissionsEntity(String userName) {
+        this.userName = userName;
+    }
+
+    public PermissionsEntity(Set<QuestionSetVersionEntity> questionSetVersionEntities, String userName, String auditee, String profilePageGroup, Long questionSetVersion, String tbd) {
+        this.questionSetVersionEntities = questionSetVersionEntities;
         this.userName = userName;
         this.auditee = auditee;
         this.profilePageGroup = profilePageGroup;
         this.questionSetVersion = questionSetVersion;
         this.tbd = tbd;
+    }
+
+    public PermissionsEntity(String auditee, String profilePageGroup, Long questionSetVersion, String tbd) {
+        this.auditee = auditee;
+        this.profilePageGroup = profilePageGroup;
+        this.questionSetVersion = questionSetVersion;
+        this.tbd = tbd;
+    }
+    public Set<QuestionSetVersionEntity> getQuestionSetVersionEntities() {
+        return questionSetVersionEntities;
+    }
+
+    public void setQuestionSetVersionEntities(Set<QuestionSetVersionEntity> questionSetVersionEntities) {
+        this.questionSetVersionEntities = questionSetVersionEntities;
     }
 
     public Long getGid() {

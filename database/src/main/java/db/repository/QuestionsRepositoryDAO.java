@@ -21,11 +21,11 @@ public interface QuestionsRepositoryDAO extends JpaRepository<QuestionsEntity, L
     //Long findMaxQtyQuestions2();
 
     // indexed parameter (first method parameter is indicated as ?1)
-    @Query("SELECT MAX(sequenceNumber) FROM QuestionsEntity WHERE setNumber = ?1")
-    Long findMaxQtyQuestions(Long setNumber);
+    @Query("SELECT MAX(sequenceNumber) FROM QuestionsEntity WHERE questionSetVersion = ?1")
+    Long findMaxQtyQuestions(Long questionSetVersion);
 
-    @Query("SELECT SUM(maxPoints) FROM QuestionsEntity WHERE setNumber = ?1")
-    Long PointsForSetNumber(Long setNumber);
+    @Query("SELECT SUM(maxPoints) FROM QuestionsEntity WHERE questionSetVersion = ?1")
+    Long PointsForQuestionSetVersion(Long questionSetVersion);
 
 
 }

@@ -28,7 +28,7 @@ public class UserEntityDto implements Serializable {
     private String publicProfile;
 
     @JsonProperty("friendsList")
-    private Set<FriendshipsEntity> friendsSet;
+    private Set<FriendshipsEntity> friendsSet;  // TODO this should be FriendshipsEntityDto
 
     public UserEntityDto() {
     }

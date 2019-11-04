@@ -38,7 +38,7 @@ public class QuestionsEntityController extends AbstractRestController {
             @RequestHeader("Authorization") String token,
 
             @PathVariable("qsid")
-            final Long setNumber,
+            final Long questionSetVersion,
 
             @PathVariable("qid")
             final Long sequenceNumber) {
@@ -53,7 +53,7 @@ public class QuestionsEntityController extends AbstractRestController {
         String user = values[0];
 
         // QuestionSetVersionEntity service.
-        QuestionSetVersionEntity questionSetVersionEntity = questionSetVersionRepositoryDAO.findOneBySetNumber(setNumber);
+        QuestionSetVersionEntity questionSetVersionEntity = questionSetVersionRepositoryDAO.findOneByQuestionSetVersion(questionSetVersion);
 
         QuestionsEntityDto questionsEntityDto = questionsEntityService.getQuestionsEntity(questionSetVersionEntity, sequenceNumber);
 

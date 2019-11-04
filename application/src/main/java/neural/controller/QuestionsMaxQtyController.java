@@ -29,7 +29,7 @@ public class QuestionsMaxQtyController extends AbstractRestController {
     @RequestMapping( method = RequestMethod.GET)
     public ResponseEntity<String> getMaxQtyQuestions(
         @RequestHeader("Authorization") String token,
-        @RequestParam("sn") final Long setNumber) {
+        @RequestParam("sn") final Long questionSetVersion) {
 
         // secured by token
         String base64Credentials = token.substring("Basic".length()).trim();
@@ -39,8 +39,8 @@ public class QuestionsMaxQtyController extends AbstractRestController {
         final String[] values = credentials.split(":", 2);
         String user = values[0];
 
-        Long maxQtyQuestions = questionsRepositoryDAO.findMaxQtyQuestions(setNumber);
-        Long maxPoints = questionsRepositoryDAO.PointsForSetNumber(setNumber);
+        Long maxQtyQuestions = questionsRepositoryDAO.findMaxQtyQuestions(questionSetVersion);
+        Long maxPoints = questionsRepositoryDAO.PointsForQuestionSetVersion(questionSetVersion);
 
         if (maxQtyQuestions == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT); }
@@ -54,7 +54,7 @@ public class QuestionsMaxQtyController extends AbstractRestController {
 //    @RequestMapping(value = "/p", method = RequestMethod.GET)
 //    public ResponseEntity<String> getMaxPoints(
 //            @RequestHeader("Authorization") String token,
-//            @RequestParam("snp") final Long setNumber) {
+//            @RequestParam("snp") final Long questionSetVersion) {
 
         // secured by token
 //        String base64Credentials = token.substring("Basic".length()).trim();
@@ -64,7 +64,7 @@ public class QuestionsMaxQtyController extends AbstractRestController {
 //        final String[] values = credentials.split(":", 2);
 //        String user = values[0];
 
-//        Long maxPoints = questionsRepositoryDAO.PointsForSetNumber(setNumber);
+//        Long maxPoints = questionsRepositoryDAO.PointsForQuestionSetVersion(questionSetVersion);
 
 //        if (maxPoints == null) {
 //            return new ResponseEntity<>(HttpStatus.NO_CONTENT);

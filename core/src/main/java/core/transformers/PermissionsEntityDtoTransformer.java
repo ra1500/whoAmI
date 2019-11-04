@@ -28,8 +28,9 @@ public class PermissionsEntityDtoTransformer {
         return dto;
     }
 
+    // POST
     public PermissionsEntity generate(final PermissionsEntityDto dto) {
-        return new PermissionsEntity(dto.getUserName(),dto.getAuditee(), dto.getProfilePageGroup(),
+        return new PermissionsEntity(dto.getAuditee(), dto.getProfilePageGroup(),
                 dto.getQuestionSetVersion(), dto.getTbd());
     }
 }

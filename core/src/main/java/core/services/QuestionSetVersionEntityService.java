@@ -22,8 +22,8 @@ public class QuestionSetVersionEntityService {
         this.questionSetVersionEntityDtoTransformer = questionSetVersionEntityDtoTransformer;
     }
 
-    public QuestionSetVersionEntityDto getQuestionSetVersionEntity(final Long setNumber) {
-        return questionSetVersionEntityDtoTransformer.generate(questionSetVersionEntityRepository.findOneBySetNumber(setNumber));
+    public QuestionSetVersionEntityDto getQuestionSetVersionEntity(final Long questionSetVersion) {
+        return questionSetVersionEntityDtoTransformer.generate(questionSetVersionEntityRepository.findOneByQuestionSetVersion(questionSetVersion));
     }
 
     //public QuestionSetVersionEntityDto createQuestionSetVersionEntity(final QuestionSetVersionEntityDto questionSetVersionEntityDto) {

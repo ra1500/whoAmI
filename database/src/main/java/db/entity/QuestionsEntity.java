@@ -21,7 +21,7 @@ public class QuestionsEntity implements Serializable {
     private Date created;
 
     @ManyToOne
-    @JoinColumn(name = "setNumber")
+    @JoinColumn(name = "questionSetVersion")
     private QuestionSetVersionEntity questionSetVersionEntity;
 
     @Column

@@ -19,8 +19,11 @@ public class QuestionSetVersionEntity {
     @Column
     private Date created;
 
+    @ManyToMany(mappedBy = "questionSetVersionEntities", fetch = FetchType.EAGER)
+    private Set<PermissionsEntity> permissionsEntities = new HashSet<>();
+
     @Column
-    private Long setNumber;
+    private Long questionSetVersion;
 
     @JsonIgnore
     @OneToMany(mappedBy = "questionSetVersionEntity",
@@ -48,21 +51,29 @@ public class QuestionSetVersionEntity {
         super();
     }
 
-    public QuestionSetVersionEntity (Long setNumber) {
+    public QuestionSetVersionEntity (Long questionSetVersion) {
         super();
-        this.setNumber = setNumber;
+        this.questionSetVersion = questionSetVersion;
+    }
+
+    public Set<PermissionsEntity> getPermissionsEntities() {
+        return permissionsEntities;
+    }
+
+    public void setPermissionsEntities(Set<PermissionsEntity> permissionsEntities) {
+        this.permissionsEntities = permissionsEntities;
     }
 
     public Long getGid() { return gid; }
 
     public Date getCreated() { return created; }
 
-    public Long getSetNumber() {
-        return setNumber;
+    public Long getQuestionSetVersion() {
+        return questionSetVersion;
     }
 
-    public void setSetNumber(Long setNumber) {
-        this.setNumber = setNumber;
+    public void setQuestionSetVersion(Long questionSetVersion) {
+        this.questionSetVersion = questionSetVersion;
     }
 
     public Set<QuestionsEntity> getQuestionsSet() {
@@ -115,7 +126,7 @@ public class QuestionSetVersionEntity {
 
     @Override
     public String toString() {
-        return String.format("QuestionSetVersion Profile", gid, created, setNumber, version, category, description, questionsSet, creativeSource);
+        return String.format("QuestionSetVersion Profile", gid, created, questionSetVersion, version, category, description, questionsSet, creativeSource);
     }
 
 }

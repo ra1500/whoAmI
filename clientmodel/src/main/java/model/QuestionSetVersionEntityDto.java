@@ -18,10 +18,10 @@ public class QuestionSetVersionEntityDto implements Serializable {
     //@JsonProperty("created")
     //private Date created;
 
-    @JsonProperty("setNumber")
-    private Long setNumber;
+    @JsonProperty("questionSetVersion")
+    private Long questionSetVersion;
 
-    //@JsonProperty("questionsList")
+    //@JsonProperty("questionsList") // to be used later. keep light now.
     //private Set<QuestionsEntity> questionsSet;
 
     @JsonProperty("version")
@@ -38,6 +38,9 @@ public class QuestionSetVersionEntityDto implements Serializable {
 
     @JsonProperty("creativeSource")
     private String creativeSource;
+
+    //@JsonProperty("pSets")  // to be used later. keep light now.
+    //private Set<PermissionsEntityDto> permissionsEntityDtoSet;
 
     public QuestionSetVersionEntityDto() {
     }
@@ -59,12 +62,20 @@ public class QuestionSetVersionEntityDto implements Serializable {
     //}
 
 
-    public Long getSetNumber() {
-        return setNumber;
+    //public Set<PermissionsEntityDto> getPermissionsEntityDtoSet() {
+    //    return permissionsEntityDtoSet;
+    //}
+
+    //public void setPermissionsEntityDtoSet(Set<PermissionsEntityDto> permissionsEntityDtoSet) {
+    //    this.permissionsEntityDtoSet = permissionsEntityDtoSet;
+    //}
+
+    public Long getQuestionSetVersion() {
+        return questionSetVersion;
     }
 
-    public void setSetNumber(Long setNumber) {
-        this.setNumber = setNumber;
+    public void setQuestionSetVersion(Long questionSetVersion) {
+        this.questionSetVersion = questionSetVersion;
     }
 
     //public Set<QuestionsEntity> getQuestionsSet() {

@@ -28,7 +28,7 @@ public class QuestionSetVersionController extends AbstractRestController {
     public ResponseEntity<QuestionSetVersionEntityDto> getQuestionSetVersionEntity(
             @RequestHeader("Authorization") String token,
 
-            @PathVariable("qsid") //questionSetNumber
+            @PathVariable("qsid") //questionQuestionSetVersion
             final Long qsid) {
 
         // secured by token
