@@ -1,18 +1,21 @@
 package db.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table
 public class QuestionsEntity implements Serializable {
 
-    @Id  //JPA indicating primary key
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column
+    @Column(name = "gid")
     private Long gid;
 
     @CreationTimestamp
@@ -20,7 +23,7 @@ public class QuestionsEntity implements Serializable {
     @Column
     private Date created;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "questionSetVersion")
     private QuestionSetVersionEntity questionSetVersionEntity;
 
@@ -74,6 +77,13 @@ public class QuestionsEntity implements Serializable {
 
     @Column(length = 3)
     private Long answer6Points;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "questionsEntity",
+            fetch = FetchType.EAGER,
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private Set<UserAnswersEntity> userAnswersSet = new HashSet<>();
 
     public QuestionsEntity() {
         super();

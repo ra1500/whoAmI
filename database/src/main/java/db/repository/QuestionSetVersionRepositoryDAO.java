@@ -13,6 +13,7 @@ public interface QuestionSetVersionRepositoryDAO extends JpaRepository<QuestionS
     //QuestionSetVersionEntity findOneByGid(Long gid);
     QuestionSetVersionEntity findOneByQuestionSetVersion(Long questionSetVersion);
 
-    //Set<QuestionSetVersionEntity> findAllByPermissionsEntity(PermissionsEntity permissionsEntity);
+    //@Query("SELECT SUM(answerPoints) FROM UserAnswersEntity WHERE userName = :userName AND questionSetVersion = :questionSetVersion AND auditee = :auditee")
+    //QuestionSetVersionEntity findQsetWithChildren();
 
 }

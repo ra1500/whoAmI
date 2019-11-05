@@ -24,7 +24,7 @@ public class FriendshipsEntity implements Serializable {
     private Date created;
 
     @ManyToOne
-    @JoinColumn(name = "userName")
+    @JoinColumn(name = "userName") // TODO userName? change to user_id?
     private UserEntity userEntity;
 
     @Column(length = 20)

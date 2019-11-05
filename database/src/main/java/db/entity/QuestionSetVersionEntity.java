@@ -29,7 +29,7 @@ public class QuestionSetVersionEntity implements Serializable{
 
     @JsonIgnore
     @OneToMany(mappedBy = "questionSetVersionEntity",
-            fetch = FetchType.LAZY,
+            fetch = FetchType.EAGER ,
             cascade = CascadeType.ALL,
             orphanRemoval = true)
     private Set<QuestionsEntity> questionsSet = new HashSet<>();
@@ -60,6 +60,12 @@ public class QuestionSetVersionEntity implements Serializable{
 
     public QuestionSetVersionEntity(String title, Long questionSetVersion) {
         this.questionSetVersion = questionSetVersion;
+        this.title = title;
+    }
+
+    public QuestionSetVersionEntity( Set<QuestionsEntity> questionsSet, String title, Long questionSetVersion) {
+        this.questionSetVersion = questionSetVersion;
+        this.questionsSet = questionsSet;
         this.title = title;
     }
 

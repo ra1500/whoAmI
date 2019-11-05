@@ -14,23 +14,9 @@ public interface PermissionsRepositoryDAO extends JpaRepository<PermissionsEntit
 
     PermissionsEntity findOneByUserNameAndAuditeeAndProfilePageGroupAndQuestionSetVersion(String userName, String auditee, String profilePageGroup, Long questionSetVersion);
     PermissionsEntity findOneByUserNameAndAuditee(String userName, String auditee);
-
     Set<PermissionsEntity> findAllByAuditee(String auditee);
     Set<PermissionsEntity> findByUserName(String userName);
-
-    // works. if data in join table.
     Set<PermissionsEntity> findAllByUserName(String userName);
 
-    //@Query("SELECT questionSetVersion FROM PermissionsEntity WHERE userName = :userName")
-    //Set<PermissionsEntity> findAllQsetsPrivateProfile(String userName);
 
-    //@Query("SELECT a FROM PermissionsEntity a")
-    //Set<PermissionsEntity> findAllQsetsPrivateProfile(String userName);
-
-    //@Query("SELECT a FROM QuestionSetVersionEntity a")
-    //Set<PermissionsEntity> findAllQsetsPrivateProfile(String userName);
-
-    //
-    //@Query("SELECT a, b FROM PermissionsEntity a INNER JOIN a.questionSetVersionEntities b")
-    //Set<PermissionsEntity> findAllQsetsPrivateProfile(String userName);
 }

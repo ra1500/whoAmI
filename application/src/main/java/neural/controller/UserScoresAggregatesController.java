@@ -3,9 +3,11 @@ package neural.controller;
 // import .Paths;     --use later if wish to have Paths restricted/opened via separate class--
 import db.entity.PermissionsEntity;
 import db.entity.QuestionSetVersionEntity;
+import db.entity.QuestionsEntity;
 import db.entity.UserEntity;
 import db.repository.PermissionsRepositoryDAO;
 import db.repository.QuestionSetVersionRepositoryDAO;
+import db.repository.QuestionsRepositoryDAO;
 import db.repository.UserAnswersRepositoryDAO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -19,6 +21,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Set;
 
 @RestController
@@ -29,13 +33,15 @@ public class UserScoresAggregatesController extends AbstractRestController {
     private UserAnswersRepositoryDAO userAnswersRepositoryDAO;
     private QuestionSetVersionRepositoryDAO questionSetVersionRepositoryDAO;
     private PermissionsRepositoryDAO permissionsRepositoryDAO;
+    private QuestionsRepositoryDAO questionsRepositoryDAO;
     private String UserScoreJSON;
 
     public UserScoresAggregatesController(UserAnswersRepositoryDAO userAnswersRepositoryDAO, QuestionSetVersionRepositoryDAO questionSetVersionRepositoryDAO,
-                                          PermissionsRepositoryDAO permissionsRepositoryDAO) {
+                                          PermissionsRepositoryDAO permissionsRepositoryDAO, QuestionsRepositoryDAO questionsRepositoryDAO) {
         this.userAnswersRepositoryDAO = userAnswersRepositoryDAO;
         this.questionSetVersionRepositoryDAO = questionSetVersionRepositoryDAO;
-        this.permissionsRepositoryDAO = permissionsRepositoryDAO;}
+        this.permissionsRepositoryDAO = permissionsRepositoryDAO;
+        this.questionsRepositoryDAO = questionsRepositoryDAO;}
 
     // GET. Private Profile Page.
     @ApiOperation(value = "getUserScoresAggregates")
@@ -94,11 +100,14 @@ public class UserScoresAggregatesController extends AbstractRestController {
         final String[] values = credentials.split(":", 2);
         String user = values[0];
 
-        Set<PermissionsEntity> permissionsEntity = permissionsRepositoryDAO.findAllByUserName(user);
+         Set<PermissionsEntity> permissionsEntity = permissionsRepositoryDAO.findAllByUserName(user); // works!
 
-        //Set<PermissionsEntity> permissionsEntity = permissionsRepositoryDAO.findOneByUserName(user);
-        //Set<QuestionSetVersionEntity> questionSetVersionEntities = questionSetVersionRepositoryDAO.findAllByPermissionsEntity(permissionsEntity);
-        //Set<PermissionsEntity> privateQsets = permissionsRepositoryDAO.findAllByUserName(user);// works.
+        // works. This gets Question. Which gets the parent as well.
+        //QuestionsEntity questionsEntity = questionsRepositoryDAO.findOneByGid(new Long(1));
+        //Set<QuestionsEntity> questionsEntities = new HashSet<>();
+        //questionsEntities.add(questionsEntity);
+
+        //QuestionSetVersionEntity questionSetVersionEntity = questionSetVersionRepositoryDAO.findQsetWithChildren();
 
         if (permissionsEntity == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);

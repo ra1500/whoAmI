@@ -18,6 +18,10 @@ public class UserAnswersEntity implements Serializable {
     @Column
     private Date created;
 
+    @ManyToOne
+    @JoinColumn(name = "question_id")
+    private QuestionsEntity questionsEntity;
+
     @Column
     private String userName;
 
