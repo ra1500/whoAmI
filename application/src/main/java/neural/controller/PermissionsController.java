@@ -40,7 +40,8 @@ public class PermissionsController extends AbstractRestController {
         final String[] values = credentials.split(":", 2);
         String user = values[0];
 
-        PermissionsEntityDto permissionsEntityDto = permissionsEntityService.getPermissionsEntity(user, auditee, questionSetVersion);
+        String profilePageGroup = "Public"; // TODO fix front-end to pass this over as well.
+        PermissionsEntityDto permissionsEntityDto = permissionsEntityService.getPermissionsEntity(user, auditee, profilePageGroup, questionSetVersion);
         if (permissionsEntityDto == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }

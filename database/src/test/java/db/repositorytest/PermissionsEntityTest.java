@@ -18,7 +18,11 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import static org.junit.Assert.assertEquals;
 
@@ -39,26 +43,39 @@ public class PermissionsEntityTest {
 
     @Test
     public void crudTest() {
-        String userName = "maria";
-        String auditee = "karen";
+
+        // save a child. (in manyTomany).
         String title = "lovin it";
         Long questionSetVersion = new Long(1);
-
         QuestionSetVersionEntity questionSetVersionEntity = new QuestionSetVersionEntity(title, questionSetVersion);
         QuestionSetVersionEntity savedQuestionSetVersionEntity = questionSetVersionDAO.saveAndFlush(questionSetVersionEntity);
-        System.out.println("Qset Title and Version:");
-        System.out.println(savedQuestionSetVersionEntity.getTitle());
-        System.out.println(savedQuestionSetVersionEntity.getQuestionSetVersion());
+        QuestionSetVersionEntity foundQuestionSetVersionEntity = questionSetVersionDAO.findOneByQuestionSetVersion(questionSetVersion);
 
-        PermissionsEntity permissionsEntity = new PermissionsEntity(userName, auditee, questionSetVersion );
+        // put child into a Set
+        Set<QuestionSetVersionEntity> questionSetVersionEntities = new HashSet<>();
+        questionSetVersionEntities.add(foundQuestionSetVersionEntity);
+
+        // create a new parent with the child included
+        String userName = "maria";
+        String auditee = "karen";
+        String profilePageGroup = "Public";
+        String tbd = "tbd";
+        PermissionsEntity permissionsEntity = new PermissionsEntity(questionSetVersionEntities, userName, auditee, profilePageGroup, questionSetVersion, tbd  );
+
+        // save parent (which includes child)
         PermissionsEntity savedPermissionsEntity = permissionsRepositoryDAO.saveAndFlush(permissionsEntity);
-        System.out.println("Permissions userName and Qsets:");
-        System.out.println(savedPermissionsEntity.getUserName());
-        System.out.println(savedPermissionsEntity.getQuestionSetVersionEntities());
-        System.out.println("Other methods....");
-        System.out.println(permissionsRepositoryDAO.findAllByUserName(userName));
 
+        // retrieve the saved parent
+        PermissionsEntity foundPermmissionsEntities = permissionsRepositoryDAO.findOneByUserNameAndAuditee(userName, auditee);
 
+        // get from the saved parent the child set
+        Set<QuestionSetVersionEntity> qsets =  foundPermmissionsEntities.getQuestionSetVersionEntities();
+
+        // assert that retrieved parent's child's value is equal to the child in db
+        Stream<QuestionSetVersionEntity> stream = qsets.stream();
+        //stream.forEach(elem -> System.out.println(elem.getTitle()));
+        Optional<QuestionSetVersionEntity> foundTitle = stream.findFirst();
+        assertEquals(title, foundTitle.get().getTitle() );
 
     }
 

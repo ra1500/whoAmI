@@ -1,11 +1,19 @@
 package core.transformers;
 
 import db.entity.PermissionsEntity;
+import db.entity.QuestionSetVersionEntity;
+import db.repository.PermissionsRepositoryDAO;
+import db.repository.QuestionSetVersionRepositoryDAO;
 import model.PermissionsEntityDto;
 import org.springframework.stereotype.Component;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Component
 public class PermissionsEntityDtoTransformer {
+
+
 
     public PermissionsEntityDtoTransformer() {
     }
@@ -31,7 +39,7 @@ public class PermissionsEntityDtoTransformer {
 
     // POST
     public PermissionsEntity generate(final PermissionsEntityDto dto) {
-        return new PermissionsEntity(dto.getAuditee(), dto.getProfilePageGroup(),
+        return new PermissionsEntity(dto.getQuestionSetVersionEntitySet(), dto.getUserName(), dto.getAuditee(), dto.getProfilePageGroup(),
                 dto.getQuestionSetVersion(), dto.getTbd());
     }
 }

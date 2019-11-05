@@ -12,7 +12,7 @@ import java.util.Set;
 @Repository
 public interface PermissionsRepositoryDAO extends JpaRepository<PermissionsEntity, Long> {
 
-    PermissionsEntity findOneByUserNameAndAuditeeAndQuestionSetVersion(String userName, String auditee, Long questionSetVersion);
+    PermissionsEntity findOneByUserNameAndAuditeeAndProfilePageGroupAndQuestionSetVersion(String userName, String auditee, String profilePageGroup, Long questionSetVersion);
     PermissionsEntity findOneByUserNameAndAuditee(String userName, String auditee);
 
     Set<PermissionsEntity> findAllByAuditee(String auditee);

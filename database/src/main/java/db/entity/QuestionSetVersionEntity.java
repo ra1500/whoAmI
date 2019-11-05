@@ -11,7 +11,7 @@ import java.util.*;
 public class QuestionSetVersionEntity implements Serializable{
 
     @Id  //JPA indicating primary key
-    @Column
+    @Column(name = "gid")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long gid;
 
@@ -20,7 +20,8 @@ public class QuestionSetVersionEntity implements Serializable{
     @Column
     private Date created;
 
-    @ManyToMany(mappedBy = "questionSetVersionEntities", fetch = FetchType.EAGER)
+    @JsonIgnore
+    @ManyToMany(mappedBy = "questionSetVersionEntities", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<PermissionsEntity> permissionsEntities = new HashSet<>();
 
     @Column(name = "questionSetVersion")

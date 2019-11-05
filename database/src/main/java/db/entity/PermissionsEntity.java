@@ -1,5 +1,6 @@
 package db.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.CreationTimestamp;
 import javax.persistence.*;
 import java.io.Serializable;
@@ -21,11 +22,12 @@ public class PermissionsEntity implements Serializable {
     @Column
     private Date created;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
+    //@JsonIgnore
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(
-            name = "permissions_questionSets",
-            joinColumns = { @JoinColumn(name = "pset", referencedColumnName = "questionSetVersion") },
-            inverseJoinColumns = { @JoinColumn(name = "qset", referencedColumnName = "gid") }
+            name = "psets_qsets",
+            joinColumns = { @JoinColumn(name = "pset", referencedColumnName="gid" )},
+            inverseJoinColumns = { @JoinColumn(name = "qset", referencedColumnName="gid") }
     )
     Set<QuestionSetVersionEntity> questionSetVersionEntities = new HashSet<>();
 
@@ -59,6 +61,13 @@ public class PermissionsEntity implements Serializable {
         this.profilePageGroup = profilePageGroup;
         this.questionSetVersion = questionSetVersion;
         this.tbd = tbd;
+    }
+
+    public PermissionsEntity(String userName,String auditee, String profilePageGroup, Long questionSetVersion) {
+        this.userName = userName;
+        this.auditee = auditee;
+        this.profilePageGroup = profilePageGroup;
+        this.questionSetVersion = questionSetVersion;
     }
 
     public PermissionsEntity(String auditee, String profilePageGroup, Long questionSetVersion, String tbd) {
