@@ -1,10 +1,7 @@
 package neural.controller;
 
 // import .Paths;     --use later if wish to have Paths restricted/opened via separate class--
-import db.entity.PermissionsEntity;
-import db.entity.QuestionSetVersionEntity;
-import db.entity.QuestionsEntity;
-import db.entity.UserEntity;
+import db.entity.*;
 import db.repository.PermissionsRepositoryDAO;
 import db.repository.QuestionSetVersionRepositoryDAO;
 import db.repository.QuestionsRepositoryDAO;
@@ -100,14 +97,9 @@ public class UserScoresAggregatesController extends AbstractRestController {
         final String[] values = credentials.split(":", 2);
         String user = values[0];
 
-         Set<PermissionsEntity> permissionsEntity = permissionsRepositoryDAO.findAllByUserName(user); // works!
-
-        // works. This gets Question. Which gets the parent as well.
-        //QuestionsEntity questionsEntity = questionsRepositoryDAO.findOneByGid(new Long(1));
-        //Set<QuestionsEntity> questionsEntities = new HashSet<>();
-        //questionsEntities.add(questionsEntity);
-
-        //QuestionSetVersionEntity questionSetVersionEntity = questionSetVersionRepositoryDAO.findQsetWithChildren();
+        Set<PermissionsEntity> permissionsEntity = permissionsRepositoryDAO.findAllByUserName(user); // works!
+        //Set<QuestionSetVersionEntity> questionSetVersionEntities = questionSetVersionRepositoryDAO.findAllByPermission();
+        //Set<QuestionsEntity> questionsSet = questionsRepositoryDAO.findSome();
 
         if (permissionsEntity == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);

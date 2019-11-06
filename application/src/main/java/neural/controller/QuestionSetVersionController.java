@@ -9,6 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
@@ -48,5 +49,25 @@ public class QuestionSetVersionController extends AbstractRestController {
         return ResponseEntity.ok(questionSetVersionEntityDto);
     }
 
+    // POST/PATCH  posts a new one, updates an existing one
+    @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<QuestionSetVersionEntityDto> createQuestionSetVersionEntity(
+            @Valid
+            @RequestBody final QuestionSetVersionEntityDto questionSetVersionEntityDto,
+            @RequestHeader("Authorization") String token) {
+
+        String base64Credentials = token.substring("Basic".length()).trim();
+        byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
+        String credentials = new String(credDecoded, StandardCharsets.UTF_8);
+        // credentials = username:password
+        final String[] values = credentials.split(":", 2);
+        String user = values[0];
+
+        // userName from token
+        questionSetVersionEntityDto.setCreativeSource(user);
+
+        QuestionSetVersionEntityDto savedQuestionSetVersionEntityDto = questionSetVersionEntityService.createQuestionSetVersionEntity(questionSetVersionEntityDto);
+        return ResponseEntity.ok(savedQuestionSetVersionEntityDto);
+    }
 
 }

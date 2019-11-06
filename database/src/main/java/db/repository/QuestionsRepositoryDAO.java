@@ -27,6 +27,9 @@ public interface QuestionsRepositoryDAO extends JpaRepository<QuestionsEntity, L
     @Query("SELECT SUM(maxPoints) FROM QuestionsEntity WHERE questionSetVersion = ?1")
     Long PointsForQuestionSetVersion(Long questionSetVersion);
 
+    @Query("Select a FROM QuestionsEntity a")
+    Set<QuestionsEntity> findSome();
+
 
 }
 

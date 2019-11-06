@@ -49,6 +49,7 @@ public class QuestionSetVersionEntityDtoTransformer {
 
     // POST
     public QuestionSetVersionEntity generate(final QuestionSetVersionEntityDto dto) {
-        return new QuestionSetVersionEntity(dto.getGid());
+        return new QuestionSetVersionEntity(dto.getQuestionSetVersion(), dto.getVersion(), dto.getTitle(),
+                dto.getDescription(), dto.getCategory(), dto.getCreativeSource());
     }
 }

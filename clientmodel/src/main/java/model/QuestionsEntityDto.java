@@ -21,6 +21,13 @@ public class QuestionsEntityDto implements Serializable {
     @JsonProperty("questionSetVersionEntity")
     private QuestionSetVersionEntity questionSetVersionEntity;
 
+    @JsonProperty("creativeSource")
+    private String creativeSource;
+
+    // used for POST only
+    @JsonProperty("questionSetVersion")
+    private Long questionSetVersion;
+
     @JsonProperty("sequenceNumber")
     private Long sequenceNumber;
 
@@ -86,6 +93,30 @@ public class QuestionsEntityDto implements Serializable {
 
     public void setCreated(final Date created) {
         this.created = created;
+    }
+
+    public QuestionSetVersionEntity getQuestionSetVersionEntity() {
+        return questionSetVersionEntity;
+    }
+
+    public void setQuestionSetVersionEntity(QuestionSetVersionEntity questionSetVersionEntity) {
+        this.questionSetVersionEntity = questionSetVersionEntity;
+    }
+
+    public Long getQuestionSetVersion() {
+        return questionSetVersion;
+    }
+
+    public void setQuestionSetVersion(Long questionSetVersion) {
+        this.questionSetVersion = questionSetVersion;
+    }
+
+    public String getCreativeSource() {
+        return creativeSource;
+    }
+
+    public void setCreativeSource(String creativeSource) {
+        this.creativeSource = creativeSource;
     }
 
     public Long getSequenceNumber() {

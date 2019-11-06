@@ -41,8 +41,11 @@ public class QuestionsEntityDtoTransformer {
         return dto;
     }
 
-    // POST (not used)
-    //public QuestionsEntity generate(final QuestionsEntityDto dto) {
-    //    return new QuestionsEntity(dto.getQuestion(),dto.getCategory(),dto.getMaxPoints(),dto.getAnswer1(),dto.getAnswer1Points(),dto.getAnswer2(),dto.getAnswer2Points(),dto.getAnswer3(),dto.getAnswer3Points(),dto.getAnswer4(),dto.getAnswer4Points(),dto.getAnswer5(),dto.getAnswer5Points(),dto.getAnswer6(),dto.getAnswer6Points());
-    //}
+    // POST
+    public QuestionsEntity generate(final QuestionsEntityDto dto) {
+        return new QuestionsEntity(dto.getQuestionSetVersionEntity(),dto.getCreativeSource(),dto.getSequenceNumber(),dto.getQuestion(),dto.getCategory(),dto.getMaxPoints(),dto.getAnswer1(),
+        dto.getAnswer1Points(),dto.getAnswer2(),dto.getAnswer2Points(),dto.getAnswer3(),dto.getAnswer3Points(),
+        dto.getAnswer4(),dto.getAnswer4Points(),dto.getAnswer5(),dto.getAnswer5Points(),dto.getAnswer6(),
+        dto.getAnswer6Points());
+    }
 }

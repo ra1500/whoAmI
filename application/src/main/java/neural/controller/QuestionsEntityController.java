@@ -31,7 +31,7 @@ public class QuestionsEntityController extends AbstractRestController {
         this.questionsEntityService = questionsEntityService;
         this.questionSetVersionRepositoryDAO = questionSetVersionRepositoryDAO; }
 
-    // get an single question. any user with a token can access.
+    // GET a single question. any user with a token can access.
     @ApiOperation(value = "getQuestionsEntity")
     @RequestMapping(value = "/{qsid}/{qid}", method = RequestMethod.GET)
     public ResponseEntity<QuestionsEntityDto> getQuestionsEntity(
@@ -42,7 +42,6 @@ public class QuestionsEntityController extends AbstractRestController {
 
             @PathVariable("qid")
             final Long sequenceNumber) {
-
 
         // secured by token
         String base64Credentials = token.substring("Basic".length()).trim();
@@ -60,8 +59,26 @@ public class QuestionsEntityController extends AbstractRestController {
         if (questionsEntityDto == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-
         return ResponseEntity.ok(questionsEntityDto);
+    }
+    // POST/PATCH  posts a new one, updates an existing one
+    @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<QuestionsEntityDto> createQuestionsEntity(
+            @Valid
+            @RequestBody final QuestionsEntityDto questionsEntityDto,
+            @RequestHeader("Authorization") String token) {
+
+        String base64Credentials = token.substring("Basic".length()).trim();
+        byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
+        String credentials = new String(credDecoded, StandardCharsets.UTF_8);
+        // credentials = username:password
+        final String[] values = credentials.split(":", 2);
+        String user = values[0];
+
+        questionsEntityDto.setCreativeSource(user);
+
+        QuestionsEntityDto savedQuestionsEntityDto = questionsEntityService.createQuestionsEntity(questionsEntityDto);
+        return ResponseEntity.ok(savedQuestionsEntityDto);
     }
     
 }

@@ -69,6 +69,15 @@ public class QuestionSetVersionEntity implements Serializable{
         this.title = title;
     }
 
+    public QuestionSetVersionEntity(Long questionSetVersion, String version, String title, String description, String category, String creativeSource) {
+        this.questionSetVersion = questionSetVersion;
+        this.version = version;
+        this.title = title;
+        this.description = description;
+        this.category = category;
+        this.creativeSource = creativeSource;
+    }
+
     public Set<PermissionsEntity> getPermissionsEntities() {
         return permissionsEntities;
     }

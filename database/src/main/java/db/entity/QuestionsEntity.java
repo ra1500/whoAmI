@@ -99,13 +99,15 @@ public class QuestionsEntity implements Serializable {
         this.question = question;
     }
 
-    public QuestionsEntity(QuestionSetVersionEntity questionSetVersionEntity, String question, String category,
+    public QuestionsEntity(QuestionSetVersionEntity questionSetVersionEntity, String creativeSource, Long sequenceNumber , String question, String category,
                            Long maxPoints, String answer1, Long answer1Points,
                            String answer2, Long answer2Points, String answer3, Long answer3Points, String answer4,
                            Long answer4Points, String answer5, Long answer5Points, String answer6, Long answer6Points)
     {
         super();
         this.questionSetVersionEntity = questionSetVersionEntity;
+        this.creativeSource = creativeSource;
+        this.sequenceNumber = sequenceNumber;
         this.question = question;
         this.category = category;
         this.maxPoints = maxPoints;
@@ -127,6 +129,14 @@ public class QuestionsEntity implements Serializable {
     public Long getGid() { return gid; }
 
     public Date getCreated() { return created; }
+
+    public String getCreativeSource() {
+        return creativeSource;
+    }
+
+    public Set<UserAnswersEntity> getUserAnswersSet() {
+        return userAnswersSet;
+    }
 
     public Long getSequenceNumber() {
         return sequenceNumber;
@@ -169,6 +179,74 @@ public class QuestionsEntity implements Serializable {
     public String getAnswer6() { return answer6; }
 
     public Long getAnswer6Points() { return answer6Points; }
+
+    public void setQuestionSetVersionEntity(QuestionSetVersionEntity questionSetVersionEntity) {
+        this.questionSetVersionEntity = questionSetVersionEntity;
+    }
+
+    public void setCreativeSource(String creativeSource) {
+        this.creativeSource = creativeSource;
+    }
+
+    public void setQuestion(String question) {
+        this.question = question;
+    }
+
+    public void setMaxPoints(Long maxPoints) {
+        this.maxPoints = maxPoints;
+    }
+
+    public void setAnswer1(String answer1) {
+        this.answer1 = answer1;
+    }
+
+    public void setAnswer1Points(Long answer1Points) {
+        this.answer1Points = answer1Points;
+    }
+
+    public void setAnswer2(String answer2) {
+        this.answer2 = answer2;
+    }
+
+    public void setAnswer2Points(Long answer2Points) {
+        this.answer2Points = answer2Points;
+    }
+
+    public void setAnswer3(String answer3) {
+        this.answer3 = answer3;
+    }
+
+    public void setAnswer3Points(Long answer3Points) {
+        this.answer3Points = answer3Points;
+    }
+
+    public void setAnswer4(String answer4) {
+        this.answer4 = answer4;
+    }
+
+    public void setAnswer4Points(Long answer4Points) {
+        this.answer4Points = answer4Points;
+    }
+
+    public void setAnswer5(String answer5) {
+        this.answer5 = answer5;
+    }
+
+    public void setAnswer5Points(Long answer5Points) {
+        this.answer5Points = answer5Points;
+    }
+
+    public void setAnswer6(String answer6) {
+        this.answer6 = answer6;
+    }
+
+    public void setAnswer6Points(Long answer6Points) {
+        this.answer6Points = answer6Points;
+    }
+
+    public void setUserAnswersSet(Set<UserAnswersEntity> userAnswersSet) {
+        this.userAnswersSet = userAnswersSet;
+    }
 
     public void setCategory(String category) {
         this.category = category;
