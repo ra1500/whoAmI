@@ -15,23 +15,19 @@ public class QuestionsEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "gid")
-    private Long gid;
+    @Column(name = "questionId")
+    private Long id;
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column
     private Date created;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "questionSetVersion")
-    private QuestionSetVersionEntity questionSetVersionEntity;
+    @Column
+    private Long sequenceNumber;
 
     @Column
     private String creativeSource;
-
-    @Column
-    private Long sequenceNumber;
 
     @Column
     private String question;
@@ -78,36 +74,17 @@ public class QuestionsEntity implements Serializable {
     @Column(length = 3)
     private Long answer6Points;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "questionsEntity",
-            fetch = FetchType.EAGER,
-            cascade = CascadeType.ALL,
-            orphanRemoval = true)
-    private Set<UserAnswersEntity> userAnswersSet = new HashSet<>();
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "questionSetVersionEntityId")
+    private QuestionSetVersionEntity questionSetVersionEntity;
 
     public QuestionsEntity() {
         super();
     }
 
-    public QuestionsEntity(Long gid) {
-        super();
-        this.gid = gid;
-    }
-
-    public QuestionsEntity(String question) {
-        super();
-        this.question = question;
-    }
-
-    public QuestionsEntity(QuestionSetVersionEntity questionSetVersionEntity, String creativeSource, Long sequenceNumber , String question, String category,
-                           Long maxPoints, String answer1, Long answer1Points,
-                           String answer2, Long answer2Points, String answer3, Long answer3Points, String answer4,
-                           Long answer4Points, String answer5, Long answer5Points, String answer6, Long answer6Points)
-    {
-        super();
-        this.questionSetVersionEntity = questionSetVersionEntity;
-        this.creativeSource = creativeSource;
+    public QuestionsEntity(Long sequenceNumber, String creativeSource, String question, String category, Long maxPoints, String answer1, Long answer1Points, String answer2, Long answer2Points, String answer3, Long answer3Points, String answer4, Long answer4Points, String answer5, Long answer5Points, String answer6, Long answer6Points) {
         this.sequenceNumber = sequenceNumber;
+        this.creativeSource = creativeSource;
         this.question = question;
         this.category = category;
         this.maxPoints = maxPoints;
@@ -125,17 +102,25 @@ public class QuestionsEntity implements Serializable {
         this.answer6Points = answer6Points;
     }
 
-
-    public Long getGid() { return gid; }
-
-    public Date getCreated() { return created; }
-
-    public String getCreativeSource() {
-        return creativeSource;
+    // constructor used in UserAnswersEntity Test
+    public QuestionsEntity(String question) {
+        this.question = question;
     }
 
-    public Set<UserAnswersEntity> getUserAnswersSet() {
-        return userAnswersSet;
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Date getCreated() {
+        return created;
+    }
+
+    public void setCreated(Date created) {
+        this.created = created;
     }
 
     public Long getSequenceNumber() {
@@ -146,115 +131,147 @@ public class QuestionsEntity implements Serializable {
         this.sequenceNumber = sequenceNumber;
     }
 
-    public QuestionSetVersionEntity getQuestionSetVersionEntity() {
-        return questionSetVersionEntity;
-    }
-
-    public String getQuestion() { return question; }
-
-    public String getCategory() { return category; }
-
-    public Long getMaxPoints() { return maxPoints; }
-
-    public String getAnswer1() { return answer1; }
-
-    public Long getAnswer1Points() { return answer1Points; }
-
-    public String getAnswer2() { return answer2; }
-
-    public Long getAnswer2Points() { return answer2Points; }
-
-    public String getAnswer3() { return answer3; }
-
-    public Long getAnswer3Points() { return answer3Points; }
-
-    public String getAnswer4() { return answer4; }
-
-    public Long getAnswer4Points() { return answer4Points; }
-
-    public String getAnswer5() { return answer5; }
-
-    public Long getAnswer5Points() { return answer5Points; }
-
-    public String getAnswer6() { return answer6; }
-
-    public Long getAnswer6Points() { return answer6Points; }
-
-    public void setQuestionSetVersionEntity(QuestionSetVersionEntity questionSetVersionEntity) {
-        this.questionSetVersionEntity = questionSetVersionEntity;
+    public String getCreativeSource() {
+        return creativeSource;
     }
 
     public void setCreativeSource(String creativeSource) {
         this.creativeSource = creativeSource;
     }
 
+    public String getQuestion() {
+        return question;
+    }
+
     public void setQuestion(String question) {
         this.question = question;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public Long getMaxPoints() {
+        return maxPoints;
     }
 
     public void setMaxPoints(Long maxPoints) {
         this.maxPoints = maxPoints;
     }
 
+    public String getAnswer1() {
+        return answer1;
+    }
+
     public void setAnswer1(String answer1) {
         this.answer1 = answer1;
+    }
+
+    public Long getAnswer1Points() {
+        return answer1Points;
     }
 
     public void setAnswer1Points(Long answer1Points) {
         this.answer1Points = answer1Points;
     }
 
+    public String getAnswer2() {
+        return answer2;
+    }
+
     public void setAnswer2(String answer2) {
         this.answer2 = answer2;
+    }
+
+    public Long getAnswer2Points() {
+        return answer2Points;
     }
 
     public void setAnswer2Points(Long answer2Points) {
         this.answer2Points = answer2Points;
     }
 
+    public String getAnswer3() {
+        return answer3;
+    }
+
     public void setAnswer3(String answer3) {
         this.answer3 = answer3;
+    }
+
+    public Long getAnswer3Points() {
+        return answer3Points;
     }
 
     public void setAnswer3Points(Long answer3Points) {
         this.answer3Points = answer3Points;
     }
 
+    public String getAnswer4() {
+        return answer4;
+    }
+
     public void setAnswer4(String answer4) {
         this.answer4 = answer4;
+    }
+
+    public Long getAnswer4Points() {
+        return answer4Points;
     }
 
     public void setAnswer4Points(Long answer4Points) {
         this.answer4Points = answer4Points;
     }
 
+    public String getAnswer5() {
+        return answer5;
+    }
+
     public void setAnswer5(String answer5) {
         this.answer5 = answer5;
+    }
+
+    public Long getAnswer5Points() {
+        return answer5Points;
     }
 
     public void setAnswer5Points(Long answer5Points) {
         this.answer5Points = answer5Points;
     }
 
+    public String getAnswer6() {
+        return answer6;
+    }
+
     public void setAnswer6(String answer6) {
         this.answer6 = answer6;
+    }
+
+    public Long getAnswer6Points() {
+        return answer6Points;
     }
 
     public void setAnswer6Points(Long answer6Points) {
         this.answer6Points = answer6Points;
     }
 
-    public void setUserAnswersSet(Set<UserAnswersEntity> userAnswersSet) {
-        this.userAnswersSet = userAnswersSet;
+    public QuestionSetVersionEntity getQuestionSetVersionEntity() {
+        return questionSetVersionEntity;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
-    } // used for Crud update test
+    public void setQuestionSetVersionEntity(QuestionSetVersionEntity questionSetVersionEntity) {
+        this.questionSetVersionEntity = questionSetVersionEntity;
+    }
 
     @Override
     public String toString() {
-        return String.format("question profile", gid, created, question, category);
+        return String.format("question profile", id, created, sequenceNumber, creativeSource,question, category, maxPoints, answer1, answer1Points,
+                answer2, answer2Points, answer3, answer3Points, answer4, answer4Points, answer5, answer5Points,
+                answer6, answer6Points);
     }
 
 }

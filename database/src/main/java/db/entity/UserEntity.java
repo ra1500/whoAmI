@@ -19,7 +19,7 @@ public class UserEntity implements Serializable {
 
     @Id  //JPA indicating primary key
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long gid;
+    private Long id;
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
@@ -57,7 +57,7 @@ public class UserEntity implements Serializable {
         this.userName = userName;
     }
 
-    public Long getGid() { return gid; }
+    public Long getId() { return id; }
 
     public Date getCreated() { return created; }
 
@@ -83,7 +83,7 @@ public class UserEntity implements Serializable {
 
     @Override
     public String toString() {
-        return String.format("User Profile", gid, created, userName, password);
+        return String.format("User Profile", id, created, userName, password);
     }
 
 }

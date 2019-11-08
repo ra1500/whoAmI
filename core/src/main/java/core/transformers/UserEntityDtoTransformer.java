@@ -31,12 +31,12 @@ public class UserEntityDtoTransformer {
 
     // GET
     public UserEntityDto generate(final UserEntity userEntity) {
-        if (userEntity == null || userEntity.getGid() == null) {
+        if (userEntity == null || userEntity.getId() == null) {
             return null;
         }
 
         UserEntityDto dto = new UserEntityDto();
-        //dto.setGid(userEntity.getGid());
+        //dto.setId(userEntity.getId());
         //dto.setCreated(userEntity.getCreated());
         dto.setUserName(userEntity.getUserName());
         dto.setPassword(userEntity.getPassword());

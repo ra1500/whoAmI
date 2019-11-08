@@ -26,12 +26,12 @@ public class FriendshipsEntityDtoTransformer {
 
     // GET from db
     public FriendshipsEntityDto generate(final FriendshipsEntity friendshipsEntity) {
-        if (friendshipsEntity == null || friendshipsEntity.getGid() == null) {
+        if (friendshipsEntity == null || friendshipsEntity.getId() == null) {
             return null;
         }
 
         FriendshipsEntityDto dto = new FriendshipsEntityDto();
-        dto.setGid(friendshipsEntity.getGid());
+        dto.setId(friendshipsEntity.getId());
         //dto.setCreated(friendshipsEntity.getCreated()); // no need to send out created date now
         //dto.setUserEntity(getUserEntityService(friendshipsEntity)); // not needed?
         dto.setInviter(friendshipsEntity.getInviter());
@@ -54,6 +54,6 @@ public class FriendshipsEntityDtoTransformer {
 
     // PATCH to the db an update
     public FriendshipsEntity patch(final FriendshipsEntityDtoPOST dto) {
-        return new FriendshipsEntity(dto.getGid());
+        return new FriendshipsEntity(dto.getId());
     }
 }

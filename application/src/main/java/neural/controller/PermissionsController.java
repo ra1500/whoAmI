@@ -32,7 +32,7 @@ public class PermissionsController extends AbstractRestController {
     public ResponseEntity<PermissionsEntityDto> getPermissionsEntity(
             @RequestHeader("Authorization") String token,
             @PathVariable("au") final String auditee,
-            @PathVariable("qId") final Long questionSetVersion) {
+            @PathVariable("qId") final Long questionSetVersionEntityId) {
         String base64Credentials = token.substring("Basic".length()).trim();
         byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
         String credentials = new String(credDecoded, StandardCharsets.UTF_8);
@@ -40,21 +40,20 @@ public class PermissionsController extends AbstractRestController {
         final String[] values = credentials.split(":", 2);
         String user = values[0];
 
-        String profilePageGroup = "Public"; // TODO fix front-end to pass this over as well.
-        PermissionsEntityDto permissionsEntityDto = permissionsEntityService.getPermissionsEntity(user, auditee, profilePageGroup, questionSetVersion);
+        PermissionsEntityDto permissionsEntityDto = permissionsEntityService.getPermissionsEntity(user, auditee, questionSetVersionEntityId);
         if (permissionsEntityDto == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-
         return ResponseEntity.ok(permissionsEntityDto);
     }
 
     // POST/PATCH  posts a new one, updates an existing one
-    @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/{qsId}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PermissionsEntityDto> createPermissionsEntity(
             @Valid
             @RequestBody final PermissionsEntityDto permissionsEntityDto,
-            @RequestHeader("Authorization") String token) {
+            @RequestHeader("Authorization") String token,
+            @PathVariable("qsId") final Long questionSetVersionEntityId) {
 
         String base64Credentials = token.substring("Basic".length()).trim();
         byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
@@ -66,7 +65,7 @@ public class PermissionsController extends AbstractRestController {
         // userName from token
         permissionsEntityDto.setUserName(user);
 
-        PermissionsEntityDto savedPermissionsEntityDto = permissionsEntityService.createPermissionsEntity(permissionsEntityDto);
+        PermissionsEntityDto savedPermissionsEntityDto = permissionsEntityService.createPermissionsEntity(permissionsEntityDto, questionSetVersionEntityId);
         return ResponseEntity.ok(savedPermissionsEntityDto);
     }
 }

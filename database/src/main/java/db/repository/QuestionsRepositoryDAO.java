@@ -12,23 +12,19 @@ import java.util.Set;
 @Repository
 public interface QuestionsRepositoryDAO extends JpaRepository<QuestionsEntity, Long> {
 
-    QuestionsEntity findOneByGid(Long gid);
-    QuestionsEntity findOneByQuestionSetVersionEntityAndSequenceNumber(QuestionSetVersionEntity questionSetVersionEntity, Long sequenceNumber);
+    QuestionsEntity findOneById(Long id); // used in UserAnswersEntity Test.
     Set<QuestionsEntity> findAllByQuestionSetVersionEntity(QuestionSetVersionEntity questionSetVersionEntity);
-
-    // delete. not used....
-    //@Query("SELECT MAX(sequenceNumber) FROM QuestionsEntity")
-    //Long findMaxQtyQuestions2();
+    QuestionsEntity findOneBySequenceNumberAndQuestionSetVersionEntityId(Long sequenceNumber, Long questionSetVersionEntityId);
 
     // indexed parameter (first method parameter is indicated as ?1)
-    @Query("SELECT MAX(sequenceNumber) FROM QuestionsEntity WHERE questionSetVersion = ?1")
-    Long findMaxQtyQuestions(Long questionSetVersion);
+    //@Query("SELECT MAX(sequenceNumber) FROM QuestionsEntity WHERE questionSetVersion = ?1")
+    //Long findMaxQtyQuestions(Long questionSetVersion);
 
-    @Query("SELECT SUM(maxPoints) FROM QuestionsEntity WHERE questionSetVersion = ?1")
-    Long PointsForQuestionSetVersion(Long questionSetVersion);
+    //@Query("SELECT SUM(maxPoints) FROM QuestionsEntity WHERE questionSetVersion = ?1")
+    //Long PointsForQuestionSetVersion(Long questionSetVersion);
 
-    @Query("Select a FROM QuestionsEntity a")
-    Set<QuestionsEntity> findSome();
+    //@Query("Select a FROM QuestionsEntity a")
+    //Set<QuestionsEntity> findSome();
 
 
 }

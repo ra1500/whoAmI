@@ -12,8 +12,8 @@ import java.util.Set;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserEntityDto implements Serializable {
 
-    //@JsonProperty("gid")
-    //private Long gid;
+    //@JsonProperty("id")
+    //private Long id;
 
     //@JsonProperty("created")
     //private Date created;
@@ -33,12 +33,12 @@ public class UserEntityDto implements Serializable {
     public UserEntityDto() {
     }
 
-    //public Long getGid() {
-    //    return gid;
+    //public Long getId() {
+    //    return id;
     //}
 
-    //public void setGid(final Long gid) {
-    //    this.gid = gid;
+    //public void setId(final Long id) {
+    //    this.id = id;
     //}
 
     //public Date getCreated() {

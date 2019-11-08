@@ -11,8 +11,8 @@ import java.util.Date;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class FriendshipsEntityDto implements Serializable {
 
-    @JsonProperty("gid")
-    private Long gid;
+    @JsonProperty("id")
+    private Long id;
 
     //@JsonProperty("created")
     //private Date created;
@@ -39,12 +39,12 @@ public class FriendshipsEntityDto implements Serializable {
     public FriendshipsEntityDto() {
     }
 
-    public Long getGid() {
-        return gid;
+    public Long getId() {
+        return id;
     }
 
-    public void setGid(final Long gid) {
-        this.gid = gid;
+    public void setId(final Long id) {
+        this.id = id;
     }
 
     //public Date getCreated() {

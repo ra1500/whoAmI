@@ -19,59 +19,51 @@ public class PermissionsEntityService {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final PermissionsRepositoryDAO permissionsRepositoryDAO;
     private final PermissionsEntityDtoTransformer permissionsEntityDtoTransformer;
-    // used for 'mini' service to set QuestionSetVersion on incoming new POST
     QuestionSetVersionRepositoryDAO questionSetVersionRepositoryDAO;
 
     public PermissionsEntityService(final PermissionsRepositoryDAO permissionsRepositoryDAO, final PermissionsEntityDtoTransformer permissionsEntityDtoTransformer, QuestionSetVersionRepositoryDAO questionSetVersionRepositoryDAO) {
         this.permissionsRepositoryDAO = permissionsRepositoryDAO;
         this.permissionsEntityDtoTransformer = permissionsEntityDtoTransformer;
-        this.questionSetVersionRepositoryDAO = questionSetVersionRepositoryDAO; // used in new POST
+        this.questionSetVersionRepositoryDAO = questionSetVersionRepositoryDAO;
     }
 
     // GET
-    public PermissionsEntityDto getPermissionsEntity(final String userName, final String auditee, final String profilePageGroup,final Long questionSetVersion) {
-        return permissionsEntityDtoTransformer.generate(permissionsRepositoryDAO.findOneByUserNameAndAuditeeAndProfilePageGroupAndQuestionSetVersion(userName, auditee, profilePageGroup, questionSetVersion));
+    public PermissionsEntityDto getPermissionsEntity(final String userName, final String auditee, final Long questionSetVersionEntityId) {
+        return permissionsEntityDtoTransformer.generate(permissionsRepositoryDAO.findOneByUserNameAndAuditeeAndQuestionSetVersionEntityId(userName, auditee, questionSetVersionEntityId));
     }
 
-    // GET  (not currently used since network level profile permission currently sits in FriendshipsEntity
-    //public PermissionsEntityDto getPermissionsEntity(final String userName, String auditee) {
-    //    return permissionsEntityDtoTransformer.generate(permissionsRepositoryDAO.findOneByUserNameAndAuditee(userName, auditee));
-    //}
-
     // POST/PATCH  post if not found, otherwise patch.
-    public PermissionsEntityDto createPermissionsEntity(final PermissionsEntityDto permissionsEntityDto) {
-        PermissionsEntity permissionsEntity = permissionsRepositoryDAO.findOneByUserNameAndAuditeeAndProfilePageGroupAndQuestionSetVersion(permissionsEntityDto.getUserName(), permissionsEntityDto.getAuditee(), permissionsEntityDto.getProfilePageGroup(),permissionsEntityDto.getQuestionSetVersion());
+    public PermissionsEntityDto createPermissionsEntity(final PermissionsEntityDto permissionsEntityDto, final Long questionSetVersionEntityId) {
+
+        // find in db. if exists.
+        PermissionsEntity permissionsEntity = permissionsRepositoryDAO.findOneByUserNameAndAuditeeAndQuestionSetVersionEntityId(permissionsEntityDto.getUserName(), permissionsEntityDto.getAuditee(),questionSetVersionEntityId);
 
         if (permissionsEntity == null) {
 
-            // Add the Qset to the new permission.
-            QuestionSetVersionEntity questionSetVersionEntity = questionSetVersionRepositoryDAO.findOneByQuestionSetVersion(permissionsEntityDto.getQuestionSetVersion());
-            Set<QuestionSetVersionEntity> questionSetVersionEntities = new HashSet<>();
-            questionSetVersionEntities.add(questionSetVersionEntity);
+            // create a new 'raw' permissionsEntity based on incoming Dto. Add parent Qset after.
+            PermissionsEntity newPermissionsEntity = permissionsEntityDtoTransformer.generate(permissionsEntityDto);
+
+            // find and add QuestionSetVersionEntity parent. (ManyToOne). (only adding parent to child. not adding child to a parent set/list).
+            QuestionSetVersionEntity foundQuestionSetVersionEntity = questionSetVersionRepositoryDAO.findOneById(questionSetVersionEntityId);
+            newPermissionsEntity.setQuestionSetVersionEntity(foundQuestionSetVersionEntity);
 
             // then save the overall new permission
-            permissionsEntityDto.setQuestionSetVersionEntitySet(questionSetVersionEntities); //
-            PermissionsEntity newPermissionsEntity = permissionsRepositoryDAO.saveAndFlush(permissionsEntityDtoTransformer.generate(permissionsEntityDto));
+            permissionsRepositoryDAO.saveAndFlush(newPermissionsEntity);
+
             return permissionsEntityDtoTransformer.generate(newPermissionsEntity);
         }
         else {
-            // no need to update the Qset Set since only a unique combination of all the below (except for tbd) is required. So, this else statement almost useless.
+
+            permissionsEntity.setId(permissionsEntityDto.getId());
+            permissionsEntity.setCreated(permissionsEntityDto.getCreated());
             permissionsEntity.setUserName(permissionsEntityDto.getUserName());
             permissionsEntity.setAuditee(permissionsEntityDto.getAuditee());
             permissionsEntity.setProfilePageGroup(permissionsEntityDto.getProfilePageGroup());
-            permissionsEntity.setQuestionSetVersion(permissionsEntityDto.getQuestionSetVersion());
             permissionsEntity.setTbd(permissionsEntityDto.getTbd());
+            permissionsEntity.setQuestionSetVersionEntity(permissionsEntityDto.getQuestionSetVersionEntity());
             permissionsRepositoryDAO.save(permissionsEntity);
+
             return permissionsEntityDtoTransformer.generate(permissionsEntity);
         }
     }
-
-    // PATCH (not currently used, updates InNetwork Permission)
-    //public PermissionsEntityDto patchPermissionsEntity(final PermissionsEntityDto permissionsEntityDto) {
-    //    PermissionsEntity permissionsEntity = permissionsRepositoryDAO.findOneByUserNameAndAuditeeAndQuestionSetVersion(permissionsEntityDto.getUserName(),
-    //            permissionsEntityDto.getAuditee(), permissionsEntityDto.getQuestionSetVersion());
-    //    permissionsEntity.setProfilePageGroup(permissionsEntityDto.getProfilePageGroup());
-    //    permissionsRepositoryDAO.save(permissionsEntity);
-    //    return permissionsEntityDtoTransformer.generate(permissionsEntity);
-    //}
 }

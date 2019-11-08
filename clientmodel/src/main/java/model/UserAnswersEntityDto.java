@@ -2,6 +2,8 @@ package model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import db.entity.QuestionSetVersionEntity;
+import db.entity.QuestionsEntity;
 
 //import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -10,8 +12,8 @@ import java.util.Date;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserAnswersEntityDto implements Serializable {
 
-    @JsonProperty("gid")
-    private Long gid;
+    @JsonProperty("id")
+    private Long id;
 
     @JsonProperty("created")
     private Date created;
@@ -19,17 +21,11 @@ public class UserAnswersEntityDto implements Serializable {
     @JsonProperty("userName")
     private String userName;
 
-    @JsonProperty("questionId")
-    private Long questionId;
-
     @JsonProperty("answer")
     private String answer;
 
     @JsonProperty("answerPoints")
     private Long answerPoints;
-
-    @JsonProperty("questionSetVersion")
-    private Long questionSetVersion;
 
     @JsonProperty("auditee")
     private String auditee;
@@ -37,44 +33,54 @@ public class UserAnswersEntityDto implements Serializable {
     @JsonProperty("comments")
     private String comments;
 
+    @JsonProperty("questionsEntity")
+    private QuestionsEntity questionsEntity;
+
+    @JsonProperty("questionSetVersionEntity")
+    private QuestionSetVersionEntity questionSetVersionEntity;
+
     public UserAnswersEntityDto() {
     }
 
-    public Long getGid() {
-        return gid;
+    public Long getId() {
+        return id;
     }
 
-    public void setGid(final Long gid) {
-        this.gid = gid;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Date getCreated() {
         return created;
     }
 
-    public void setCreated(final Date created) {
+    public void setCreated(Date created) {
         this.created = created;
     }
 
-    public String getUserName() { return userName; }
+    public String getUserName() {
+        return userName;
+    }
 
-    public void setUserName(final String userName) { this.userName = userName; }
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
 
-    public Long getQuestionId() { return questionId; }
+    public String getAnswer() {
+        return answer;
+    }
 
-    public void setQuestionId(final Long questionId) { this.questionId = questionId; }
+    public void setAnswer(String answer) {
+        this.answer = answer;
+    }
 
-    public String getAnswer() { return answer; }
+    public Long getAnswerPoints() {
+        return answerPoints;
+    }
 
-    public void setAnswer(final String answer) { this.answer = answer; }
-
-    public Long getAnswerPoints() { return answerPoints; }
-
-    public void setAnswerPoints(final Long answerPoints) { this.answerPoints = answerPoints; }
-
-    public Long getQuestionSetVersion() { return questionSetVersion; }
-
-    public void setQuestionSetVersion(final Long questionSetVersion) { this.questionSetVersion = questionSetVersion; }
+    public void setAnswerPoints(Long answerPoints) {
+        this.answerPoints = answerPoints;
+    }
 
     public String getAuditee() {
         return auditee;
@@ -90,5 +96,21 @@ public class UserAnswersEntityDto implements Serializable {
 
     public void setComments(String comments) {
         this.comments = comments;
+    }
+
+    public QuestionsEntity getQuestionsEntity() {
+        return questionsEntity;
+    }
+
+    public void setQuestionsEntity(QuestionsEntity questionsEntity) {
+        this.questionsEntity = questionsEntity;
+    }
+
+    public QuestionSetVersionEntity getQuestionSetVersionEntity() {
+        return questionSetVersionEntity;
+    }
+
+    public void setQuestionSetVersionEntity(QuestionSetVersionEntity questionSetVersionEntity) {
+        this.questionSetVersionEntity = questionSetVersionEntity;
     }
 }

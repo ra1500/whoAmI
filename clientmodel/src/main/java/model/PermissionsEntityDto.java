@@ -12,11 +12,11 @@ import java.util.Set;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PermissionsEntityDto implements Serializable {
 
-    //@JsonProperty("gid")
-    //private Long gid;
+    @JsonProperty("id")
+    private Long id;
 
-    //@JsonProperty("created")
-    //private Date created;
+    @JsonProperty("created")
+    private Date created;
 
     @JsonProperty("userName")
     private String userName;
@@ -27,28 +27,33 @@ public class PermissionsEntityDto implements Serializable {
     @JsonProperty("profilePageGroup")
     private String profilePageGroup;
 
-    @JsonProperty("questionSetVersion")
-    private Long questionSetVersion;
-
     @JsonProperty("tbd")
     private String tbd;
 
-    @JsonProperty("qSets")
-    private Set<QuestionSetVersionEntity> questionSetVersionEntitySet;
+    @JsonProperty("questionSetVersionEntity")
+    private QuestionSetVersionEntity questionSetVersionEntity;
 
     public PermissionsEntityDto() {
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Date getCreated() {
+        return created;
+    }
+
+    public void setCreated(Date created) {
+        this.created = created;
+    }
+
     public String getUserName() {
         return userName;
-    }
-
-    public Set<QuestionSetVersionEntity> getQuestionSetVersionEntitySet() {
-        return questionSetVersionEntitySet;
-    }
-
-    public void setQuestionSetVersionEntitySet(Set<QuestionSetVersionEntity> questionSetVersionEntitySet) {
-        this.questionSetVersionEntitySet = questionSetVersionEntitySet;
     }
 
     public void setUserName(String userName) {
@@ -71,19 +76,19 @@ public class PermissionsEntityDto implements Serializable {
         this.profilePageGroup = profilePageGroup;
     }
 
-    public Long getQuestionSetVersion() {
-        return questionSetVersion;
-    }
-
-    public void setQuestionSetVersion(Long questionSetVersion) {
-        this.questionSetVersion = questionSetVersion;
-    }
-
     public String getTbd() {
         return tbd;
     }
 
     public void setTbd(String tbd) {
         this.tbd = tbd;
+    }
+
+    public QuestionSetVersionEntity getQuestionSetVersionEntity() {
+        return questionSetVersionEntity;
+    }
+
+    public void setQuestionSetVersionEntity(QuestionSetVersionEntity questionSetVersionEntity) {
+        this.questionSetVersionEntity = questionSetVersionEntity;
     }
 }

@@ -39,8 +39,10 @@ public class QuestionsMaxQtyController extends AbstractRestController {
         final String[] values = credentials.split(":", 2);
         String user = values[0];
 
-        Long maxQtyQuestions = questionsRepositoryDAO.findMaxQtyQuestions(questionSetVersion);
-        Long maxPoints = questionsRepositoryDAO.PointsForQuestionSetVersion(questionSetVersion);
+        //Long maxQtyQuestions = questionsRepositoryDAO.findMaxQtyQuestions(questionSetVersion);
+        //Long maxPoints = questionsRepositoryDAO.PointsForQuestionSetVersion(questionSetVersion);
+        Long maxQtyQuestions = new Long(1);
+        Long maxPoints =new Long(1);
 
         if (maxQtyQuestions == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT); }

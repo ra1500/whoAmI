@@ -12,86 +12,44 @@ import java.util.Set;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class QuestionSetVersionEntityDto implements Serializable {
 
-    @JsonProperty("gid")
-    private Long gid;
+    @JsonProperty("id")
+    private Long id;
 
-    //@JsonProperty("created")
-    //private Date created;
-
-    @JsonProperty("questionSetVersion")
-    private Long questionSetVersion;
-
-    //@JsonProperty("questionsList") // to be used later. keep light now.
-    //private Set<QuestionsEntity> questionsSet;
-
-    @JsonProperty("version")
-    private String version;
+    @JsonProperty("created")
+    private Date created;
 
     @JsonProperty("title")
     private String title;
 
+    @JsonProperty("category")
+    private String category;
+
     @JsonProperty("description")
     private String description;
 
-    @JsonProperty("category")
-    private String category;
+    @JsonProperty("version")
+    private String version;
 
     @JsonProperty("creativeSource")
     private String creativeSource;
 
-    //@JsonProperty("pSets")  // to be used later. keep light now.
-    //private Set<PermissionsEntityDto> permissionsEntityDtoSet;
-
     public QuestionSetVersionEntityDto() {
     }
 
-    public Long getGid() {
-        return gid;
+    public Long getId() {
+        return id;
     }
 
-    public void setGid(final Long gid) {
-        this.gid = gid;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    //public Date getCreated() {
-    //    return created;
-    //}
-
-    //public void setCreated(final Date created) {
-    //    this.created = created;
-    //}
-
-
-    //public Set<PermissionsEntityDto> getPermissionsEntityDtoSet() {
-    //    return permissionsEntityDtoSet;
-    //}
-
-    //public void setPermissionsEntityDtoSet(Set<PermissionsEntityDto> permissionsEntityDtoSet) {
-    //    this.permissionsEntityDtoSet = permissionsEntityDtoSet;
-    //}
-
-    public Long getQuestionSetVersion() {
-        return questionSetVersion;
+    public Date getCreated() {
+        return created;
     }
 
-    public void setQuestionSetVersion(Long questionSetVersion) {
-        this.questionSetVersion = questionSetVersion;
-    }
-
-    //public Set<QuestionsEntity> getQuestionsSet() {
-    //    return questionsSet;
-    //}
-
-    //public void setQuestionsSet(Set<QuestionsEntity> questionsSet) {
-    //    this.questionsSet = questionsSet;
-    //}
-
-    public String getVersion() {
-        return version;
-    }
-
-    public void setVersion(String version) {
-        this.version = version;
+    public void setCreated(Date created) {
+        this.created = created;
     }
 
     public String getTitle() {
@@ -102,6 +60,14 @@ public class QuestionSetVersionEntityDto implements Serializable {
         this.title = title;
     }
 
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
     public String getDescription() {
         return description;
     }
@@ -110,12 +76,12 @@ public class QuestionSetVersionEntityDto implements Serializable {
         this.description = description;
     }
 
-    public String getCategory() {
-        return category;
+    public String getVersion() {
+        return version;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
+    public void setVersion(String version) {
+        this.version = version;
     }
 
     public String getCreativeSource() {

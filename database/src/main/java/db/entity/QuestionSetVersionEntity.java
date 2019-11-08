@@ -8,43 +8,29 @@ import java.util.*;
 
 @Entity
 @Table
-public class QuestionSetVersionEntity implements Serializable{
+public class QuestionSetVersionEntity implements Serializable {
 
-    @Id  //JPA indicating primary key
-    @Column(name = "gid")
+    @Id
+    @Column
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long gid;
+    private Long id;
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column
     private Date created;
 
-    @JsonIgnore
-    @ManyToMany(mappedBy = "questionSetVersionEntities", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private Set<PermissionsEntity> permissionsEntities = new HashSet<>();
-
-    @Column(name = "questionSetVersion")
-    private Long questionSetVersion;
-
-    @JsonIgnore
-    @OneToMany(mappedBy = "questionSetVersionEntity",
-            fetch = FetchType.EAGER ,
-            cascade = CascadeType.ALL,
-            orphanRemoval = true)
-    private Set<QuestionsEntity> questionsSet = new HashSet<>();
-
-    @Column (length = 20)
-    private String version;
-
     @Column (length = 20)
     private String title;
+
+    @Column (length = 40)
+    private String category;
 
     @Column (length = 200)
     private String description;
 
-    @Column (length = 40)
-    private String category;
+    @Column (length = 20)
+    private String version;
 
     @Column (length = 40)
     private String creativeSource;
@@ -53,65 +39,33 @@ public class QuestionSetVersionEntity implements Serializable{
         super();
     }
 
-    public QuestionSetVersionEntity (Long questionSetVersion) {
-        super();
-        this.questionSetVersion = questionSetVersion;
-    }
-
-    public QuestionSetVersionEntity(String title, Long questionSetVersion) {
-        this.questionSetVersion = questionSetVersion;
+    public QuestionSetVersionEntity(String title, String category, String description, String version, String creativeSource) {
         this.title = title;
-    }
-
-    public QuestionSetVersionEntity( Set<QuestionsEntity> questionsSet, String title, Long questionSetVersion) {
-        this.questionSetVersion = questionSetVersion;
-        this.questionsSet = questionsSet;
-        this.title = title;
-    }
-
-    public QuestionSetVersionEntity(Long questionSetVersion, String version, String title, String description, String category, String creativeSource) {
-        this.questionSetVersion = questionSetVersion;
-        this.version = version;
-        this.title = title;
-        this.description = description;
         this.category = category;
+        this.description = description;
+        this.version = version;
         this.creativeSource = creativeSource;
     }
 
-    public Set<PermissionsEntity> getPermissionsEntities() {
-        return permissionsEntities;
+    // constructor used in UserAnswersEntity Test.
+    public QuestionSetVersionEntity(String title) {
+        this.title = title;
     }
 
-    public void setPermissionsEntities(Set<PermissionsEntity> permissionsEntities) {
-        this.permissionsEntities = permissionsEntities;
+    public Long getId() {
+        return id;
     }
 
-    public Long getGid() { return gid; }
-
-    public Date getCreated() { return created; }
-
-    public Long getQuestionSetVersion() {
-        return questionSetVersion;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public void setQuestionSetVersion(Long questionSetVersion) {
-        this.questionSetVersion = questionSetVersion;
+    public Date getCreated() {
+        return created;
     }
 
-    public Set<QuestionsEntity> getQuestionsSet() {
-        return questionsSet;
-    }
-
-    public void setQuestionsSet(Set<QuestionsEntity> questionsSet) {
-        this.questionsSet = questionsSet;
-    }
-
-    public String getVersion() {
-        return version;
-    }
-
-    public void setVersion(String version) {
-        this.version = version;
+    public void setCreated(Date created) {
+        this.created = created;
     }
 
     public String getTitle() {
@@ -122,6 +76,14 @@ public class QuestionSetVersionEntity implements Serializable{
         this.title = title;
     }
 
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
     public String getDescription() {
         return description;
     }
@@ -130,12 +92,12 @@ public class QuestionSetVersionEntity implements Serializable{
         this.description = description;
     }
 
-    public String getCategory() {
-        return category;
+    public String getVersion() {
+        return version;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
+    public void setVersion(String version) {
+        this.version = version;
     }
 
     public String getCreativeSource() {
@@ -148,7 +110,7 @@ public class QuestionSetVersionEntity implements Serializable{
 
     @Override
     public String toString() {
-        return String.format("QuestionSetVersion Profile", gid, created, questionSetVersion, version, category, description, questionsSet, creativeSource);
+        return String.format("QuestionSetVersion Profile", id, created, title, category, description, version, creativeSource);
     }
 
 }

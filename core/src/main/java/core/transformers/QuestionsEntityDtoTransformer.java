@@ -12,16 +12,14 @@ public class QuestionsEntityDtoTransformer {
 
     // GET from db
     public QuestionsEntityDto generate(final QuestionsEntity questionsEntity) {
-        if (questionsEntity == null || questionsEntity.getGid() == null) {
+        if (questionsEntity == null || questionsEntity.getId() == null) {
             return null;
         }
-
         QuestionsEntityDto dto = new QuestionsEntityDto();
-        dto.setGid(questionsEntity.getGid());
+        dto.setId(questionsEntity.getId());
         dto.setCreated(questionsEntity.getCreated());
-
-        //dto.set   questionSetVersionNumber
         dto.setSequenceNumber(questionsEntity.getSequenceNumber());
+        dto.setCreativeSource(questionsEntity.getCreativeSource());
         dto.setQuestion(questionsEntity.getQuestion());
         dto.setCategory(questionsEntity.getCategory());
         dto.setMaxPoints(questionsEntity.getMaxPoints());
@@ -37,13 +35,12 @@ public class QuestionsEntityDtoTransformer {
         dto.setAnswer5Points(questionsEntity.getAnswer5Points());
         dto.setAnswer6(questionsEntity.getAnswer6());
         dto.setAnswer6Points(questionsEntity.getAnswer6Points());
-
         return dto;
     }
 
     // POST
     public QuestionsEntity generate(final QuestionsEntityDto dto) {
-        return new QuestionsEntity(dto.getQuestionSetVersionEntity(),dto.getCreativeSource(),dto.getSequenceNumber(),dto.getQuestion(),dto.getCategory(),dto.getMaxPoints(),dto.getAnswer1(),
+        return new QuestionsEntity(dto.getSequenceNumber(), dto.getCreativeSource(),dto.getQuestion(),dto.getCategory(),dto.getMaxPoints(),dto.getAnswer1(),
         dto.getAnswer1Points(),dto.getAnswer2(),dto.getAnswer2Points(),dto.getAnswer3(),dto.getAnswer3Points(),
         dto.getAnswer4(),dto.getAnswer4Points(),dto.getAnswer5(),dto.getAnswer5Points(),dto.getAnswer6(),
         dto.getAnswer6Points());

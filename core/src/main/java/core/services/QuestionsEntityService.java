@@ -10,6 +10,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class QuestionsEntityService {
 
@@ -28,41 +30,50 @@ public class QuestionsEntityService {
     }
 
     // GET a question
-    public QuestionsEntityDto getQuestionsEntity(final QuestionSetVersionEntity questionSetVersionEntity, Long sequenceNumber) {
-        return questionsEntityDtoTransformer.generate(questionsEntityRepository.findOneByQuestionSetVersionEntityAndSequenceNumber(questionSetVersionEntity, sequenceNumber));
+    public QuestionsEntityDto getQuestionsEntity(final Long questionSetVersionEntityId, Long sequenceNumber) {
+        return questionsEntityDtoTransformer.generate(questionsEntityRepository.findOneBySequenceNumberAndQuestionSetVersionEntityId(questionSetVersionEntityId, sequenceNumber));
     }
 
-    // POST
-    public QuestionsEntityDto createQuestionsEntity(final QuestionsEntityDto questionsEntityDto) {
-        // get questionSetVersionEntity related to this question.
-        QuestionSetVersionEntity foundQuestionSetVersionEntity = questionSetVersionRepositoryDAO.findOneByQuestionSetVersion(questionsEntityDto.getQuestionSetVersion());
+    // POST/PATCH
+    public QuestionsEntityDto createQuestionsEntity(final QuestionsEntityDto questionsEntityDto, final Long questionSetVersionEntityId) {
 
-        // check if this question already exists in db
-        QuestionsEntity questionsEntity = questionsEntityRepository.findOneByQuestionSetVersionEntityAndSequenceNumber(foundQuestionSetVersionEntity,questionsEntityDto.getSequenceNumber());
+        // get questionsEntityDto from db, if it exists.
+        QuestionsEntity foundQuestionsEntity = questionsEntityRepository.findOneBySequenceNumberAndQuestionSetVersionEntityId(questionsEntityDto.getSequenceNumber(), questionSetVersionEntityId);
 
-        if (questionsEntity == null) {
-            // add the found QsetVersion to the questionEntity, then save
-            questionsEntityDto.setQuestionSetVersionEntity(foundQuestionSetVersionEntity);
-            QuestionsEntity newQuestionsEntity = questionsEntityRepository.saveAndFlush(questionsEntityDtoTransformer.generate(questionsEntityDto));
+        if (foundQuestionsEntity == null) {
+
+            // create a 'raw' questionsEntity based on the incoming questionsEntityDto (before adding parent)
+            QuestionsEntity newQuestionsEntity = questionsEntityDtoTransformer.generate(questionsEntityDto);
+
+            // add the parent questionSetVersionEntity
+            QuestionSetVersionEntity foundQuestionSetVersionEntity = questionSetVersionRepositoryDAO.findOneById(questionSetVersionEntityId);
+            newQuestionsEntity.setQuestionSetVersionEntity(foundQuestionSetVersionEntity);
+
+            // save the completed questionsEntity
+            questionsEntityRepository.saveAndFlush(newQuestionsEntity);
             return questionsEntityDtoTransformer.generate(newQuestionsEntity);
         }
+
         else {
-            questionsEntity.setQuestion(questionsEntityDto.getQuestion());
-            questionsEntity.setMaxPoints(questionsEntityDto.getMaxPoints());
-            questionsEntity.setCreativeSource(questionsEntityDto.getCreativeSource());
-            questionsEntity.setAnswer1(questionsEntityDto.getAnswer1());
-            questionsEntity.setAnswer1Points(questionsEntityDto.getAnswer1Points());
-            questionsEntity.setAnswer2(questionsEntityDto.getAnswer2());
-            questionsEntity.setAnswer2Points(questionsEntityDto.getAnswer2Points());
-            questionsEntity.setAnswer3(questionsEntityDto.getAnswer3());
-            questionsEntity.setAnswer3Points(questionsEntityDto.getAnswer3Points());
-            questionsEntity.setAnswer4(questionsEntityDto.getAnswer4());
-            questionsEntity.setAnswer4Points(questionsEntityDto.getAnswer4Points());
-            questionsEntity.setAnswer5(questionsEntityDto.getAnswer5());
-            questionsEntity.setAnswer5Points(questionsEntityDto.getAnswer5Points());
-            questionsEntity.setAnswer6(questionsEntityDto.getAnswer6());
-            questionsEntity.setAnswer6Points(questionsEntityDto.getAnswer6Points());
-            return questionsEntityDtoTransformer.generate(questionsEntity);
+            // this else statement is an update/patch. no need to update parent since client already 'knows' who they are. and they are already set.
+            foundQuestionsEntity.setSequenceNumber(questionsEntityDto.getSequenceNumber());
+            foundQuestionsEntity.setCreativeSource(questionsEntityDto.getCreativeSource());
+            foundQuestionsEntity.setQuestion(questionsEntityDto.getQuestion());
+            foundQuestionsEntity.setCategory(questionsEntityDto.getCategory());
+            foundQuestionsEntity.setMaxPoints(questionsEntityDto.getMaxPoints());
+            foundQuestionsEntity.setAnswer1(questionsEntityDto.getAnswer1());
+            foundQuestionsEntity.setAnswer1Points(questionsEntityDto.getAnswer1Points());
+            foundQuestionsEntity.setAnswer2(questionsEntityDto.getAnswer2());
+            foundQuestionsEntity.setAnswer2Points(questionsEntityDto.getAnswer2Points());
+            foundQuestionsEntity.setAnswer3(questionsEntityDto.getAnswer3());
+            foundQuestionsEntity.setAnswer3Points(questionsEntityDto.getAnswer3Points());
+            foundQuestionsEntity.setAnswer4(questionsEntityDto.getAnswer4());
+            foundQuestionsEntity.setAnswer4Points(questionsEntityDto.getAnswer4Points());
+            foundQuestionsEntity.setAnswer5(questionsEntityDto.getAnswer5());
+            foundQuestionsEntity.setAnswer5Points(questionsEntityDto.getAnswer5Points());
+            foundQuestionsEntity.setAnswer6(questionsEntityDto.getAnswer6());
+            foundQuestionsEntity.setAnswer6Points(questionsEntityDto.getAnswer6Points());
+            return questionsEntityDtoTransformer.generate(foundQuestionsEntity);
         }
     }
 }

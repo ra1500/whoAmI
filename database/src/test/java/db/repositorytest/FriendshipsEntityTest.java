@@ -44,12 +44,12 @@ public class FriendshipsEntityTest {
         //Create - Save to db
         FriendshipsEntity friendshipsEntity = new FriendshipsEntity(userEntity,inviter,friend,connectionStatus,connectionType,visibilityPermission );
         FriendshipsEntity savedFriendshipsEntity = friendshipsRepositoryDAO.saveAndFlush(friendshipsEntity);
-        System.out.println(savedFriendshipsEntity.getGid());
-        assertEquals(new Long(1), savedFriendshipsEntity.getGid());
+        System.out.println(savedFriendshipsEntity.getId());
+        assertEquals(new Long(1), savedFriendshipsEntity.getId());
         assertEquals(inviter, savedFriendshipsEntity.getInviter());
 
         //Read
-        FriendshipsEntity foundFriendshipsEntity = friendshipsRepositoryDAO.findOneByGid(new Long(1));
+        FriendshipsEntity foundFriendshipsEntity = friendshipsRepositoryDAO.findOneById(new Long(1));
         assertEquals(friendshipsEntity.getFriend(),foundFriendshipsEntity.getFriend() );
         assertEquals(friendshipsEntity.getConnectionStatus(),foundFriendshipsEntity.getConnectionStatus() );
         assertEquals(friendshipsEntity.getConnectionType(),foundFriendshipsEntity.getConnectionType() );

@@ -17,7 +17,6 @@ import java.util.Set;
 public class QuestionSetVersionEntityService {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
-
     private final QuestionSetVersionRepositoryDAO questionSetVersionEntityRepository;
     private final PermissionsRepositoryDAO permissionsRepositoryDAO;
     private final QuestionSetVersionEntityDtoTransformer questionSetVersionEntityDtoTransformer;
@@ -30,36 +29,38 @@ public class QuestionSetVersionEntityService {
         this.permissionsRepositoryDAO = permissionsRepositoryDAO;
     }
 
-    public QuestionSetVersionEntityDto getQuestionSetVersionEntity(final Long questionSetVersion) {
-        return questionSetVersionEntityDtoTransformer.generate(questionSetVersionEntityRepository.findOneByQuestionSetVersion(questionSetVersion));
+    // GET
+    public QuestionSetVersionEntityDto getQuestionSetVersionEntity(final Long questionSetVersionEntityId) {
+        return questionSetVersionEntityDtoTransformer.generate(questionSetVersionEntityRepository.findOneById(questionSetVersionEntityId));
     }
 
     // POST/PATCH
-    public QuestionSetVersionEntityDto createQuestionSetVersionEntity(final QuestionSetVersionEntityDto questionSetVersionEntityDto) {
-        QuestionSetVersionEntity questionSetVersionEntity = questionSetVersionEntityRepository.findOneByQuestionSetVersion(questionSetVersionEntityDto.getQuestionSetVersion());
+    public QuestionSetVersionEntityDto createQuestionSetVersionEntity(final QuestionSetVersionEntityDto questionSetVersionEntityDto,
+                final Long questionSetVersionEntityId, final String userName) {
+
+        // get questionSetVersionEntity from db, if it exists.
+        QuestionSetVersionEntity questionSetVersionEntity = questionSetVersionEntityRepository.findOneById(questionSetVersionEntityId);
 
         if (questionSetVersionEntity == null) {
+
+            // create and save new questionSetVersionEntity
             QuestionSetVersionEntity newQuestionSetVersionEntity = questionSetVersionEntityRepository.saveAndFlush(questionSetVersionEntityDtoTransformer.generate(questionSetVersionEntityDto));
 
-            // set questionSetVersion equal to the generated ID // TODO maybe don't need to set since would be equal to gid.... So use gid instead for joins and GETs etc.
-            newQuestionSetVersionEntity.setQuestionSetVersion(newQuestionSetVersionEntity.getGid());
-            questionSetVersionEntityRepository.save(newQuestionSetVersionEntity);
-
-            // Add/create the new respective permission
-            Set<QuestionSetVersionEntity> newQuestionSetVersionEntities = new HashSet<>();
-            newQuestionSetVersionEntities.add(newQuestionSetVersionEntity);
-            PermissionsEntity newPermissionsEntity = new PermissionsEntity(newQuestionSetVersionEntities, questionSetVersionEntityDto.getCreativeSource(),
-                    questionSetVersionEntityDto.getCreativeSource(), new String("Private"), newQuestionSetVersionEntity.getGid(), new String("tbd") );
+            // create and save a new initial child permission. (ManyToOne. a permission only has one qset parent. a qset can have many permissions associated with it)
+            PermissionsEntity newPermissionsEntity = new PermissionsEntity(userName, userName, new String("Public"), new String("tbd"));
+            newPermissionsEntity.setQuestionSetVersionEntity(newQuestionSetVersionEntity);
             permissionsRepositoryDAO.saveAndFlush(newPermissionsEntity);
 
-            return questionSetVersionEntityDtoTransformer.generate(questionSetVersionEntity);
+            return questionSetVersionEntityDtoTransformer.generate(newQuestionSetVersionEntity);
         }
         else {
+            questionSetVersionEntity.setId(questionSetVersionEntityDto.getId());
+            questionSetVersionEntity.setCreated(questionSetVersionEntityDto.getCreated());
             questionSetVersionEntity.setTitle(questionSetVersionEntityDto.getTitle());
             questionSetVersionEntity.setCategory(questionSetVersionEntityDto.getCategory());
             questionSetVersionEntity.setDescription(questionSetVersionEntityDto.getDescription());
-            // no need to update questionSetVersion since this is an update and should be the same.
-            // no need to update 'version' at this time per front-end.
+            questionSetVersionEntity.setVersion(questionSetVersionEntityDto.getVersion());
+            questionSetVersionEntity.setCreativeSource(questionSetVersionEntityDto.getCreativeSource());
             questionSetVersionEntityRepository.save(questionSetVersionEntity);
             return questionSetVersionEntityDtoTransformer.generate(questionSetVersionEntity);
         }

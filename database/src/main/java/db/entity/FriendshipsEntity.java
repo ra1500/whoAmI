@@ -14,9 +14,9 @@ import java.util.Date;
 @Entity
 public class FriendshipsEntity implements Serializable {
 
-    @Id  //JPA indicating primary key
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long gid;
+    private Long id;
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
@@ -58,7 +58,7 @@ public class FriendshipsEntity implements Serializable {
     }
 
     public FriendshipsEntity(UserEntity userEntity, String inviter, String friend, String connectionStatus,
-                             Long gid) {
+                             Long id) {
         super();
         this.userEntity = userEntity;
         this.inviter = inviter;
@@ -68,9 +68,9 @@ public class FriendshipsEntity implements Serializable {
         this.visibilityPermission = visibilityPermission;
     }
 
-    public FriendshipsEntity(Long gid) {
+    public FriendshipsEntity(Long id) {
         super();
-        this.gid = gid;
+        this.id = id;
     }
 
     public FriendshipsEntity(UserEntity userEntity) {
@@ -78,7 +78,7 @@ public class FriendshipsEntity implements Serializable {
         this.userEntity = userEntity;
     }
 
-    public Long getGid() { return gid; }
+    public Long getId() { return id; }
 
     public Date getCreated() { return created; }
 
@@ -112,7 +112,7 @@ public class FriendshipsEntity implements Serializable {
 
     @Override
     public String toString() {
-        return String.format("friendships profile", gid, created, userEntity.getUserName(), inviter, friend, connectionStatus,
+        return String.format("friendships profile", id, created, userEntity.getUserName(), inviter, friend, connectionStatus,
                 connectionType, visibilityPermission);
     }
 

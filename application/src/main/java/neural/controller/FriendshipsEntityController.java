@@ -133,11 +133,11 @@ public class FriendshipsEntityController extends AbstractRestController {
             // userEntity service.
             UserEntity userEntity = userRepositoryDAO.findOneByUserName(friendshipsEntityDtoPOSTdouble.getUserName());
 
-            // need to get the GID for the 2nd entry update.
+            // need to get the Id for the 2nd entry update.
             FriendshipsEntityDto friendshipsEntityDto = friendshipsEntityService.getFriendshipsEntity(userEntity, friendshipsEntityDtoPOSTdouble.getFriend());
 
-            // dizzying setting of GID so that can update 2nd entry.
-            friendshipsEntityDtoPOSTdouble.setGid(friendshipsEntityDto.getGid());
+            // dizzying setting of Id so that can update 2nd entry.
+            friendshipsEntityDtoPOSTdouble.setId(friendshipsEntityDto.getId());
 
             FriendshipsEntityDto patchedFriendshipsEntityDtoPOSTdouble = friendshipsEntityService.patchFriendshipsEntity(friendshipsEntityDtoPOSTdouble);
             return ResponseEntity.ok(patchedFriendshipsEntityDtoPOST);
@@ -187,7 +187,7 @@ public class FriendshipsEntityController extends AbstractRestController {
         // setting/securing DTO userName as obtained from the Authorization token.
         friendshipsEntityDtoPOST.setUserName(user);
 
-        Integer deletedFriendshipsEntity = friendshipsEntityService.deleteFriendshipsEntity(friendshipsEntityDtoPOST.getGid());
+        Integer deletedFriendshipsEntity = friendshipsEntityService.deleteFriendshipsEntity(friendshipsEntityDtoPOST.getId());
 
         return ResponseEntity.ok(deletedFriendshipsEntity);
     }

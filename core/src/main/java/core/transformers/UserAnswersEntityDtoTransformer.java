@@ -12,26 +12,23 @@ public class UserAnswersEntityDtoTransformer {
 
     // GET
     public UserAnswersEntityDto generate(final UserAnswersEntity userAnswersEntity) {
-        if (userAnswersEntity == null || userAnswersEntity.getGid() == null) {
+        if (userAnswersEntity == null || userAnswersEntity.getId() == null) {
             return null;
         }
-
         UserAnswersEntityDto dto = new UserAnswersEntityDto();
-        dto.setGid(userAnswersEntity.getGid());
+        dto.setId(userAnswersEntity.getId());
         dto.setCreated(userAnswersEntity.getCreated());
         dto.setUserName(userAnswersEntity.getUserName());
-        dto.setQuestionId(userAnswersEntity.getQuestionId());
         dto.setAnswer(userAnswersEntity.getAnswer());
         dto.setAnswerPoints(userAnswersEntity.getAnswerPoints());
-        dto.setQuestionSetVersion(userAnswersEntity.getQuestionSetVersion());
         dto.setAuditee(userAnswersEntity.getAuditee());
         dto.setComments(userAnswersEntity.getComments());
-
         return dto;
     }
 
+    // POST
     public UserAnswersEntity generate(final UserAnswersEntityDto dto) {
-        return new UserAnswersEntity(dto.getUserName(),dto.getQuestionId(), dto.getAnswer(), dto.getAnswerPoints(),
-                dto.getQuestionSetVersion(), dto.getAuditee(), dto.getComments());
+        return new UserAnswersEntity(dto.getUserName(), dto.getAnswer(), dto.getAnswerPoints(),
+                 dto.getAuditee(), dto.getComments());
     }
 }

@@ -11,10 +11,10 @@ import java.util.Set;
 @Repository
 public interface FriendshipsRepositoryDAO extends JpaRepository<FriendshipsEntity, Long> {
 
-    FriendshipsEntity findOneByGid(Long gid);
+    FriendshipsEntity findOneById(Long id);
     FriendshipsEntity findOneByUserEntityAndFriend(UserEntity userEntity, String friend);
     Set<FriendshipsEntity> findAllByUserEntity(UserEntity userEntity);
 
     @Transactional
-    Integer deleteOneByGid(Long gid);
+    Integer deleteOneById(Long id);
 }

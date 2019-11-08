@@ -12,24 +12,15 @@ import java.util.Set;
 @Table
 public class PermissionsEntity implements Serializable {
 
-    @Id  //JPA indicating primary key
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "gid")
-    private Long gid;
+    @Column(name = "id")
+    private Long id;
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column
     private Date created;
-
-    //@JsonIgnore
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "psets_qsets",
-            joinColumns = { @JoinColumn(name = "pset", referencedColumnName="gid" )},
-            inverseJoinColumns = { @JoinColumn(name = "qset", referencedColumnName="gid") }
-    )
-    Set<QuestionSetVersionEntity> questionSetVersionEntities = new HashSet<>();
 
     @Column(name = "userName")
     private String userName;
@@ -40,63 +31,39 @@ public class PermissionsEntity implements Serializable {
     @Column
     private String profilePageGroup;
 
-    @Column(name = "questionSetVersion")
-    private Long questionSetVersion;
-
     @Column  // not used currently. available for future use.
     private String tbd;
+
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "questionSetVersionEntityId")
+    private QuestionSetVersionEntity questionSetVersionEntity;
 
     public PermissionsEntity() {
         super();
     }
 
-    public PermissionsEntity(String userName) {
-        this.userName = userName;
-    }
-
-    public PermissionsEntity(Set<QuestionSetVersionEntity> questionSetVersionEntities, String userName, String auditee, String profilePageGroup, Long questionSetVersion, String tbd) {
-        this.questionSetVersionEntities = questionSetVersionEntities;
+    public PermissionsEntity(String userName, String auditee, String profilePageGroup, String tbd, QuestionSetVersionEntity questionSetVersionEntity) {
         this.userName = userName;
         this.auditee = auditee;
         this.profilePageGroup = profilePageGroup;
-        this.questionSetVersion = questionSetVersion;
+        this.tbd = tbd;
+        this.questionSetVersionEntity = questionSetVersionEntity;
+    }
+
+    // constructor used in QuestionSetVersionEntityService.
+    public PermissionsEntity(String userName, String auditee, String profilePageGroup, String tbd) {
+        this.userName = userName;
+        this.auditee = auditee;
+        this.profilePageGroup = profilePageGroup;
         this.tbd = tbd;
     }
 
-    public PermissionsEntity(String userName,String auditee, String profilePageGroup, Long questionSetVersion) {
-        this.userName = userName;
-        this.auditee = auditee;
-        this.profilePageGroup = profilePageGroup;
-        this.questionSetVersion = questionSetVersion;
+    public Long getId() {
+        return id;
     }
 
-    public PermissionsEntity(String auditee, String profilePageGroup, Long questionSetVersion, String tbd) {
-        this.auditee = auditee;
-        this.profilePageGroup = profilePageGroup;
-        this.questionSetVersion = questionSetVersion;
-        this.tbd = tbd;
-    }
-
-    public PermissionsEntity(String userName, String auditee, Long questionSetVersion) {
-        this.userName = userName;
-        this.auditee = auditee;
-        this.questionSetVersion = questionSetVersion;
-    }
-
-    public Set<QuestionSetVersionEntity> getQuestionSetVersionEntities() {
-        return questionSetVersionEntities;
-    }
-
-    public void setQuestionSetVersionEntities(Set<QuestionSetVersionEntity> questionSetVersionEntities) {
-        this.questionSetVersionEntities = questionSetVersionEntities;
-    }
-
-    public Long getGid() {
-        return gid;
-    }
-
-    public void setGid(Long gid) {
-        this.gid = gid;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Date getCreated() {
@@ -131,14 +98,6 @@ public class PermissionsEntity implements Serializable {
         this.profilePageGroup = profilePageGroup;
     }
 
-    public Long getQuestionSetVersion() {
-        return questionSetVersion;
-    }
-
-    public void setQuestionSetVersion(Long questionSetVersion) {
-        this.questionSetVersion = questionSetVersion;
-    }
-
     public String getTbd() {
         return tbd;
     }
@@ -147,10 +106,17 @@ public class PermissionsEntity implements Serializable {
         this.tbd = tbd;
     }
 
+    public QuestionSetVersionEntity getQuestionSetVersionEntity() {
+        return questionSetVersionEntity;
+    }
+
+    public void setQuestionSetVersionEntity(QuestionSetVersionEntity questionSetVersionEntity) {
+        this.questionSetVersionEntity = questionSetVersionEntity;
+    }
+
     @Override
     public String toString() {
-        return String.format("Permissions profile", gid, created, userName, auditee, profilePageGroup,
-                questionSetVersion, tbd);
+        return String.format("Permissions profile", id, created, userName, auditee, profilePageGroup, tbd);
     }
 
 }

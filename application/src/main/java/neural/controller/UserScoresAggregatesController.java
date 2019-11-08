@@ -54,7 +54,9 @@ public class UserScoresAggregatesController extends AbstractRestController {
         final String[] values = credentials.split(":", 2);
         String user = values[0];
 
-        Long userScore = userAnswersRepositoryDAO.findUserScoresTotal(user, auditee, questionSetVersion);
+        // Long userScore = userAnswersRepositoryDAO.findUserScoresTotal(user, auditee, questionSetVersion);
+        Long userScore = new Long(1);
+
         if (userScore == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT); }
         else {
@@ -66,14 +68,16 @@ public class UserScoresAggregatesController extends AbstractRestController {
     @ApiOperation(value = "getUserScoresAggregates")
     @RequestMapping(value = "/scores", method = RequestMethod.GET)
     public ResponseEntity<String> getUserScore(
-            @RequestParam("gid") final String userName,
+            @RequestParam("id") final String userName,
             @RequestParam("sv") final Long questionSetVersion) {
 
         // Checking Permissions
         //UserEntity userEntity = findOneByUser
 
         String auditee = userName;
-        Long userScore = userAnswersRepositoryDAO.findUserScoresTotal(userName, auditee, questionSetVersion);
+        //Long userScore = userAnswersRepositoryDAO.findUserScoresTotal(userName, auditee, questionSetVersion);
+        Long userScore = new Long(1);
+
         if (userScore > 0) {
             String userScoreJSON = "{\"userScore\":" + userScore + "}";
             return ResponseEntity.ok(userScoreJSON);}
@@ -84,27 +88,26 @@ public class UserScoresAggregatesController extends AbstractRestController {
     }
 
     // GET privateProfile set of questionSets based on userName/auditor
-    @ApiOperation(value = "getPrivateProfileQsets")
-    @RequestMapping(value = "/pr", method = RequestMethod.GET)
-    public ResponseEntity<Set<PermissionsEntity>> getPrivateProfileQsets(
-            @RequestHeader("Authorization") String token) {
+//    @ApiOperation(value = "getPrivateProfileQsets")
+//    @RequestMapping(value = "/pr", method = RequestMethod.GET)
+//    public ResponseEntity<Set<QuestionsEntity>> getPrivateProfileQsets(
+//            @RequestHeader("Authorization") String token) {
 
         // secured by token
-        String base64Credentials = token.substring("Basic".length()).trim();
-        byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
-        String credentials = new String(credDecoded, StandardCharsets.UTF_8);
+//        String base64Credentials = token.substring("Basic".length()).trim();
+//        byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
+//        String credentials = new String(credDecoded, StandardCharsets.UTF_8);
         // credentials = username:password
-        final String[] values = credentials.split(":", 2);
-        String user = values[0];
+//        final String[] values = credentials.split(":", 2);
+//        String user = values[0];
 
-        Set<PermissionsEntity> permissionsEntity = permissionsRepositoryDAO.findAllByUserName(user); // works!
-        //Set<QuestionSetVersionEntity> questionSetVersionEntities = questionSetVersionRepositoryDAO.findAllByPermission();
-        //Set<QuestionsEntity> questionsSet = questionsRepositoryDAO.findSome();
+//        Set<QuestionsEntity> questionsSet = questionsRepositoryDAO.findSome();
+        //Set<UserAnswersEntity> userAnswersEntities = userAnswersRepositoryDAO.findSome();
 
-        if (permissionsEntity == null) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
+//        if (questionsSet == null) {
+//            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+//        }
 
-        return ResponseEntity.ok(permissionsEntity);
-    }
+//        return ResponseEntity.ok(questionsSet);
+//    }
 }

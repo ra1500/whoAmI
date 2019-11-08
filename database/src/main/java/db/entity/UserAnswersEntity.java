@@ -9,24 +9,17 @@ import java.util.Date;
 @Table
 public class UserAnswersEntity implements Serializable {
 
-    @Id  //JPA indicating primary key
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long gid;
+    private Long id;
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column
     private Date created;
 
-    @ManyToOne
-    @JoinColumn(name = "question_id")
-    private QuestionsEntity questionsEntity;
-
     @Column
     private String userName;
-
-    @Column
-    private Long questionId;
 
     @Column
     private String answer;
@@ -35,94 +28,91 @@ public class UserAnswersEntity implements Serializable {
     private Long answerPoints;
 
     @Column
-    private Long questionSetVersion;
-
-    @Column
     private String auditee;
 
     @Column
     private String comments;
 
+    @ManyToOne
+    @JoinColumn(name = "questionId")
+    private QuestionsEntity questionsEntity;
+
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "questionSetVersionEntityId")
+    private QuestionSetVersionEntity questionSetVersionEntity;
+
     public UserAnswersEntity() {
         super();
     }
 
-    public UserAnswersEntity(String userName, Long questionId, String answer, Long answerPoints, Long questionSetVersion,
-            String auditee, String comments) {
-        super();
+    public UserAnswersEntity(String userName, String answer, Long answerPoints, String auditee, String comments,
+                             QuestionsEntity questionsEntity, QuestionSetVersionEntity questionSetVersionEntity) {
         this.userName = userName;
-        this.questionId = questionId;
         this.answer = answer;
         this.answerPoints = answerPoints;
-        this.questionSetVersion = questionSetVersion;
+        this.auditee = auditee;
+        this.comments = comments;
+        this.questionsEntity = questionsEntity;
+        this.questionSetVersionEntity = questionSetVersionEntity;
+    }
+
+    // used in UserAnswersEntityService to create a new initial entity before adding parents.
+    public UserAnswersEntity(String userName, String answer, Long answerPoints, String auditee, String comments) {
+        this.userName = userName;
+        this.answer = answer;
+        this.answerPoints = answerPoints;
         this.auditee = auditee;
         this.comments = comments;
     }
 
-    public UserAnswersEntity(Long gid) {
-        super();
-        this.gid = gid;
-    }
-
-    public UserAnswersEntity(String userName, Long questionId) {
-        super();
+    // constructor used in UserAnswersEntity Test.
+    public UserAnswersEntity(String userName, Long answerPoints) {
         this.userName = userName;
-        this.questionId = questionId;
-    }
-
-    public UserAnswersEntity(String userName, String auditee, Long questionSetVersion, Long questionId) {
-        super();
-        this.userName = userName;
-        this.auditee = auditee;
-        this.userName = userName;
-        this.questionSetVersion = questionSetVersion;
-    }
-
-    public UserAnswersEntity(String userName, Long questionId, Long questionSetVersion, Long answerPoints, String answer) {
-        super();
-        this.userName = userName;
-        this.questionId = questionId;
-        this.questionSetVersion = questionSetVersion;
         this.answerPoints = answerPoints;
-        this.answer = answer;
     }
 
-    public Long getGid() { return gid; }
+    public Long getId() {
+        return id;
+    }
 
-    public Date getCreated() { return created; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public String getUserName() { return userName; }
+    public Date getCreated() {
+        return created;
+    }
 
-    public Long getQuestionId() { return questionId; }
+    public void setCreated(Date created) {
+        this.created = created;
+    }
 
-    public String getAnswer() { return answer; }
-
-    public Long getAnswerPoints() { return answerPoints; }
-
-    public Long getQuestionSetVersion() { return questionSetVersion; }
+    public String getUserName() {
+        return userName;
+    }
 
     public void setUserName(String userName) {
         this.userName = userName;
-    } // used for Crud update test
-
-    public String getAuditee() {
-        return auditee;
     }
 
-    public void setQuestionId(Long questionId) {
-        this.questionId = questionId;
+    public String getAnswer() {
+        return answer;
     }
 
     public void setAnswer(String answer) {
         this.answer = answer;
     }
 
+    public Long getAnswerPoints() {
+        return answerPoints;
+    }
+
     public void setAnswerPoints(Long answerPoints) {
         this.answerPoints = answerPoints;
     }
 
-    public void setQuestionSetVersion(Long questionSetVersion) {
-        this.questionSetVersion = questionSetVersion;
+    public String getAuditee() {
+        return auditee;
     }
 
     public void setAuditee(String auditee) {
@@ -137,9 +127,25 @@ public class UserAnswersEntity implements Serializable {
         this.comments = comments;
     }
 
+    public QuestionsEntity getQuestionsEntity() {
+        return questionsEntity;
+    }
+
+    public void setQuestionsEntity(QuestionsEntity questionsEntity) {
+        this.questionsEntity = questionsEntity;
+    }
+
+    public QuestionSetVersionEntity getQuestionSetVersionEntity() {
+        return questionSetVersionEntity;
+    }
+
+    public void setQuestionSetVersionEntity(QuestionSetVersionEntity questionSetVersionEntity) {
+        this.questionSetVersionEntity = questionSetVersionEntity;
+    }
+
     @Override
     public String toString() {
-        return String.format("UserAnswers profile", gid, created, userName, questionId, answer, answerPoints, questionSetVersion);
+        return String.format("UserAnswers profile", id, created, userName, answer, answerPoints, auditee, comments);
     }
 
 }

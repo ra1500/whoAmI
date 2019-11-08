@@ -31,15 +31,13 @@ public class QuestionsEntityController extends AbstractRestController {
         this.questionsEntityService = questionsEntityService;
         this.questionSetVersionRepositoryDAO = questionSetVersionRepositoryDAO; }
 
-    // GET a single question. any user with a token can access.
+    // GET a single question.
     @ApiOperation(value = "getQuestionsEntity")
     @RequestMapping(value = "/{qsid}/{qid}", method = RequestMethod.GET)
     public ResponseEntity<QuestionsEntityDto> getQuestionsEntity(
             @RequestHeader("Authorization") String token,
-
             @PathVariable("qsid")
-            final Long questionSetVersion,
-
+            final Long questionSetVersionEntityId,
             @PathVariable("qid")
             final Long sequenceNumber) {
 
@@ -51,10 +49,7 @@ public class QuestionsEntityController extends AbstractRestController {
         final String[] values = credentials.split(":", 2);
         String user = values[0];
 
-        // QuestionSetVersionEntity service.
-        QuestionSetVersionEntity questionSetVersionEntity = questionSetVersionRepositoryDAO.findOneByQuestionSetVersion(questionSetVersion);
-
-        QuestionsEntityDto questionsEntityDto = questionsEntityService.getQuestionsEntity(questionSetVersionEntity, sequenceNumber);
+        QuestionsEntityDto questionsEntityDto = questionsEntityService.getQuestionsEntity(questionSetVersionEntityId, sequenceNumber);
 
         if (questionsEntityDto == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -62,11 +57,13 @@ public class QuestionsEntityController extends AbstractRestController {
         return ResponseEntity.ok(questionsEntityDto);
     }
     // POST/PATCH  posts a new one, updates an existing one
-    @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/{qsid}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<QuestionsEntityDto> createQuestionsEntity(
             @Valid
             @RequestBody final QuestionsEntityDto questionsEntityDto,
-            @RequestHeader("Authorization") String token) {
+            @RequestHeader("Authorization") String token,
+            @PathVariable("qsid")
+            final Long questionSetVersionEntityId) {
 
         String base64Credentials = token.substring("Basic".length()).trim();
         byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
@@ -77,7 +74,7 @@ public class QuestionsEntityController extends AbstractRestController {
 
         questionsEntityDto.setCreativeSource(user);
 
-        QuestionsEntityDto savedQuestionsEntityDto = questionsEntityService.createQuestionsEntity(questionsEntityDto);
+        QuestionsEntityDto savedQuestionsEntityDto = questionsEntityService.createQuestionsEntity(questionsEntityDto, questionSetVersionEntityId);
         return ResponseEntity.ok(savedQuestionsEntityDto);
     }
     

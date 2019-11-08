@@ -28,8 +28,7 @@ public class QuestionSetVersionController extends AbstractRestController {
     @RequestMapping(value = "/{qsid}", method = RequestMethod.GET)
     public ResponseEntity<QuestionSetVersionEntityDto> getQuestionSetVersionEntity(
             @RequestHeader("Authorization") String token,
-
-            @PathVariable("qsid") //questionQuestionSetVersion
+            @PathVariable("qsid")
             final Long qsid) {
 
         // secured by token
@@ -50,11 +49,13 @@ public class QuestionSetVersionController extends AbstractRestController {
     }
 
     // POST/PATCH  posts a new one, updates an existing one
-    @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/{qsid}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<QuestionSetVersionEntityDto> createQuestionSetVersionEntity(
             @Valid
             @RequestBody final QuestionSetVersionEntityDto questionSetVersionEntityDto,
-            @RequestHeader("Authorization") String token) {
+            @RequestHeader("Authorization") String token,
+            @PathVariable("qsid")
+            final Long qsid) {
 
         String base64Credentials = token.substring("Basic".length()).trim();
         byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
@@ -66,7 +67,7 @@ public class QuestionSetVersionController extends AbstractRestController {
         // userName from token
         questionSetVersionEntityDto.setCreativeSource(user);
 
-        QuestionSetVersionEntityDto savedQuestionSetVersionEntityDto = questionSetVersionEntityService.createQuestionSetVersionEntity(questionSetVersionEntityDto);
+        QuestionSetVersionEntityDto savedQuestionSetVersionEntityDto = questionSetVersionEntityService.createQuestionSetVersionEntity(questionSetVersionEntityDto, qsid, user);
         return ResponseEntity.ok(savedQuestionSetVersionEntityDto);
     }
 

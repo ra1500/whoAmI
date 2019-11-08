@@ -11,19 +11,17 @@ import java.util.Set;
 @Repository
 public interface UserAnswersRepositoryDAO extends JpaRepository<UserAnswersEntity, Long> {
 
-    UserAnswersEntity findOneByUserNameAndAuditeeAndQuestionSetVersionAndQuestionId(String userName, String auditee, Long questionSetVersion, Long questionId);
+    UserAnswersEntity findOneById(Long id); // used in UserAnswersEntity Test
+    UserAnswersEntity findOneByUserNameAndAuditeeAndQuestionsEntityId(String userName, String auditee, Long questionsEntityId);
 
-    @Query("SELECT SUM(answerPoints) FROM UserAnswersEntity WHERE userName = :userName AND questionSetVersion = :questionSetVersion AND auditee = :auditee")
-    Long findUserScoresTotal(@Param("userName") String userName, @Param("auditee") String auditee, @Param("questionSetVersion") Long questionSetVersion);
+    //@Query("SELECT SUM(answerPoints) FROM UserAnswersEntity WHERE userName = :userName AND questionSetVersion = :questionSetVersion AND auditee = :auditee")
+    //Long findUserScoresTotal(@Param("userName") String userName, @Param("auditee") String auditee, @Param("questionSetVersion") Long questionSetVersion);
+
+    @Transactional
+    Integer deleteAllByUserNameAndAuditeeAndQuestionSetVersionEntityId(String userName, String auditee, Long questionSetVersionEntityId);
 
     // works
     //@Query("Select a FROM UserAnswersEntity a")
     //Set<UserAnswersEntity> findSome();
-
-    @Transactional
-    Integer deleteOneByUserNameAndAuditeeAndQuestionSetVersionAndQuestionId(String userName, String auditee,Long questionSetVersion,Long questionId);
-
-    @Transactional
-    Integer deleteAllByUserNameAndAuditeeAndQuestionSetVersion(String userName, String auditee, Long questionSetVersion);
 
 }

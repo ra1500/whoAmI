@@ -39,7 +39,7 @@ public class FriendshipsEntityServiceTest {
     public void shouldProvideClientDtoWithValidDbInquiryEntity(){
         friendshipsEntityService = new FriendshipsEntityService(mockedFriendshipsRepositoryDAO, mockedInquiryEntityDtoTransformer);
 
-        when(mockedFriendshipsRepositoryDAO.findOneByGid(anyLong())).thenReturn(friendshipsEntity);
+        when(mockedFriendshipsRepositoryDAO.findOneById(anyLong())).thenReturn(friendshipsEntity);
         when(mockedInquiryEntityDtoTransformer.generate(friendshipsEntity)).thenReturn(FRIENDSHIPS_ENTITY_DTO);
         when(mockedInquiryEntityDtoTransformer.generate(FRIENDSHIPS_ENTITY_DTO)).thenReturn(friendshipsEntity);
 
@@ -47,7 +47,7 @@ public class FriendshipsEntityServiceTest {
 
         FriendshipsEntityDto validClientDto = friendshipsEntityService.getFriendshipsEntity(userEntity);
         assertEquals (FRIENDSHIPS_ENTITY_DTO.getFriend(), validClientDto.getFriend());
-        verify(mockedFriendshipsRepositoryDAO).findOneByGid(1L);
+        verify(mockedFriendshipsRepositoryDAO).findOneById(1L);
         verify(mockedInquiryEntityDtoTransformer).generate(friendshipsEntity);
     }
 
