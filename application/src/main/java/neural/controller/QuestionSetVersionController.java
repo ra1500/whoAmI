@@ -1,6 +1,7 @@
 package neural.controller;
 
 import core.services.QuestionSetVersionEntityService;
+import db.repository.QuestionsRepositoryDAO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import model.QuestionSetVersionEntityDto;
@@ -19,9 +20,12 @@ import java.util.Base64;
 public class QuestionSetVersionController extends AbstractRestController {
 
     private QuestionSetVersionEntityService questionSetVersionEntityService;
+    private QuestionsRepositoryDAO questionsRepositoryDAO;
 
-    public QuestionSetVersionController(QuestionSetVersionEntityService questionSetVersionEntityService) {
-        this.questionSetVersionEntityService = questionSetVersionEntityService; }
+    public QuestionSetVersionController(QuestionSetVersionEntityService questionSetVersionEntityService,
+                                        QuestionsRepositoryDAO questionsRepositoryDAO) {
+        this.questionSetVersionEntityService = questionSetVersionEntityService;
+        this.questionsRepositoryDAO = questionsRepositoryDAO; }
 
     // GET questionSetVersion. DTO excludes Set<Questions> to reduce load.
     @ApiOperation(value = "getQuestionsEntity")
@@ -67,6 +71,31 @@ public class QuestionSetVersionController extends AbstractRestController {
 
         QuestionSetVersionEntityDto savedQuestionSetVersionEntityDto = questionSetVersionEntityService.createQuestionSetVersionEntity(questionSetVersionEntityDto, qsid, user);
         return ResponseEntity.ok(savedQuestionSetVersionEntityDto);
+    }
+
+    // GET maxPoints and maxQtyQuestions
+    @ApiOperation(value = "getMaxQtyQuestions")
+    @RequestMapping(value = "/q{sn}", method = RequestMethod.GET)
+    public ResponseEntity<String> getMaxQtyQuestions(
+            @RequestHeader("Authorization") String token,
+            @RequestParam("sn") final Long questionSetVersion) {
+
+        // secured by token
+        String base64Credentials = token.substring("Basic".length()).trim();
+        byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
+        String credentials = new String(credDecoded, StandardCharsets.UTF_8);
+        // credentials = username:password
+        final String[] values = credentials.split(":", 2);
+        String user = values[0];
+
+        Long maxQtyQuestions = questionsRepositoryDAO.findMaxQtyQuestions(questionSetVersion);
+        Long maxPoints = questionsRepositoryDAO.PointsForQuestionSetVersion(questionSetVersion);
+
+        if (maxQtyQuestions == null) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT); }
+        else {
+            String maxQtyQuestionsJSON = "{\"maxQtyQuestions\":" + maxQtyQuestions + ", \"maxPoints\":" + maxPoints + "}";
+            return ResponseEntity.ok(maxQtyQuestionsJSON);}
     }
 
 }

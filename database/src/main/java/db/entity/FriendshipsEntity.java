@@ -10,7 +10,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 @DynamicUpdate // needed for patch?
-@Table(uniqueConstraints= @UniqueConstraint(columnNames={"userName", "friend"}))
+@Table(uniqueConstraints= @UniqueConstraint(columnNames={"userEntityId", "friend"}))
 @Entity
 public class FriendshipsEntity implements Serializable {
 
@@ -22,10 +22,6 @@ public class FriendshipsEntity implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     @Column
     private Date created;
-
-    @ManyToOne
-    @JoinColumn(name = "userName") // TODO userName? change to user_id?
-    private UserEntity userEntity;
 
     @Column(length = 20)
     private String inviter; // the user who initiated the invitation to be a friend
@@ -42,14 +38,24 @@ public class FriendshipsEntity implements Serializable {
     @Column(length = 20)
     private String visibilityPermission;
 
+    @ManyToOne
+    @JoinColumn(name = "userEntityId")
+    private UserEntity userEntity;
+
     public FriendshipsEntity() {
         super();
     }
 
-    public FriendshipsEntity(UserEntity userEntity, String inviter, String friend, String connectionStatus,
-                             String connectionType, String visibilityPermission) {
-        super();
+    public FriendshipsEntity(String inviter, String friend, String connectionStatus, String connectionType, String visibilityPermission, UserEntity userEntity) {
+        this.inviter = inviter;
+        this.friend = friend;
+        this.connectionStatus = connectionStatus;
+        this.connectionType = connectionType;
+        this.visibilityPermission = visibilityPermission;
         this.userEntity = userEntity;
+    }
+
+    public FriendshipsEntity(String inviter, String friend, String connectionStatus, String connectionType, String visibilityPermission) {
         this.inviter = inviter;
         this.friend = friend;
         this.connectionStatus = connectionStatus;
@@ -57,62 +63,73 @@ public class FriendshipsEntity implements Serializable {
         this.visibilityPermission = visibilityPermission;
     }
 
-    public FriendshipsEntity(UserEntity userEntity, String inviter, String friend, String connectionStatus,
-                             Long id) {
-        super();
-        this.userEntity = userEntity;
-        this.inviter = inviter;
-        this.friend = friend;
-        this.connectionStatus = connectionStatus;
-        this.connectionType = connectionType;
-        this.visibilityPermission = visibilityPermission;
+    public Long getId() {
+        return id;
     }
 
-    public FriendshipsEntity(Long id) {
-        super();
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public FriendshipsEntity(UserEntity userEntity) {
-        super();
-        this.userEntity = userEntity;
+    public Date getCreated() {
+        return created;
     }
 
-    public Long getId() { return id; }
-
-    public Date getCreated() { return created; }
-
-    public UserEntity getUserEntity() {return userEntity; }
-
-    public String getInviter() { return inviter; }
-
-    public String getFriend() { return friend; }
-
-    public String getConnectionStatus() { return connectionStatus; }
-
-    public String getConnectionType() { return connectionType; }
-
-    public String getVisibilityPermission() { return visibilityPermission; }
-
-    public void setVisibilityPermission(String visibilityPermission) {
-        this.visibilityPermission = visibilityPermission;
+    public void setCreated(Date created) {
+        this.created = created;
     }
 
-    public void setConnectionType(String connectionType) {
-        this.connectionType = connectionType;
+    public String getInviter() {
+        return inviter;
+    }
+
+    public void setInviter(String inviter) {
+        this.inviter = inviter;
+    }
+
+    public String getFriend() {
+        return friend;
+    }
+
+    public void setFriend(String friend) {
+        this.friend = friend;
+    }
+
+    public String getConnectionStatus() {
+        return connectionStatus;
     }
 
     public void setConnectionStatus(String connectionStatus) {
         this.connectionStatus = connectionStatus;
     }
 
-    public void setFriend(String friend) {
-        this.friend = friend;
-    } // used for Crud update test
+    public String getConnectionType() {
+        return connectionType;
+    }
+
+    public void setConnectionType(String connectionType) {
+        this.connectionType = connectionType;
+    }
+
+    public String getVisibilityPermission() {
+        return visibilityPermission;
+    }
+
+    public void setVisibilityPermission(String visibilityPermission) {
+        this.visibilityPermission = visibilityPermission;
+    }
+
+    public UserEntity getUserEntity() {
+        return userEntity;
+    }
+
+    public void setUserEntity(UserEntity userEntity) {
+        this.userEntity = userEntity;
+    }
 
     @Override
     public String toString() {
-        return String.format("friendships profile", id, created, userEntity.getUserName(), inviter, friend, connectionStatus,
+        return String.format("friendships profile", id, created, inviter, friend, connectionStatus,
                 connectionType, visibilityPermission);
     }
 

@@ -34,32 +34,23 @@ public class UserEntityDtoTransformer {
         if (userEntity == null || userEntity.getId() == null) {
             return null;
         }
-
         UserEntityDto dto = new UserEntityDto();
-        //dto.setId(userEntity.getId());
-        //dto.setCreated(userEntity.getCreated());
+        dto.setId(userEntity.getId());
+        dto.setCreated(userEntity.getCreated());
         dto.setUserName(userEntity.getUserName());
         dto.setPassword(userEntity.getPassword());
         dto.setPublicProfile(userEntity.getPublicProfile());
         dto.setFriendsSet(getFriendshipsSetService(userEntity));
-
-        //dto.setFriendsSet(userEntity.getFriendsSet()
-        //            .stream()
-        //            .map(friendshipsEntityDtoTransformer::generate)
-        //            .sorted()
-        //            .collect(Collectors.toList()));
-
-
         return dto;
     }
 
     // POST
     public UserEntity generate(final UserEntityDto dto) {
-        return new UserEntity(dto.getUserName(),dto.getPassword());
+        return new UserEntity(dto.getUserName(),dto.getPassword(), dto.getPublicProfile());
     }
 
     // PATCH to the db an update
     public UserEntity patch(final UserEntity dto) {
-        return new UserEntity(dto.getUserName(), dto.getPassword());
+        return new UserEntity(dto.getUserName(), dto.getPassword(), dto.getPublicProfile());
     }
 }

@@ -12,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.nio.charset.StandardCharsets;
@@ -50,7 +49,7 @@ public class UserEntityController extends AbstractRestController {
         return ResponseEntity.ok(userEntityDto);
     }
 
-    // GET a user (without the friendships load). so user knows publicProfile privacy setting.
+    // GET a user (without the friendships Set). so user knows publicProfile privacy setting.
     @ApiOperation(value = "getUserEntity")
     @RequestMapping(value = "/pr", method = RequestMethod.GET)
     public ResponseEntity<UserEntityDto> getUserEntity2(

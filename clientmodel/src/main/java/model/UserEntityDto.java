@@ -12,11 +12,11 @@ import java.util.Set;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserEntityDto implements Serializable {
 
-    //@JsonProperty("id")
-    //private Long id;
+    @JsonProperty("id")
+    private Long id;
 
-    //@JsonProperty("created")
-    //private Date created;
+    @JsonProperty("created")
+    private Date created;
 
     @JsonProperty("userName")
     private String userName;
@@ -28,30 +28,42 @@ public class UserEntityDto implements Serializable {
     private String publicProfile;
 
     @JsonProperty("friendsList")
-    private Set<FriendshipsEntity> friendsSet;  // TODO this should be FriendshipsEntityDto
+    private Set<FriendshipsEntity> friendsSet;
 
     public UserEntityDto() {
     }
 
-    //public Long getId() {
-    //    return id;
-    //}
+    public Long getId() {
+        return id;
+    }
 
-    //public void setId(final Long id) {
-    //    this.id = id;
-    //}
+    public void setId(final Long id) {
+        this.id = id;
+    }
 
-    //public Date getCreated() {
-    //    return created;
-    //}
+    public Date getCreated() {
+        return created;
+    }
 
-    public String getUserName() { return userName; }
+    public void setCreated(Date created) {
+        this.created = created;
+    }
 
-    public void setUserName(final String userName) { this.userName = userName; }
+    public String getUserName() {
+        return userName;
+    }
 
-    public String getPassword() { return password; }
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
 
-    public void setPassword(final String password) { this.password = password; }
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
     public String getPublicProfile() {
         return publicProfile;

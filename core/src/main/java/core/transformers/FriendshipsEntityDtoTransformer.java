@@ -4,56 +4,40 @@ import db.entity.FriendshipsEntity;
 import db.entity.UserEntity;
 import db.repository.UserRepositoryDAO;
 import model.FriendshipsEntityDto;
-import model.FriendshipsEntityDtoPOST;
 import model.UserEntityDto;
 import org.springframework.stereotype.Component;
 
 @Component
 public class FriendshipsEntityDtoTransformer {
 
-    // used in the 'mini' getUserEntity service below
-    private final UserRepositoryDAO userRepositoryDAO;
-
-    public FriendshipsEntityDtoTransformer(UserRepositoryDAO userRepositoryDAO) {
-        this.userRepositoryDAO = userRepositoryDAO;
+    public FriendshipsEntityDtoTransformer() {
     }
-
-    // this is a 'mini' getUserEntity service... not needed?
-    //private UserEntity getUserEntityService(FriendshipsEntity friendshipsEntity) {
-    //    UserEntity userEntity = userRepositoryDAO.findOneByUserName(friendshipsEntity.getUserEntity().getUserName());
-    //    return userEntity;
-    //}
 
     // GET from db
     public FriendshipsEntityDto generate(final FriendshipsEntity friendshipsEntity) {
         if (friendshipsEntity == null || friendshipsEntity.getId() == null) {
             return null;
         }
-
         FriendshipsEntityDto dto = new FriendshipsEntityDto();
         dto.setId(friendshipsEntity.getId());
-        //dto.setCreated(friendshipsEntity.getCreated()); // no need to send out created date now
-        //dto.setUserEntity(getUserEntityService(friendshipsEntity)); // not needed?
+        dto.setCreated(friendshipsEntity.getCreated());
         dto.setInviter(friendshipsEntity.getInviter());
         dto.setFriend(friendshipsEntity.getFriend());
         dto.setConnectionStatus(friendshipsEntity.getConnectionStatus());
         dto.setConnectionType(friendshipsEntity.getConnectionType());
         dto.setVisibilityPermission(friendshipsEntity.getVisibilityPermission());
-
         return dto;
     }
 
     // POST to the db a new friendship
-    public FriendshipsEntity generate(final FriendshipsEntityDtoPOST dto) {
-        UserEntity userEntity = userRepositoryDAO.findOneByUserName(dto.getUserName());
-        return new FriendshipsEntity(
-                userEntity,
-                dto.getInviter(),dto.getFriend(), dto.getConnectionStatus(),
+    public FriendshipsEntity generate(final FriendshipsEntityDto dto) {
+        return new FriendshipsEntity(dto.getInviter(),dto.getFriend(), dto.getConnectionStatus(),
                 dto.getConnectionType(),dto.getVisibilityPermission());
     }
 
     // PATCH to the db an update
-    public FriendshipsEntity patch(final FriendshipsEntityDtoPOST dto) {
-        return new FriendshipsEntity(dto.getId());
+    public FriendshipsEntity patch(final FriendshipsEntityDto dto) {
+        return new FriendshipsEntity(dto.getInviter(),dto.getFriend(), dto.getConnectionStatus(),
+                dto.getConnectionType(),dto.getVisibilityPermission());
     }
 }

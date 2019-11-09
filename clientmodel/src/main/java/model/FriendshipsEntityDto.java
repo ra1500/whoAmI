@@ -14,12 +14,8 @@ public class FriendshipsEntityDto implements Serializable {
     @JsonProperty("id")
     private Long id;
 
-    //@JsonProperty("created")
-    //private Date created;
-
-    // Here, return the full UserEntity object since this is for GET
-    @JsonProperty("userEntity")
-    private UserEntity userEntity;
+    @JsonProperty("created")
+    private Date created;
 
     @JsonProperty("inviter")
     private String inviter;
@@ -36,6 +32,9 @@ public class FriendshipsEntityDto implements Serializable {
     @JsonProperty("visibilityPermission")
     private String visibilityPermission;
 
+    @JsonProperty("userEntity")
+    private UserEntity userEntity;
+
     public FriendshipsEntityDto() {
     }
 
@@ -43,17 +42,17 @@ public class FriendshipsEntityDto implements Serializable {
         return id;
     }
 
-    public void setId(final Long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    //public Date getCreated() {
-    //    return created;
-    //}
+    public Date getCreated() {
+        return created;
+    }
 
-    public UserEntity getUserEntity() { return userEntity; }
-
-    public void setUserEntity(UserEntity userEntity) { this.userEntity = userEntity; }
+    public void setCreated(Date created) {
+        this.created = created;
+    }
 
     public String getInviter() {
         return inviter;
@@ -67,7 +66,7 @@ public class FriendshipsEntityDto implements Serializable {
         return friend;
     }
 
-    public void setFriend(String invitationRecipient) {
+    public void setFriend(String friend) {
         this.friend = friend;
     }
 
@@ -93,5 +92,13 @@ public class FriendshipsEntityDto implements Serializable {
 
     public void setVisibilityPermission(String visibilityPermission) {
         this.visibilityPermission = visibilityPermission;
+    }
+
+    public UserEntity getUserEntity() {
+        return userEntity;
+    }
+
+    public void setUserEntity(UserEntity userEntity) {
+        this.userEntity = userEntity;
     }
 }

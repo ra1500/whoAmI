@@ -17,7 +17,7 @@ import java.util.Set;
 @Entity
 public class UserEntity implements Serializable {
 
-    @Id  //JPA indicating primary key
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -44,6 +44,13 @@ public class UserEntity implements Serializable {
 
     public UserEntity() {
         super();
+    }
+
+    public UserEntity (String userName, String password, String publicProfile) {
+        super();
+        this.userName = userName;
+        this.password = password;
+        this.publicProfile = publicProfile;
     }
 
     public UserEntity (String userName, String password) {
@@ -83,7 +90,7 @@ public class UserEntity implements Serializable {
 
     @Override
     public String toString() {
-        return String.format("User Profile", id, created, userName, password);
+        return String.format("User Profile", id, created, userName, password, publicProfile);
     }
 
 }

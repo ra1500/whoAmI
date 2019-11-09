@@ -12,9 +12,7 @@ import org.springframework.stereotype.Service;
 public class UserEntityService {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
-
     private final UserRepositoryDAO userEntityRepository;
-
     private final UserEntityDtoTransformer userEntityDtoTransformer;
 
     public UserEntityService(final UserRepositoryDAO userEntityRepository, final UserEntityDtoTransformer userEntityDtoTransformer) {

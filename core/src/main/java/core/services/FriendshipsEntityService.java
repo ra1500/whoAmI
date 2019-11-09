@@ -4,8 +4,8 @@ import core.transformers.FriendshipsEntityDtoTransformer;
 import db.entity.FriendshipsEntity;
 import db.entity.UserEntity;
 import db.repository.FriendshipsRepositoryDAO;
+import db.repository.UserRepositoryDAO;
 import model.FriendshipsEntityDto;
-import model.FriendshipsEntityDtoPOST;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -15,32 +15,72 @@ public class FriendshipsEntityService {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final FriendshipsRepositoryDAO friendshipsRepositoryDAO;
+    private final UserRepositoryDAO userRepositoryDAO;
     private final FriendshipsEntityDtoTransformer friendshipsEntityDtoTransformer;
 
-    public FriendshipsEntityService(final FriendshipsRepositoryDAO friendshipsRepositoryDAO, final FriendshipsEntityDtoTransformer friendshipsEntityDtoTransformer) {
+    public FriendshipsEntityService(final FriendshipsRepositoryDAO friendshipsRepositoryDAO, final FriendshipsEntityDtoTransformer friendshipsEntityDtoTransformer,
+                                    UserRepositoryDAO userRepositoryDAO) {
         this.friendshipsRepositoryDAO = friendshipsRepositoryDAO;
         this.friendshipsEntityDtoTransformer = friendshipsEntityDtoTransformer;
+        this.userRepositoryDAO = userRepositoryDAO;
     }
 
-    // for GET.
-    public FriendshipsEntityDto getFriendshipsEntity(final UserEntity userEntity, final String friend) {
-        return friendshipsEntityDtoTransformer.generate(friendshipsRepositoryDAO.findOneByUserEntityAndFriend(userEntity, friend));
+    // GET.
+    public FriendshipsEntityDto getFriendshipsEntity(final String user, final String friend) {
+        UserEntity userEntity = userRepositoryDAO.findOneByUserName(user);
+        Long userEntityId = userEntity.getId();
+
+        return friendshipsEntityDtoTransformer.generate(friendshipsRepositoryDAO.findOneByUserEntityIdAndFriend(userEntityId, friend));
     }
 
-    // for POST
-    public FriendshipsEntityDto createFriendshipsEntity(final FriendshipsEntityDtoPOST friendshipsEntityDtoPOST) {
-        FriendshipsEntity friendshipsEntity = friendshipsRepositoryDAO.saveAndFlush(friendshipsEntityDtoTransformer.generate(friendshipsEntityDtoPOST));
-        return friendshipsEntityDtoTransformer.generate(friendshipsEntity);
-    }
+    // POST/PATCH a friendship (double entry of friendships(qty 2) + double entry of adding parent to child, and child to Set in parent)
+    public FriendshipsEntityDto createFriendshipsEntity(final FriendshipsEntityDto friendshipsEntityDto, final String userName) {
 
-    // for PATCH  // TODO: is this just returning the same object to the client as the client sent in instead of coming from the updated db?
-    public FriendshipsEntityDto patchFriendshipsEntity(final FriendshipsEntityDtoPOST friendshipsEntityDtoPOST) {
-        FriendshipsEntity friendshipsEntity = friendshipsRepositoryDAO.findOneById(friendshipsEntityDtoPOST.getId());
-        friendshipsEntity.setConnectionType(friendshipsEntityDtoPOST.getConnectionType());
-        friendshipsEntity.setConnectionStatus(friendshipsEntityDtoPOST.getConnectionStatus());
-        friendshipsEntity.setVisibilityPermission(friendshipsEntityDtoPOST.getVisibilityPermission());
-        friendshipsRepositoryDAO.save(friendshipsEntity);
-        return friendshipsEntityDtoTransformer.generate(friendshipsEntity);
+        // get friendshipsEntityDto from db, if it exists.
+        UserEntity foundUserEntity = userRepositoryDAO.findOneByUserName(userName);
+        Long userId = foundUserEntity.getId();
+        FriendshipsEntity foundFriendshipsEntity = friendshipsRepositoryDAO.findOneByUserEntityIdAndFriend(userId, friendshipsEntityDto.getFriend());
+
+        // get friend userEntity if it exists
+        UserEntity friendExistsUserEntity = userRepositoryDAO.findOneByUserName(friendshipsEntityDto.getFriend());
+
+        if (foundFriendshipsEntity == null && friendExistsUserEntity != null ) {
+
+            // create a new 'raw' friendshipsEntity (1 of 2 entries) (ManyToOne twice, instead of ManyToMany)
+            FriendshipsEntity newFriendshipsEntity1 = friendshipsEntityDtoTransformer.generate(friendshipsEntityDto);
+
+            // add userEntity
+            newFriendshipsEntity1.setUserEntity(foundUserEntity);
+
+            // save completed friendshipsEntity1
+            friendshipsRepositoryDAO.saveAndFlush(newFriendshipsEntity1);
+
+            // create a new 'raw' friendshipsEntity (2 of 2 entries) (ManyToOne twice, instead of ManyToMany)
+            FriendshipsEntityDto friendshipsEntityDto2 = friendshipsEntityDto;
+            friendshipsEntityDto2.setFriend(userName);
+            FriendshipsEntity newFriendshipsEntity2 = friendshipsEntityDtoTransformer.generate(friendshipsEntityDto2);
+
+            // add userEntity (of friend)
+            newFriendshipsEntity2.setUserEntity(friendExistsUserEntity);
+
+            // save completed friendshipsEntity2
+            friendshipsRepositoryDAO.saveAndFlush(newFriendshipsEntity2);
+
+            // add both new friendships to their respective user's friendships Lists
+            foundUserEntity.getFriendsSet().add(newFriendshipsEntity1);
+            friendExistsUserEntity.getFriendsSet().add(newFriendshipsEntity2);
+
+            // return only the 'main' 1st entry friendhsipsEntity
+            return friendshipsEntityDtoTransformer.generate(newFriendshipsEntity1);
+        }
+        else{
+            // this else statement is an update/patch of child (and only updates one-side of friendship which ensures 'friendship control' by client. no need to update parents since already set.
+            foundFriendshipsEntity.setConnectionStatus(friendshipsEntityDto.getConnectionStatus());
+            foundFriendshipsEntity.setConnectionType(friendshipsEntityDto.getConnectionType());
+            foundFriendshipsEntity.setVisibilityPermission(friendshipsEntityDto.getVisibilityPermission());
+            friendshipsRepositoryDAO.save(foundFriendshipsEntity);
+            return friendshipsEntityDtoTransformer.generate(foundFriendshipsEntity);
+        }
     }
 
     // for DELETE.

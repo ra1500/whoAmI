@@ -14,6 +14,7 @@ public interface FriendshipsRepositoryDAO extends JpaRepository<FriendshipsEntit
     FriendshipsEntity findOneById(Long id);
     FriendshipsEntity findOneByUserEntityAndFriend(UserEntity userEntity, String friend);
     Set<FriendshipsEntity> findAllByUserEntity(UserEntity userEntity);
+    FriendshipsEntity findOneByUserEntityIdAndFriend(Long userEntityId, String friend);
 
     @Transactional
     Integer deleteOneById(Long id);
