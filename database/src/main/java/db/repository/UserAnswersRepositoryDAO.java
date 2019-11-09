@@ -14,14 +14,18 @@ public interface UserAnswersRepositoryDAO extends JpaRepository<UserAnswersEntit
     UserAnswersEntity findOneById(Long id); // used in UserAnswersEntity Test
     UserAnswersEntity findOneByUserNameAndAuditeeAndQuestionsEntityId(String userName, String auditee, Long questionsEntityId);
 
-    //@Query("SELECT SUM(answerPoints) FROM UserAnswersEntity WHERE userName = :userName AND questionSetVersion = :questionSetVersion AND auditee = :auditee")
-    //Long findUserScoresTotal(@Param("userName") String userName, @Param("auditee") String auditee, @Param("questionSetVersion") Long questionSetVersion);
+    @Query("SELECT SUM(answerPoints) FROM UserAnswersEntity WHERE userName = :userName AND questionSetVersionEntityId = :questionSetVersionEntityId AND auditee = :auditee")
+    Long findUserScoresTotal(@Param("userName") String userName, @Param("auditee") String auditee, @Param("questionSetVersionEntityId") Long questionSetVersionEntityId);
 
     @Transactional
     Integer deleteAllByUserNameAndAuditeeAndQuestionSetVersionEntityId(String userName, String auditee, Long questionSetVersionEntityId);
 
-    // works
+    // WORKS. testing on Profile page....
     //@Query("Select a FROM UserAnswersEntity a")
     //Set<UserAnswersEntity> findSome();
+
+    // SELECT b, p FROM Book b, Publisher p
+    @Query("Select a, b FROM UserAnswersEntity a, PermissionsEntity b")
+    Set<UserAnswersEntity> findSome();
 
 }

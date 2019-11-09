@@ -25,11 +25,10 @@ public class QuestionSetVersionController extends AbstractRestController {
 
     // GET questionSetVersion. DTO excludes Set<Questions> to reduce load.
     @ApiOperation(value = "getQuestionsEntity")
-    @RequestMapping(value = "/{qsid}", method = RequestMethod.GET)
+    @RequestMapping(value = "/g{qsid}", method = RequestMethod.GET)
     public ResponseEntity<QuestionSetVersionEntityDto> getQuestionSetVersionEntity(
             @RequestHeader("Authorization") String token,
-            @PathVariable("qsid")
-            final Long qsid) {
+            @RequestParam("qsid") final Long qsid) {
 
         // secured by token
         String base64Credentials = token.substring("Basic".length()).trim();
@@ -49,13 +48,12 @@ public class QuestionSetVersionController extends AbstractRestController {
     }
 
     // POST/PATCH  posts a new one, updates an existing one
-    @RequestMapping(value = "/{qsid}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/p{qsid}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<QuestionSetVersionEntityDto> createQuestionSetVersionEntity(
             @Valid
             @RequestBody final QuestionSetVersionEntityDto questionSetVersionEntityDto,
             @RequestHeader("Authorization") String token,
-            @PathVariable("qsid")
-            final Long qsid) {
+            @RequestParam("qsid") final Long qsid) {
 
         String base64Credentials = token.substring("Basic".length()).trim();
         byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);

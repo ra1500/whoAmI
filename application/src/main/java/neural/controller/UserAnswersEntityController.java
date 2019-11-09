@@ -33,8 +33,8 @@ public class UserAnswersEntityController extends AbstractRestController {
     @RequestMapping(value = "/{qId}/{au}", method = RequestMethod.GET)
     public ResponseEntity<UserAnswersEntityDto> getUserAnswersEntity(
             @RequestHeader("Authorization") String token,
-            @PathVariable("au") final String auditee,
-            @PathVariable("qId") final Long questionsEntityId) {
+            @PathVariable("qId") final Long questionsEntityId,
+            @PathVariable("au") final String auditee) {
         String base64Credentials = token.substring("Basic".length()).trim();
         byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
         String credentials = new String(credDecoded, StandardCharsets.UTF_8);
@@ -88,7 +88,7 @@ public class UserAnswersEntityController extends AbstractRestController {
         final String[] values = credentials.split(":", 2);
         String user = values[0];
 
-        String deleted =  userAnswersEntityService.deleteAllAnswersForUserNameAndAuditeeAndQuestionSetVersionEntityId(user, userAnswersEntityDto.getAuditee(), questionSetVersionEntityId);
+        String deleted = userAnswersEntityService.deleteAllAnswersForUserNameAndAuditeeAndQuestionSetVersionEntityId(user, userAnswersEntityDto.getAuditee(), questionSetVersionEntityId);
 
         return ResponseEntity.ok(deleted);
     }

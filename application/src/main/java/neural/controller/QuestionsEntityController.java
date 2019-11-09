@@ -49,7 +49,7 @@ public class QuestionsEntityController extends AbstractRestController {
         final String[] values = credentials.split(":", 2);
         String user = values[0];
 
-        QuestionsEntityDto questionsEntityDto = questionsEntityService.getQuestionsEntity(questionSetVersionEntityId, sequenceNumber);
+        QuestionsEntityDto questionsEntityDto = questionsEntityService.getQuestionsEntity(sequenceNumber, questionSetVersionEntityId);
 
         if (questionsEntityDto == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -57,12 +57,12 @@ public class QuestionsEntityController extends AbstractRestController {
         return ResponseEntity.ok(questionsEntityDto);
     }
     // POST/PATCH  posts a new one, updates an existing one
-    @RequestMapping(value = "/{qsid}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/p{qsid}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<QuestionsEntityDto> createQuestionsEntity(
             @Valid
             @RequestBody final QuestionsEntityDto questionsEntityDto,
             @RequestHeader("Authorization") String token,
-            @PathVariable("qsid")
+            @RequestParam("qsid")
             final Long questionSetVersionEntityId) {
 
         String base64Credentials = token.substring("Basic".length()).trim();
