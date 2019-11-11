@@ -24,11 +24,17 @@ public class PermissionsEntityDto implements Serializable {
     @JsonProperty("auditee")
     private String auditee;
 
-    @JsonProperty("profilePageGroup")
-    private String profilePageGroup;
+    @JsonProperty("viewGroup")
+    private String viewGroup;
 
-    @JsonProperty("tbd")
-    private String tbd;
+    @JsonProperty("type")
+    private String type;
+
+    @JsonProperty("typeNumber")
+    private Long typeNumber;
+
+    @JsonProperty("score")
+    private Long score;
 
     @JsonProperty("questionSetVersionEntity")
     private QuestionSetVersionEntity questionSetVersionEntity;
@@ -68,20 +74,36 @@ public class PermissionsEntityDto implements Serializable {
         this.auditee = auditee;
     }
 
-    public String getProfilePageGroup() {
-        return profilePageGroup;
+    public String getViewGroup() {
+        return viewGroup;
     }
 
-    public void setProfilePageGroup(String profilePageGroup) {
-        this.profilePageGroup = profilePageGroup;
+    public void setViewGroup(String viewGroup) {
+        this.viewGroup = viewGroup;
     }
 
-    public String getTbd() {
-        return tbd;
+    public String getType() {
+        return type;
     }
 
-    public void setTbd(String tbd) {
-        this.tbd = tbd;
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public Long getTypeNumber() {
+        return typeNumber;
+    }
+
+    public void setTypeNumber(Long typeNumber) {
+        this.typeNumber = typeNumber;
+    }
+
+    public Long getScore() {
+        return score;
+    }
+
+    public void setScore(Long score) {
+        this.score = score;
     }
 
     public QuestionSetVersionEntity getQuestionSetVersionEntity() {

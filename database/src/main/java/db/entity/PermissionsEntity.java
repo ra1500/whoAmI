@@ -23,16 +23,22 @@ public class PermissionsEntity implements Serializable {
     private Date created;
 
     @Column(name = "userName")
-    private String userName;
+    private String userName; // auditor/answeror
 
     @Column
-    private String auditee;
+    private String auditee; // auditee
 
     @Column
-    private String profilePageGroup;
+    private String viewGroup; // QsetPerm:   AnswerPerm: viewGroup can view
 
-    @Column  // not used currently. available for future use.
-    private String tbd;
+    @Column  // Type: Qset view permission or userScore permission
+    private String type;
+
+    @Column
+    private Long typeNumber;
+
+    @Column
+    private Long score;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "questionSetVersionEntityId")
@@ -42,20 +48,24 @@ public class PermissionsEntity implements Serializable {
         super();
     }
 
-    public PermissionsEntity(String userName, String auditee, String profilePageGroup, String tbd, QuestionSetVersionEntity questionSetVersionEntity) {
+    public PermissionsEntity(String userName, String auditee, String viewGroup, String type, Long typeNumber, Long score, QuestionSetVersionEntity questionSetVersionEntity) {
         this.userName = userName;
         this.auditee = auditee;
-        this.profilePageGroup = profilePageGroup;
-        this.tbd = tbd;
+        this.viewGroup = viewGroup;
+        this.type = type;
+        this.typeNumber = typeNumber;
+        this.score = score;
         this.questionSetVersionEntity = questionSetVersionEntity;
     }
 
     // constructor used in QuestionSetVersionEntityService.
-    public PermissionsEntity(String userName, String auditee, String profilePageGroup, String tbd) {
+    public PermissionsEntity(String userName, String auditee, String viewGroup, String type, Long typeNumber, Long score) {
         this.userName = userName;
         this.auditee = auditee;
-        this.profilePageGroup = profilePageGroup;
-        this.tbd = tbd;
+        this.viewGroup = viewGroup;
+        this.type = type;
+        this.typeNumber = typeNumber;
+        this.score = score;
     }
 
     public Long getId() {
@@ -90,20 +100,36 @@ public class PermissionsEntity implements Serializable {
         this.auditee = auditee;
     }
 
-    public String getProfilePageGroup() {
-        return profilePageGroup;
+    public String getViewGroup() {
+        return viewGroup;
     }
 
-    public void setProfilePageGroup(String profilePageGroup) {
-        this.profilePageGroup = profilePageGroup;
+    public void setViewGroup(String viewGroup) {
+        this.viewGroup = viewGroup;
     }
 
-    public String getTbd() {
-        return tbd;
+    public String getType() {
+        return type;
     }
 
-    public void setTbd(String tbd) {
-        this.tbd = tbd;
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public Long getTypeNumber() {
+        return typeNumber;
+    }
+
+    public void setTypeNumber(Long typeNumber) {
+        this.typeNumber = typeNumber;
+    }
+
+    public Long getScore() {
+        return score;
+    }
+
+    public void setScore(Long score) {
+        this.score = score;
     }
 
     public QuestionSetVersionEntity getQuestionSetVersionEntity() {
@@ -116,7 +142,7 @@ public class PermissionsEntity implements Serializable {
 
     @Override
     public String toString() {
-        return String.format("Permissions profile", id, created, userName, auditee, profilePageGroup, tbd);
+        return String.format("Permissions profile", id, created, userName, auditee, viewGroup, type);
     }
 
 }

@@ -58,9 +58,9 @@ public class PermissionsEntityTest {
         // create a new parent with the child included
         String userName = "maria";
         String auditee = "karen";
-        String profilePageGroup = "Public";
-        String tbd = "tbd";
-//        PermissionsEntity permissionsEntity = new PermissionsEntity(questionSetVersionEntities, userName, auditee, profilePageGroup, questionSetVersion, tbd  );
+        String group = "Public";
+        String type = "type";
+//        PermissionsEntity permissionsEntity = new PermissionsEntity(questionSetVersionEntities, userName, auditee, group, questionSetVersion, type  );
 
         // save parent (which includes child)
 //        PermissionsEntity savedPermissionsEntity = permissionsRepositoryDAO.saveAndFlush(permissionsEntity);

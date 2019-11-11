@@ -23,15 +23,17 @@ public class PermissionsEntityDtoTransformer {
         dto.setCreated(permissionsEntity.getCreated());
         dto.setUserName(permissionsEntity.getUserName());
         dto.setAuditee(permissionsEntity.getAuditee());
-        dto.setProfilePageGroup(permissionsEntity.getProfilePageGroup());
-        dto.setTbd(permissionsEntity.getTbd());
+        dto.setViewGroup(permissionsEntity.getViewGroup());
+        dto.setType(permissionsEntity.getType());
+        dto.setTypeNumber(permissionsEntity.getTypeNumber());
+        dto.setScore(permissionsEntity.getScore());
         dto.setQuestionSetVersionEntity(permissionsEntity.getQuestionSetVersionEntity());
         return dto;
     }
 
     // POST
     public PermissionsEntity generate(final PermissionsEntityDto dto) {
-        return new PermissionsEntity( dto.getUserName(), dto.getAuditee(), dto.getProfilePageGroup(),
-                 dto.getTbd(), dto.getQuestionSetVersionEntity());
+        return new PermissionsEntity( dto.getUserName(), dto.getAuditee(), dto.getViewGroup(),
+                 dto.getType(), dto.getTypeNumber(), dto.getScore(), dto.getQuestionSetVersionEntity());
     }
 }

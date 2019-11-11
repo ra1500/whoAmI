@@ -47,15 +47,15 @@ public class QuestionSetVersionEntityService {
             QuestionSetVersionEntity newQuestionSetVersionEntity = questionSetVersionEntityRepository.saveAndFlush(questionSetVersionEntityDtoTransformer.generate(questionSetVersionEntityDto));
 
             // create and save a new initial child permission. (ManyToOne. a permission only has one qset parent. a qset can have many permissions associated with it)
-            PermissionsEntity newPermissionsEntity = new PermissionsEntity(userName, userName, new String("Public"), new String("tbd"));
+            PermissionsEntity newPermissionsEntity = new PermissionsEntity(userName, userName, new String("self"), new String("viewQuestionSet"), new Long(3), new Long(0));
             newPermissionsEntity.setQuestionSetVersionEntity(newQuestionSetVersionEntity);
             permissionsRepositoryDAO.saveAndFlush(newPermissionsEntity);
 
             return questionSetVersionEntityDtoTransformer.generate(newQuestionSetVersionEntity);
         }
         else {
-            questionSetVersionEntity.setId(questionSetVersionEntityDto.getId());
-            questionSetVersionEntity.setCreated(questionSetVersionEntityDto.getCreated());
+            //questionSetVersionEntity.setId(questionSetVersionEntityDto.getId());
+            //questionSetVersionEntity.setCreated(questionSetVersionEntityDto.getCreated());
             questionSetVersionEntity.setTitle(questionSetVersionEntityDto.getTitle());
             questionSetVersionEntity.setCategory(questionSetVersionEntityDto.getCategory());
             questionSetVersionEntity.setDescription(questionSetVersionEntityDto.getDescription());

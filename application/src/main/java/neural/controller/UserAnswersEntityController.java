@@ -95,7 +95,7 @@ public class UserAnswersEntityController extends AbstractRestController {
         return ResponseEntity.ok(deleted);
     }
 
-    //  -- Aggregate Queries --
+    //  -- Aggregate Queries -- Delete all of these. Now resides in Permissions Controller.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     // GET. Private Profile Page.
@@ -143,28 +143,29 @@ public class UserAnswersEntityController extends AbstractRestController {
             return ResponseEntity.ok(userScoreJSON);}
     }
 
+    // delete. not needed.
     // GET Qsets and Results for the privateProfilePage.
-    @ApiOperation(value = "getPrivateProfileQsets")
-    @RequestMapping(value = "/pr", method = RequestMethod.GET)
-    public ResponseEntity<Set<UserAnswersEntity>>getPrivateProfileQsets(
-            @RequestHeader("Authorization") String token) {
+   // @ApiOperation(value = "getPrivateProfileQsets")
+   // @RequestMapping(value = "/pr", method = RequestMethod.GET)
+   // public ResponseEntity<Set<UserAnswersEntity>>getPrivateProfileQsets(
+   //         @RequestHeader("Authorization") String token) {
 
         // secured by token
-        String base64Credentials = token.substring("Basic".length()).trim();
-        byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
-        String credentials = new String(credDecoded, StandardCharsets.UTF_8);
+   //     String base64Credentials = token.substring("Basic".length()).trim();
+   //     byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
+   //     String credentials = new String(credDecoded, StandardCharsets.UTF_8);
         // credentials = username:password
-        final String[] values = credentials.split(":", 2);
-        String user = values[0];
+   //     final String[] values = credentials.split(":", 2);
+   //     String user = values[0];
 
-        Set<UserAnswersEntity> userAnswersEntities = userAnswersRepositoryDAO.findSome();
+    //    Set<UserAnswersEntity> userAnswersEntities = userAnswersRepositoryDAO.findSome();
 
 
-        if (userAnswersEntities == null) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
+    //    if (userAnswersEntities == null) {
+    //        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    //    }
 
-        return ResponseEntity.ok(userAnswersEntities);
-    }
+    //    return ResponseEntity.ok(userAnswersEntities);
+    //}
 
 }
