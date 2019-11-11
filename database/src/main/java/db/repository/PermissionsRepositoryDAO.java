@@ -15,7 +15,9 @@ public interface PermissionsRepositoryDAO extends JpaRepository<PermissionsEntit
     PermissionsEntity findOneByUserNameAndAuditeeAndQuestionSetVersionEntityId(String userName, String auditee, Long questionSetVersionEntityId);
     PermissionsEntity findOneByUserNameAndTypeNumberAndQuestionSetVersionEntityId(String userName, Long typeNumber, Long questionSetVersionEntityId);
 
-    // WHERE p.userName = :userName
+    @Transactional
+    Integer deleteOneById(Long id);
+
     @Query("SELECT p FROM PermissionsEntity p WHERE p.userName = :userName AND p.typeNumber = 9 OR p.typeNumber = 10")
     Set<PermissionsEntity> getPrivateProfilePageQsets(String userName);
 

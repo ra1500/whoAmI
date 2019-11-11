@@ -94,4 +94,27 @@ public class PermissionsController extends AbstractRestController {
         }
         return ResponseEntity.ok(permissionsEntities);
     }
+
+    // POST/DELETE. Delete a score completely from permissionsEntity
+    @ApiOperation(value = "permissionsEntity")
+    @RequestMapping(value = "/sc/dl", method = RequestMethod.POST)
+    public ResponseEntity<Integer> deletePermissionsEntityUserScorePrivateProfilePage(
+            @Valid
+            @RequestBody final PermissionsEntityDto permissionsEntityDto,
+            @RequestHeader("Authorization") String token) {
+
+        String base64Credentials = token.substring("Basic".length()).trim();
+        byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
+        String credentials = new String(credDecoded, StandardCharsets.UTF_8);
+        // credentials = username:password
+        final String[] values = credentials.split(":", 2);
+        String user = values[0];
+
+        Integer deletedScore = permissionsRepositoryDAO.deleteOneById(permissionsEntityDto.getId());
+
+        if (deletedScore == null) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return ResponseEntity.ok(deletedScore);
+    }
 }

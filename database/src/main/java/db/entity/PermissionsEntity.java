@@ -40,7 +40,7 @@ public class PermissionsEntity implements Serializable {
     @Column
     private Long score;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "questionSetVersionEntityId")
     private QuestionSetVersionEntity questionSetVersionEntity;
 
