@@ -26,11 +26,11 @@ public class FriendshipsEntityService {
     }
 
     // GET.
-    public FriendshipsEntityDto getFriendshipsEntity(final String user, final String friend) {
+    public FriendshipsEntityDto getFriendshipsEntity(final String user, final Long friendId) {
         UserEntity userEntity = userRepositoryDAO.findOneByUserName(user);
         Long userEntityId = userEntity.getId();
 
-        return friendshipsEntityDtoTransformer.generate(friendshipsRepositoryDAO.findOneByUserEntityIdAndFriend(userEntityId, friend));
+        return friendshipsEntityDtoTransformer.generate(friendshipsRepositoryDAO.findOneByIdAndUserEntityId(friendId, userEntityId));
     }
 
     // POST/PATCH a friendship (double entry of friendships(qty 2) + double entry of adding parent to child, and child to Set in parent)
@@ -39,7 +39,7 @@ public class FriendshipsEntityService {
         // get friendshipsEntityDto from db, if it exists.
         UserEntity foundUserEntity = userRepositoryDAO.findOneByUserName(userName);
         Long userId = foundUserEntity.getId();
-        FriendshipsEntity foundFriendshipsEntity = friendshipsRepositoryDAO.findOneByUserEntityIdAndFriend(userId, friendshipsEntityDto.getFriend());
+        FriendshipsEntity foundFriendshipsEntity = friendshipsRepositoryDAO.findOneByUserEntityIdAndId(userId, friendshipsEntityDto.getId());
 
         // get friend userEntity if it exists
         UserEntity friendExistsUserEntity = userRepositoryDAO.findOneByUserName(friendshipsEntityDto.getFriend());
@@ -74,13 +74,31 @@ public class FriendshipsEntityService {
             return friendshipsEntityDtoTransformer.generate(newFriendshipsEntity1);
         }
         else{
-            // this else statement is an update/patch of child (and only updates one-side of friendship which ensures 'friendship control' by client. no need to update parents since already set.
+            if (foundFriendshipsEntity.getConnectionStatus() == "pending")
+            {
+                // first entry
+                foundFriendshipsEntity.setConnectionStatus(friendshipsEntityDto.getConnectionStatus());
+                foundFriendshipsEntity.setConnectionType(friendshipsEntityDto.getConnectionType());
+                foundFriendshipsEntity.setVisibilityPermission(friendshipsEntityDto.getVisibilityPermission());
+                friendshipsRepositoryDAO.save(foundFriendshipsEntity);
+
+                // second entry (two-sided)
+                String secondUser = friendshipsEntityDto.getFriend();
+                UserEntity secondUserEntity = userRepositoryDAO.findOneByUserName(secondUser);
+                FriendshipsEntity secondFriendshipsEntity = friendshipsRepositoryDAO.findOneByUserEntityIdAndFriend(secondUserEntity.getId(), userName);
+                secondFriendshipsEntity.setConnectionStatus(friendshipsEntityDto.getConnectionStatus());
+                friendshipsRepositoryDAO.save(secondFriendshipsEntity);
+                return friendshipsEntityDtoTransformer.generate(foundFriendshipsEntity);
+            }
+            else {
+            // for updates except accepting an invitation. (therefore only one-sided here)
             foundFriendshipsEntity.setConnectionStatus(friendshipsEntityDto.getConnectionStatus());
             foundFriendshipsEntity.setConnectionType(friendshipsEntityDto.getConnectionType());
             foundFriendshipsEntity.setVisibilityPermission(friendshipsEntityDto.getVisibilityPermission());
             friendshipsRepositoryDAO.save(foundFriendshipsEntity);
             return friendshipsEntityDtoTransformer.generate(foundFriendshipsEntity);
-        }
+            } // end 2nd else
+        } // end 1st else
     }
 
     // for DELETE.

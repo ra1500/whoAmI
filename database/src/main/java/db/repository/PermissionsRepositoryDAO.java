@@ -15,11 +15,18 @@ public interface PermissionsRepositoryDAO extends JpaRepository<PermissionsEntit
     PermissionsEntity findOneByUserNameAndAuditeeAndQuestionSetVersionEntityId(String userName, String auditee, Long questionSetVersionEntityId);
     PermissionsEntity findOneByUserNameAndTypeNumberAndQuestionSetVersionEntityId(String userName, Long typeNumber, Long questionSetVersionEntityId);
 
-    @Transactional
+    @Transactional // not currently used
     Integer deleteOneById(Long id);
 
     @Query("SELECT p FROM PermissionsEntity p WHERE p.userName = :userName AND p.typeNumber = 9 OR p.typeNumber = 10")
     Set<PermissionsEntity> getPrivateProfilePageQsets(String userName);
+
+    @Query("SELECT p FROM PermissionsEntity p WHERE p.userName = :userName AND p.typeNumber = 9")
+    Set<PermissionsEntity> getPublicProfilePageQsets(String userName);
+
+    @Query("SELECT p FROM PermissionsEntity p WHERE p.typeNumber = 1 OR p.typeNumber = 2")
+    Set<PermissionsEntity> getScoresPageQsets();
+
 
 //    TypeIndex	    score	viewer	            owner	    view group	        PermissionType
 //    typenumber	score	username	        auditee	    group	            type/

@@ -51,7 +51,7 @@ public class FriendshipsEntityController extends AbstractRestController {
     public ResponseEntity<FriendshipsEntityDto> getFriendshipsEntity(
             @RequestHeader("Authorization") String token,
             @PathVariable("ct")
-            final String ct) {
+            final Long ct) {
         String base64Credentials = token.substring("Basic".length()).trim();
         byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
         String credentials = new String(credDecoded, StandardCharsets.UTF_8);
@@ -67,24 +67,24 @@ public class FriendshipsEntityController extends AbstractRestController {
         return ResponseEntity.ok(friendshipsEntityDto);
     }
 
-    // DELETE a friendship. User side only.
-    @RequestMapping(value = "/d", method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Integer> deleteAfriendship(
-            @RequestHeader("Authorization") String token,
-            @Valid
-            @RequestBody
-            final FriendshipsEntityDto friendshipsEntityDto) {
+    // DELETE a friendship. User side only. (not currently used)
+    //@RequestMapping(value = "/d", method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    //public ResponseEntity<Integer> deleteAfriendship(
+    //        @RequestHeader("Authorization") String token,
+    //        @Valid
+    //        @RequestBody
+    //        final FriendshipsEntityDto friendshipsEntityDto) {
 
-        String base64Credentials = token.substring("Basic".length()).trim();
-        byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
-        String credentials = new String(credDecoded, StandardCharsets.UTF_8);
-        // credentials = username:password
-        final String[] values = credentials.split(":", 2);
-        String user = values[0];
+    //    String base64Credentials = token.substring("Basic".length()).trim();
+    //    byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
+    //    String credentials = new String(credDecoded, StandardCharsets.UTF_8);
+    //    // credentials = username:password
+    //    final String[] values = credentials.split(":", 2);
+    //    String user = values[0];
 
-        Integer deletedFriendshipsEntity = friendshipsEntityService.deleteFriendshipsEntity(friendshipsEntityDto.getId());
+    //    Integer deletedFriendshipsEntity = friendshipsEntityService.deleteFriendshipsEntity(friendshipsEntityDto.getId());
 
-        return ResponseEntity.ok(deletedFriendshipsEntity);
-    }
+    //    return ResponseEntity.ok(deletedFriendshipsEntity);
+    //}
 
 }

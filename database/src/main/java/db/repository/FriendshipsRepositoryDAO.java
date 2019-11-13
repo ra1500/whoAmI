@@ -12,7 +12,9 @@ import java.util.Set;
 public interface FriendshipsRepositoryDAO extends JpaRepository<FriendshipsEntity, Long> {
 
     FriendshipsEntity findOneById(Long id);
-    FriendshipsEntity findOneByUserEntityAndFriend(UserEntity userEntity, String friend);
+    //FriendshipsEntity findOneByUserEntityAndFriend(UserEntity userEntity, String friend);
+    FriendshipsEntity findOneByUserEntityIdAndId(Long userId, Long friendId);
+    FriendshipsEntity findOneByIdAndUserEntityId(Long friendId, Long userId);
     Set<FriendshipsEntity> findAllByUserEntity(UserEntity userEntity);
     FriendshipsEntity findOneByUserEntityIdAndFriend(Long userEntityId, String friend);
 

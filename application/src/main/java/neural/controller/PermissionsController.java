@@ -71,7 +71,7 @@ public class PermissionsController extends AbstractRestController {
         return ResponseEntity.ok(savedPermissionsEntityDto);
     }
 
-    // GET. QSets for Private Profile Page.
+    // GET. QSets & user scores for Private Profile Page.
     @ApiOperation(value = "permissionsEntity")
     @RequestMapping(value = "/sc/dr", method = RequestMethod.GET)
     public ResponseEntity<Set<PermissionsEntity>> getPermissionsEntityUserScorePrivateProfilePage(
@@ -88,6 +88,54 @@ public class PermissionsController extends AbstractRestController {
 
         // TODO: Create a set of Dto's in the transformer and return them as a Set instead of direct to repository.
         Set<PermissionsEntity> permissionsEntities = permissionsRepositoryDAO.getPrivateProfilePageQsets(user);
+
+        if (permissionsEntities == null) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return ResponseEntity.ok(permissionsEntities);
+    }
+
+    // GET. QSets for 'Scores' page.
+    @ApiOperation(value = "permissionsEntity")
+    @RequestMapping(value = "/sc/dw", method = RequestMethod.GET)
+    public ResponseEntity<Set<PermissionsEntity>> getPermissionsEntityScoresPage(
+            @RequestHeader("Authorization") String token) {
+
+        String base64Credentials = token.substring("Basic".length()).trim();
+        byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
+        String credentials = new String(credDecoded, StandardCharsets.UTF_8);
+        // credentials = username:password
+        final String[] values = credentials.split(":", 2);
+        String user = values[0];
+
+        //PermissionsEntityDto permissionsEntityDto = permissionsEntityService.getPermissionsEntity(user);
+
+        // TODO: Create a set of Dto's in the transformer and return them as a Set instead of direct to repository.
+        Set<PermissionsEntity> permissionsEntities = permissionsRepositoryDAO.getScoresPageQsets();
+
+        if (permissionsEntities == null) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return ResponseEntity.ok(permissionsEntities);
+    }
+
+    // GET. QSets & user scores for Public Profile Page.
+    @ApiOperation(value = "permissionsEntity")
+    @RequestMapping(value = "/sc/dc", method = RequestMethod.GET)
+    public ResponseEntity<Set<PermissionsEntity>> getPermissionsEntityUserScorePublicProfilePage(
+            @RequestHeader("Authorization") String token) {
+
+        String base64Credentials = token.substring("Basic".length()).trim();
+        byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
+        String credentials = new String(credDecoded, StandardCharsets.UTF_8);
+        // credentials = username:password
+        final String[] values = credentials.split(":", 2);
+        String user = values[0];
+
+        //PermissionsEntityDto permissionsEntityDto = permissionsEntityService.getPermissionsEntity(user);
+
+        // TODO: Create a set of Dto's in the transformer and return them as a Set instead of direct to repository.
+        Set<PermissionsEntity> permissionsEntities = permissionsRepositoryDAO.getPublicProfilePageQsets(user);
 
         if (permissionsEntities == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
