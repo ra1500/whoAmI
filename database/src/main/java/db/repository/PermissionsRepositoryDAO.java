@@ -27,9 +27,15 @@ public interface PermissionsRepositoryDAO extends JpaRepository<PermissionsEntit
     @Query("SELECT p FROM PermissionsEntity p WHERE p.typeNumber = 1 OR p.typeNumber = 2")
     Set<PermissionsEntity> getScoresPageQsets();
 
+    @Query("SELECT p FROM PermissionsEntity p WHERE p.userName = :userName AND p.auditee = :friend AND p.typeNumber BETWEEN '11' AND '15'")
+    Set<PermissionsEntity> getNetworkContactQsets(String userName, String friend);
+
+    @Query("SELECT p FROM PermissionsEntity p WHERE p.userName = :userName AND p.auditee = :userName AND p.typeNumber = 3")
+    Set<PermissionsEntity> getPrivateProfilePageSelfMadeQsets(String userName);
 
 //    TypeIndex	    score	viewer	            owner	    view group	        PermissionType
 //    typenumber	score	username	        auditee	    group	            type/
+//
 //      1		            everyone	        company	    company	            View QuestionSet
 //      2		            everyone w/login	company	    company	            View QuestionSet
 //      3		            self	            self	    self	            View QuestionSet
@@ -38,6 +44,7 @@ public interface PermissionsRepositoryDAO extends JpaRepository<PermissionsEntit
 //      6		            (List of friends)	self	    Network Colleague	View QuestionSet
 //      7		            (List of friends)	self	    Network Other	    View QuestionSet
 //      8		            (individual)	    self	    Individual	        View QuestionSet
+//
 //      9	        score	self	            self	    public page	        Score
 //      10	        score	self	            self	    private profile pageScore
 //      11	        score	(List of friends)	self	    Network ALL	        Score

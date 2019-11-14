@@ -2,7 +2,9 @@ package neural.controller;
 
 import core.services.PermissionsEntityService;
 import db.entity.PermissionsEntity;
+import db.repository.FriendshipsRepositoryDAO;
 import db.repository.PermissionsRepositoryDAO;
+import db.repository.UserRepositoryDAO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import model.PermissionsEntityDto;
@@ -22,10 +24,12 @@ public class PermissionsController extends AbstractRestController {
 
     private PermissionsEntityService permissionsEntityService;
     private PermissionsRepositoryDAO permissionsRepositoryDAO; // used for delete. shortcut to the repository.
+    private FriendshipsRepositoryDAO friendshipsRepositoryDAO; // shortcut. TODO delete this and go through transformer
 
-    public PermissionsController(PermissionsEntityService permissionsEntityService, PermissionsRepositoryDAO permissionsRepositoryDAO) {
+    public PermissionsController(PermissionsEntityService permissionsEntityService, PermissionsRepositoryDAO permissionsRepositoryDAO, FriendshipsRepositoryDAO friendshipsRepositoryDAO) {
         this.permissionsEntityService = permissionsEntityService;
         this.permissionsRepositoryDAO = permissionsRepositoryDAO;
+        this.friendshipsRepositoryDAO = friendshipsRepositoryDAO;
     }
 
     // GET
@@ -95,7 +99,7 @@ public class PermissionsController extends AbstractRestController {
         return ResponseEntity.ok(permissionsEntities);
     }
 
-    // GET. QSets for 'Scores' page.
+    // GET. QSets for Main/'Scores' page.
     @ApiOperation(value = "permissionsEntity")
     @RequestMapping(value = "/sc/dw", method = RequestMethod.GET)
     public ResponseEntity<Set<PermissionsEntity>> getPermissionsEntityScoresPage(
@@ -132,10 +136,55 @@ public class PermissionsController extends AbstractRestController {
         final String[] values = credentials.split(":", 2);
         String user = values[0];
 
-        //PermissionsEntityDto permissionsEntityDto = permissionsEntityService.getPermissionsEntity(user);
-
         // TODO: Create a set of Dto's in the transformer and return them as a Set instead of direct to repository.
         Set<PermissionsEntity> permissionsEntities = permissionsRepositoryDAO.getPublicProfilePageQsets(user);
+
+        if (permissionsEntities == null) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return ResponseEntity.ok(permissionsEntities);
+    }
+
+    // GET. QSets & user scores for a Network Contact
+    @ApiOperation(value = "permissionsEntity")
+    @RequestMapping(value = "/sc/df{ctc}", method = RequestMethod.GET)
+    public ResponseEntity<Set<PermissionsEntity>> getPermissionsEntityUserScoreNetworkContact(
+            @RequestHeader("Authorization") String token,
+            @RequestParam("ctc") final Long friendId) {
+
+        String base64Credentials = token.substring("Basic".length()).trim();
+        byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
+        String credentials = new String(credDecoded, StandardCharsets.UTF_8);
+        // credentials = username:password
+        final String[] values = credentials.split(":", 2);
+        String user = values[0];
+
+        String friend = friendshipsRepositoryDAO.findOneById(friendId).getFriend(); // TODO clean this up to transformer
+
+        // TODO: Create a set of Dto's in the transformer and return them as a Set instead of direct to repository.
+        Set<PermissionsEntity> permissionsEntities = permissionsRepositoryDAO.getNetworkContactQsets(user, friend);
+
+        if (permissionsEntities == null) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return ResponseEntity.ok(permissionsEntities);
+    }
+
+    // GET. Private Profile page self-made Qsets.
+    @ApiOperation(value = "permissionsEntity")
+    @RequestMapping(value = "/sc/du", method = RequestMethod.GET)
+    public ResponseEntity<Set<PermissionsEntity>> getPermissionsEntityPrivateProfilePage(
+            @RequestHeader("Authorization") String token) {
+
+        String base64Credentials = token.substring("Basic".length()).trim();
+        byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
+        String credentials = new String(credDecoded, StandardCharsets.UTF_8);
+        // credentials = username:password
+        final String[] values = credentials.split(":", 2);
+        String user = values[0];
+
+        // TODO: Create a set of Dto's in the transformer and return them as a Set instead of direct to repository.
+        Set<PermissionsEntity> permissionsEntities = permissionsRepositoryDAO.getPrivateProfilePageSelfMadeQsets(user);
 
         if (permissionsEntities == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);

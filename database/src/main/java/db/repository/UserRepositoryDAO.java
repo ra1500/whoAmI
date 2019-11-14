@@ -9,4 +9,5 @@ public interface UserRepositoryDAO extends JpaRepository<UserEntity, Long> {
 
     UserEntity findOneByUserNameAndPassword(String userName, String password);
     UserEntity findOneByUserName(String userName);
+    UserEntity findOneById(Long id);
 }

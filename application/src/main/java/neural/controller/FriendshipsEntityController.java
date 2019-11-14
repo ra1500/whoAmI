@@ -25,7 +25,7 @@ public class FriendshipsEntityController extends AbstractRestController {
     public FriendshipsEntityController(FriendshipsEntityService friendshipsEntityService) {
         this.friendshipsEntityService = friendshipsEntityService; }
 
-    // POST a friendship
+    // POST a friendship (new or amended, except invitation acceptance)
     @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<FriendshipsEntityDto> createFriendshipsEntity(
             @RequestHeader("Authorization") String token,
