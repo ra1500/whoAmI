@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
@@ -23,7 +24,7 @@ public class QuestionsEntity implements Serializable {
     @Column
     private Date created;
 
-    @Column
+    @Column(length=2)
     private Long sequenceNumber;
 
     @Column
@@ -74,7 +75,7 @@ public class QuestionsEntity implements Serializable {
     @Column(length = 3)
     private Long answer6Points;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "questionSetVersionEntityId")
     private QuestionSetVersionEntity questionSetVersionEntity;
 

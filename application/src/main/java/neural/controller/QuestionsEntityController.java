@@ -24,7 +24,7 @@ public class QuestionsEntityController extends AbstractRestController {
 
     private QuestionsEntityService questionsEntityService;
 
-    // use in micro-service in GET
+    // use in micro-service in GET and Delete
     private QuestionSetVersionRepositoryDAO questionSetVersionRepositoryDAO;
 
     public QuestionsEntityController(QuestionsEntityService questionsEntityService, QuestionSetVersionRepositoryDAO questionSetVersionRepositoryDAO) {
@@ -56,6 +56,7 @@ public class QuestionsEntityController extends AbstractRestController {
         }
         return ResponseEntity.ok(questionsEntityDto);
     }
+
     // POST/PATCH  posts a new one, updates an existing one
     @RequestMapping(value = "/p{qsid}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<QuestionsEntityDto> createQuestionsEntity(
@@ -74,8 +75,8 @@ public class QuestionsEntityController extends AbstractRestController {
 
         questionsEntityDto.setCreativeSource(user);
 
-        QuestionsEntityDto savedQuestionsEntityDto = questionsEntityService.createQuestionsEntity(questionsEntityDto, questionSetVersionEntityId);
+        QuestionsEntityDto savedQuestionsEntityDto = questionsEntityService.createQuestionsEntity(questionsEntityDto, questionSetVersionEntityId, user);
         return ResponseEntity.ok(savedQuestionsEntityDto);
     }
-    
+
 }

@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import javax.transaction.Transactional;
 import java.util.Set;
 
 @Repository
@@ -23,9 +24,8 @@ public interface QuestionsRepositoryDAO extends JpaRepository<QuestionsEntity, L
     @Query("SELECT SUM(maxPoints) FROM QuestionsEntity WHERE questionSetVersionEntityId = ?1")
     Long PointsForQuestionSetVersion(Long questionSetVersion);
 
-    //@Query("Select a FROM QuestionsEntity a")
-    //Set<QuestionsEntity> findSome();
-
+    @Transactional
+    Integer deleteAllByQuestionSetVersionEntityId(Long questionSetVersionEntityId);
 
 }
 

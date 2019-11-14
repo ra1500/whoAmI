@@ -35,7 +35,7 @@ public class QuestionsEntityService {
     }
 
     // POST/PATCH
-    public QuestionsEntityDto createQuestionsEntity(final QuestionsEntityDto questionsEntityDto, final Long questionSetVersionEntityId) {
+    public QuestionsEntityDto createQuestionsEntity(final QuestionsEntityDto questionsEntityDto, final Long questionSetVersionEntityId, final String userName) {
 
         // get questionsEntityDto from db, if it exists.
         QuestionsEntity foundQuestionsEntity = questionsEntityRepository.findOneBySequenceNumberAndQuestionSetVersionEntityId(questionsEntityDto.getSequenceNumber(), questionSetVersionEntityId);
@@ -55,6 +55,11 @@ public class QuestionsEntityService {
         }
 
         else {
+            // validate that user and creator are the same (to allow edits to this questionSet).
+            if (!foundQuestionsEntity.getCreativeSource().equals(userName)) {
+                return questionsEntityDto;}
+
+
             // this else statement is an update/patch. no need to update parent since client already 'knows' who they are. and they are already set.
             foundQuestionsEntity.setSequenceNumber(questionsEntityDto.getSequenceNumber());
             foundQuestionsEntity.setCreativeSource(questionsEntityDto.getCreativeSource());
@@ -73,6 +78,7 @@ public class QuestionsEntityService {
             foundQuestionsEntity.setAnswer5Points(questionsEntityDto.getAnswer5Points());
             foundQuestionsEntity.setAnswer6(questionsEntityDto.getAnswer6());
             foundQuestionsEntity.setAnswer6Points(questionsEntityDto.getAnswer6Points());
+            questionsEntityRepository.save(foundQuestionsEntity);
             return questionsEntityDtoTransformer.generate(foundQuestionsEntity);
         }
     }

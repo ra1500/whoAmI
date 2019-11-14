@@ -1,6 +1,9 @@
 package neural.controller;
 
 import core.services.QuestionSetVersionEntityService;
+import db.entity.QuestionSetVersionEntity;
+import db.repository.PermissionsRepositoryDAO;
+import db.repository.QuestionSetVersionRepositoryDAO;
 import db.repository.QuestionsRepositoryDAO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -21,11 +24,15 @@ public class QuestionSetVersionController extends AbstractRestController {
 
     private QuestionSetVersionEntityService questionSetVersionEntityService;
     private QuestionsRepositoryDAO questionsRepositoryDAO;
+    private QuestionSetVersionRepositoryDAO questionSetVersionRepositoryDAO;
+    private PermissionsRepositoryDAO permissionsRepositoryDAO;
 
     public QuestionSetVersionController(QuestionSetVersionEntityService questionSetVersionEntityService,
-                                        QuestionsRepositoryDAO questionsRepositoryDAO) {
+                                        QuestionsRepositoryDAO questionsRepositoryDAO, QuestionSetVersionRepositoryDAO questionSetVersionRepositoryDAO, PermissionsRepositoryDAO permissionsRepositoryDAO) {
         this.questionSetVersionEntityService = questionSetVersionEntityService;
-        this.questionsRepositoryDAO = questionsRepositoryDAO; }
+        this.questionsRepositoryDAO = questionsRepositoryDAO;
+        this.questionSetVersionRepositoryDAO = questionSetVersionRepositoryDAO;
+        this.permissionsRepositoryDAO = permissionsRepositoryDAO; }
 
     // GET questionSetVersion. DTO excludes Set<Questions> to reduce load.
     @ApiOperation(value = "getQuestionsEntity")
@@ -73,7 +80,7 @@ public class QuestionSetVersionController extends AbstractRestController {
         return ResponseEntity.ok(savedQuestionSetVersionEntityDto);
     }
 
-    // GET maxPoints and maxQtyQuestions
+    // GET Scores page. maxPoints and maxQtyQuestions
     @ApiOperation(value = "getMaxQtyQuestions")
     @RequestMapping(value = "/q{sn}", method = RequestMethod.GET)
     public ResponseEntity<String> getMaxQtyQuestions(
@@ -96,6 +103,37 @@ public class QuestionSetVersionController extends AbstractRestController {
         else {
             String maxQtyQuestionsJSON = "{\"maxQtyQuestions\":" + maxQtyQuestions + ", \"maxPoints\":" + maxPoints + "}";
             return ResponseEntity.ok(maxQtyQuestionsJSON);}
+    }
+
+    // POST  delete all questions and respective Qset.
+    @RequestMapping(value = "/da", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> deleteAllQuestionsInQset(
+            @Valid
+            @RequestBody final QuestionSetVersionEntityDto questionSetVersionEntityDto,
+            @RequestHeader("Authorization") String token) {
+
+        String base64Credentials = token.substring("Basic".length()).trim();
+        byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
+        String credentials = new String(credDecoded, StandardCharsets.UTF_8);
+        // credentials = username:password
+        final String[] values = credentials.split(":", 2);
+        String user = values[0];
+
+        // validate user is creator
+        QuestionSetVersionEntity foundQuestionSetVersionEntity = questionSetVersionRepositoryDAO.findOneById(questionSetVersionEntityDto.getId());
+        if (!foundQuestionSetVersionEntity.getCreativeSource().equals(user)) {
+            String noCredentials = "no valid token";
+            return ResponseEntity.ok(noCredentials);
+        }
+
+        permissionsRepositoryDAO.deleteAllByQuestionSetVersionEntityId(questionSetVersionEntityDto.getId());
+        questionsRepositoryDAO.deleteAllByQuestionSetVersionEntityId(questionSetVersionEntityDto.getId());
+        questionSetVersionRepositoryDAO.deleteById(questionSetVersionEntityDto.getId());
+
+
+        String allDeleted = "Deleted";
+
+        return ResponseEntity.ok(allDeleted);
     }
 
 }

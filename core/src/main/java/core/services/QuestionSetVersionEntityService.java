@@ -41,6 +41,8 @@ public class QuestionSetVersionEntityService {
         // get questionSetVersionEntity from db, if it exists.
         QuestionSetVersionEntity questionSetVersionEntity = questionSetVersionEntityRepository.findOneById(questionSetVersionEntityId);
 
+
+
         if (questionSetVersionEntity == null) {
 
             // create and save new questionSetVersionEntity
@@ -54,6 +56,10 @@ public class QuestionSetVersionEntityService {
             return questionSetVersionEntityDtoTransformer.generate(newQuestionSetVersionEntity);
         }
         else {
+            // validate that user and creator are the same (to allow edits to this questionSet).
+            if (!questionSetVersionEntity.getCreativeSource().equals(userName)) {
+                return questionSetVersionEntityDto;}
+
             //questionSetVersionEntity.setId(questionSetVersionEntityDto.getId());
             //questionSetVersionEntity.setCreated(questionSetVersionEntityDto.getCreated());
             questionSetVersionEntity.setTitle(questionSetVersionEntityDto.getTitle());
