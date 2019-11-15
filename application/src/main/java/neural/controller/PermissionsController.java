@@ -75,9 +75,9 @@ public class PermissionsController extends AbstractRestController {
         return ResponseEntity.ok(savedPermissionsEntityDto);
     }
 
-    // POST/PATCH  post to let friends view new user Qset
+    // POST/PATCH  post to let a group of connections view new user Qset
     @RequestMapping(value = "/sc/n{qsId}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<PermissionsEntityDto> createFriendsViewQsetsPermissionsEntities(
+    public ResponseEntity<String> createFriendsViewQsetsPermissionsEntities(
             @Valid
             @RequestBody final PermissionsEntityDto permissionsEntityDto,
             @RequestHeader("Authorization") String token,
@@ -90,11 +90,8 @@ public class PermissionsController extends AbstractRestController {
         final String[] values = credentials.split(":", 2);
         String user = values[0];
 
-        // userName from token
-        permissionsEntityDto.setUserName(user);
-
-        PermissionsEntityDto savedPermissionsEntityDto = permissionsEntityService.createPermissionsEntity(permissionsEntityDto, questionSetVersionEntityId, user);
-        return ResponseEntity.ok(savedPermissionsEntityDto);
+        String savedQsetViewPermissionsEntities = permissionsEntityService.createQsetViewPermissionEntities(permissionsEntityDto.getTypeNumber(), questionSetVersionEntityId, user);
+        return ResponseEntity.ok(savedQsetViewPermissionsEntities);
     }
 
     // GET. QSets & user scores for Private Profile Page.
