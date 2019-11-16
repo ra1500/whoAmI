@@ -94,6 +94,25 @@ public class PermissionsController extends AbstractRestController {
         return ResponseEntity.ok(savedQsetViewPermissionsEntities);
     }
 
+    // POST/PATCH  post to let an individual connection view new user Qset
+    @RequestMapping(value = "/sc/o{qsId}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> createIndividualViewQsetsPermissionsEntities(
+            @Valid
+            @RequestBody final PermissionsEntityDto permissionsEntityDto,
+            @RequestHeader("Authorization") String token,
+            @RequestParam("qsId") final Long questionSetVersionEntityId) {
+
+        String base64Credentials = token.substring("Basic".length()).trim();
+        byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
+        String credentials = new String(credDecoded, StandardCharsets.UTF_8);
+        // credentials = username:password
+        final String[] values = credentials.split(":", 2);
+        String user = values[0];
+
+        String savedQsetViewPermissionsEntities = permissionsEntityService.createIndividualQsetViewPermissionEntity(questionSetVersionEntityId, user, permissionsEntityDto.getUserName());
+        return ResponseEntity.ok(savedQsetViewPermissionsEntities);
+    }
+
     // GET. QSets & user scores for Private Profile Page.
     @ApiOperation(value = "permissionsEntity")
     @RequestMapping(value = "/sc/dr", method = RequestMethod.GET)

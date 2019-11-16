@@ -77,7 +77,7 @@ public class PermissionsEntityService {
         }
     }
 
-    // POST generate a Set of QsetView permissions
+    // POST generate a Set of QsetView permissions (for groups)
     public String createQsetViewPermissionEntities (Long typeNumber, Long questionSetVersionEntityId ,String userName) {
 
         // get the QsetEntity to add as parent to each permissionEntity
@@ -113,4 +113,26 @@ public class PermissionsEntityService {
 
         return new String("Qset Permissions set");
     }
+
+    // POST generate a QsetView permissions (for an individual invitee)
+    public String createIndividualQsetViewPermissionEntity (Long questionSetVersionEntityId, String userName, String invitee) {
+
+        // get the QsetEntity to add as parent to the permissionEntity
+        QuestionSetVersionEntity foundQuestionSetVersionEntity = questionSetVersionRepositoryDAO.findOneById(questionSetVersionEntityId);
+
+        // validate that token user is same as Qset creator
+        if (!foundQuestionSetVersionEntity.getCreativeSource().equals(userName)) {
+            return new String("invalid operation");
+        }
+
+        // Stream through list of connections and then create the respective permission
+        Set<FriendshipsEntity> foundFriendshipsEntities = userRepositoryDAO.findOneByUserName(userName).getFriendsSet();
+
+        Stream<FriendshipsEntity> stream = foundFriendshipsEntities.stream().filter(element -> element.getFriend().equals(invitee));
+        stream.forEach(element -> permissionsRepositoryDAO.saveAndFlush(new PermissionsEntity(element.getFriend(),
+                    userName, "Network", "viewQuestionSet",  new Long(8), new Long(0), foundQuestionSetVersionEntity)));
+
+        return new String("Qset Permission set");
+    }
+
 }
