@@ -27,5 +27,8 @@ public interface QuestionsRepositoryDAO extends JpaRepository<QuestionsEntity, L
     @Transactional
     Integer deleteAllByQuestionSetVersionEntityId(Long questionSetVersionEntityId);
 
+    @Query("SELECT a FROM QuestionsEntity a JOIN FETCH a.questionSetVersionEntity b WHERE b.id = :questionSetVersionEntityId AND a.sequenceNumber = 1")
+    QuestionsEntity findOneByQuestionSetVersionEntityId(Long questionSetVersionEntityId);
+
 }
 

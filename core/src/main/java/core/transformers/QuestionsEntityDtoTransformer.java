@@ -10,7 +10,7 @@ public class QuestionsEntityDtoTransformer {
     public QuestionsEntityDtoTransformer() {
     }
 
-    // GET from db
+    // GET from db. with no parent LAZY
     public QuestionsEntityDto generate(final QuestionsEntity questionsEntity) {
         if (questionsEntity == null || questionsEntity.getId() == null) {
             return null;
@@ -35,6 +35,35 @@ public class QuestionsEntityDtoTransformer {
         dto.setAnswer5Points(questionsEntity.getAnswer5Points());
         dto.setAnswer6(questionsEntity.getAnswer6());
         dto.setAnswer6Points(questionsEntity.getAnswer6Points());
+        return dto;
+    }
+
+    // GET from db. with parent FETCH
+    public QuestionsEntityDto generateEAGER(final QuestionsEntity questionsEntity) {
+        if (questionsEntity == null || questionsEntity.getId() == null) {
+            return null;
+        }
+        QuestionsEntityDto dto = new QuestionsEntityDto();
+        dto.setId(questionsEntity.getId());
+        dto.setCreated(questionsEntity.getCreated());
+        dto.setSequenceNumber(questionsEntity.getSequenceNumber());
+        dto.setCreativeSource(questionsEntity.getCreativeSource());
+        dto.setQuestion(questionsEntity.getQuestion());
+        dto.setCategory(questionsEntity.getCategory());
+        dto.setMaxPoints(questionsEntity.getMaxPoints());
+        dto.setAnswer1(questionsEntity.getAnswer1());
+        dto.setAnswer1Points(questionsEntity.getAnswer1Points());
+        dto.setAnswer2(questionsEntity.getAnswer2());
+        dto.setAnswer2Points(questionsEntity.getAnswer2Points());
+        dto.setAnswer3(questionsEntity.getAnswer3());
+        dto.setAnswer3Points(questionsEntity.getAnswer3Points());
+        dto.setAnswer4(questionsEntity.getAnswer4());
+        dto.setAnswer4Points(questionsEntity.getAnswer4Points());
+        dto.setAnswer5(questionsEntity.getAnswer5());
+        dto.setAnswer5Points(questionsEntity.getAnswer5Points());
+        dto.setAnswer6(questionsEntity.getAnswer6());
+        dto.setAnswer6Points(questionsEntity.getAnswer6Points());
+        dto.setQuestionSetVersionEntity(questionsEntity.getQuestionSetVersionEntity()); // used in JOIN FETCH
         return dto;
     }
 

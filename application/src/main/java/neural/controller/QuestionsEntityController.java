@@ -31,7 +31,7 @@ public class QuestionsEntityController extends AbstractRestController {
         this.questionsEntityService = questionsEntityService;
         this.questionSetVersionRepositoryDAO = questionSetVersionRepositoryDAO; }
 
-    // GET a single question.
+    // GET. Lazy load a single question. without parent (Lazy load)
     @ApiOperation(value = "getQuestionsEntity")
     @RequestMapping(value = "/{qsid}/{qid}", method = RequestMethod.GET)
     public ResponseEntity<QuestionsEntityDto> getQuestionsEntity(
@@ -50,6 +50,30 @@ public class QuestionsEntityController extends AbstractRestController {
         String user = values[0];
 
         QuestionsEntityDto questionsEntityDto = questionsEntityService.getQuestionsEntity(sequenceNumber, questionSetVersionEntityId);
+
+        if (questionsEntityDto == null) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return ResponseEntity.ok(questionsEntityDto);
+    }
+
+    // GET. Eager load a single question. with Parent. For 'AskManage'
+    @ApiOperation(value = "getQuestionsEntity")
+    @RequestMapping(value = "f/{qsid}", method = RequestMethod.GET)
+    public ResponseEntity<QuestionsEntityDto> getQuestionsEntityWithParent(
+            @RequestHeader("Authorization") String token,
+            @PathVariable("qsid")
+            final Long questionSetVersionEntityId) {
+
+        // secured by token
+        String base64Credentials = token.substring("Basic".length()).trim();
+        byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
+        String credentials = new String(credDecoded, StandardCharsets.UTF_8);
+        // credentials = username:password
+        final String[] values = credentials.split(":", 2);
+        String user = values[0];
+
+        QuestionsEntityDto questionsEntityDto = questionsEntityService.getQuestionsEntityWithParent(questionSetVersionEntityId);
 
         if (questionsEntityDto == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);

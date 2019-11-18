@@ -29,9 +29,15 @@ public class QuestionsEntityService {
         this.questionSetVersionRepositoryDAO = questionSetVersionRepositoryDAO;
     }
 
-    // GET a question
+    // GET a question (lazy load, no parent)
     public QuestionsEntityDto getQuestionsEntity(final Long questionSetVersionEntityId, Long sequenceNumber) {
+        // TODO validate that user has permission to the qsets that these questions belong to.
         return questionsEntityDtoTransformer.generate(questionsEntityRepository.findOneBySequenceNumberAndQuestionSetVersionEntityId(questionSetVersionEntityId, sequenceNumber));
+    }
+
+    // GET a question (eager load, with parent)
+    public QuestionsEntityDto getQuestionsEntityWithParent(final Long questionSetVersionEntityId) {
+        return questionsEntityDtoTransformer.generateEAGER(questionsEntityRepository.findOneByQuestionSetVersionEntityId(questionSetVersionEntityId));
     }
 
     // POST/PATCH

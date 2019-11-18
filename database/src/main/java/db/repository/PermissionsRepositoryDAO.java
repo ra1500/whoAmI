@@ -14,6 +14,7 @@ public interface PermissionsRepositoryDAO extends JpaRepository<PermissionsEntit
 
     PermissionsEntity findOneByUserNameAndAuditeeAndQuestionSetVersionEntityId(String userName, String auditee, Long questionSetVersionEntityId);
     PermissionsEntity findOneByUserNameAndTypeNumberAndQuestionSetVersionEntityId(String userName, Long typeNumber, Long questionSetVersionEntityId);
+    PermissionsEntity findOneByIdAndUserName(Long Id, String userName);
 
     @Transactional // PermissionsController
     Integer deleteOneById(Long id);

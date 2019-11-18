@@ -40,6 +40,11 @@ public class PermissionsEntityService {
         return permissionsEntityDtoTransformer.generate(permissionsRepositoryDAO.findOneByUserNameAndAuditeeAndQuestionSetVersionEntityId(userName, auditee, questionSetVersionEntityId));
     }
 
+    // GET
+    public PermissionsEntityDto getPermissionsEntity(final Long Id, final String userName) {
+        return permissionsEntityDtoTransformer.generate(permissionsRepositoryDAO.findOneByIdAndUserName(Id, userName));
+    }
+
     // POST/PATCH  post if not found, otherwise patch.
     public PermissionsEntityDto createPermissionsEntity(final PermissionsEntityDto permissionsEntityDto, final Long questionSetVersionEntityId, final String userName) {
 

@@ -1,18 +1,21 @@
 package core.services;
 
 import core.transformers.UserAnswersEntityDtoTransformer;
+import db.entity.FriendshipsEntity;
 import db.entity.QuestionSetVersionEntity;
 import db.entity.QuestionsEntity;
 import db.entity.UserAnswersEntity;
 import db.repository.QuestionSetVersionRepositoryDAO;
 import db.repository.QuestionsRepositoryDAO;
 import db.repository.UserAnswersRepositoryDAO;
+import db.repository.UserRepositoryDAO;
 import model.UserAnswersEntityDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
+import java.util.stream.Stream;
 
 @Service
 public class UserAnswersEntityService {
@@ -21,13 +24,16 @@ public class UserAnswersEntityService {
     private final UserAnswersRepositoryDAO userAnswersEntityRepository;
     private final QuestionsRepositoryDAO questionsRepositoryDAO;
     private final UserAnswersEntityDtoTransformer userAnswersEntityDtoTransformer;
+    private final UserRepositoryDAO userRepositoryDAO;
 
     public UserAnswersEntityService(final UserAnswersRepositoryDAO userAnswersEntityRepository,
                                     final UserAnswersEntityDtoTransformer userAnswersEntityDtoTransformer,
-                                    final QuestionsRepositoryDAO questionsRepositoryDAO) {
+                                    final QuestionsRepositoryDAO questionsRepositoryDAO,
+                                    final UserRepositoryDAO userRepositoryDAO) {
         this.userAnswersEntityRepository = userAnswersEntityRepository;
         this.userAnswersEntityDtoTransformer = userAnswersEntityDtoTransformer;
         this.questionsRepositoryDAO = questionsRepositoryDAO;
+        this.userRepositoryDAO = userRepositoryDAO;
     }
 
     // GET an answer
@@ -59,7 +65,6 @@ public class UserAnswersEntityService {
 
             return userAnswersEntityDtoTransformer.generate(newUserAnswersEntity);
 
-
         }
         else {
             // this else statement is an update/patch. no need to update parents since client already 'knows' who they are. and they are already set.
@@ -71,6 +76,27 @@ public class UserAnswersEntityService {
             userAnswersEntityRepository.save(userAnswersEntity);
             return userAnswersEntityDtoTransformer.generate(userAnswersEntity);
         }
+    }
+
+    // POST audit permissions (adding a user's answers to the auditor's lists/sets of answers).
+    public String createUserAnswersEntitiesForAudits(final String user, final Long questionSetVersionEntityId) {
+
+
+        Set<FriendshipsEntity> foundFriendshipsEntities = userRepositoryDAO.findOneByUserName(user).getFriendsSet();
+        Set<UserAnswersEntity> foundUserAnswersEntities = userAnswersEntityRepository.findAllByUserNameAndAuditeeAndQuestionSetVersionEntityId(user, user, questionSetVersionEntityId);
+
+
+        Stream<FriendshipsEntity> stream1 = foundFriendshipsEntities.stream().filter(element -> element.getConnectionType().equals("Friend"));
+        Stream<UserAnswersEntity> stream2 = foundUserAnswersEntities.stream();
+
+        stream1.forEach(element1 ->  stream2.forEach(element2 -> userAnswersEntityRepository.save(
+                new UserAnswersEntity( element1.getFriend(), element2.getAnswer(), element2.getAnswerPoints(), element2.getAuditee(), element2.getComments(), element2.getQuestionsEntity(), element2.getQuestionSetVersionEntity() ))
+        ));
+
+
+
+        String auditorsSet = "{ auditors added }";
+        return auditorsSet;
     }
 
     public String deleteAllAnswersForUserNameAndAuditeeAndQuestionSetVersionEntityId(String user, String auditee, Long questionSetVersionEntityId) {

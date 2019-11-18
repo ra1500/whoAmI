@@ -95,16 +95,15 @@ public class UserAnswersEntityController extends AbstractRestController {
         return ResponseEntity.ok(deleted);
     }
 
-    //  -- Aggregate Queries -- Delete all of these. Now resides in Permissions Controller.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    // GET. Private Profile Page.
-    @ApiOperation(value = "getUserScoresAggregates")
-    @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<String> getUserScoresAggregate(
+    // POST audit permissions for a qset. from 'ScoresList'/manageAudits.
+    @RequestMapping(value = "/fr/{qsId}",method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> allowAuditsFriends(
+            @Valid
+            @RequestBody
+            final UserAnswersEntityDto userAnswersEntityDto,
             @RequestHeader("Authorization") String token,
-            @RequestParam("sv") final Long questionSetVersionEntityId,
-            @RequestParam("au") final String auditee) {
+            @PathVariable("qsId") final Long questionSetVersionEntityId) {
+
         String base64Credentials = token.substring("Basic".length()).trim();
         byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
         String credentials = new String(credDecoded, StandardCharsets.UTF_8);
@@ -112,60 +111,11 @@ public class UserAnswersEntityController extends AbstractRestController {
         final String[] values = credentials.split(":", 2);
         String user = values[0];
 
-        Long userScore = userAnswersRepositoryDAO.findUserScoresTotal(user, auditee, questionSetVersionEntityId);
+        String auditorsSet = userAnswersEntityService.createUserAnswersEntitiesForAudits(user, questionSetVersionEntityId);
 
-        if (userScore == null) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT); }
-        else {
-            String userScoreJSON = "{\"userScore\":" + userScore + "}";
-            return ResponseEntity.ok(userScoreJSON);}
+        return ResponseEntity.ok(auditorsSet);
     }
 
-    // GET for use in the public URL. anyone can access.
-    @ApiOperation(value = "getUserScoresAggregates")
-    @RequestMapping(value = "/scores", method = RequestMethod.GET)
-    public ResponseEntity<String> getUserScore(
-            @RequestParam("id") final String userName,
-            @RequestParam("sv") final Long questionSetVersion) {
 
-        // Checking Permissions
-        //UserEntity userEntity = findOneByUser
-
-        String auditee = userName;
-        Long userScore = userAnswersRepositoryDAO.findUserScoresTotal(userName, auditee, questionSetVersion);
-
-        if (userScore > 0) {
-            String userScoreJSON = "{\"userScore\":" + userScore + "}";
-            return ResponseEntity.ok(userScoreJSON);}
-        // this else does not work. can't evaluate if expression if SQL finds nothing
-        else {
-            String userScoreJSON = "{\"userScore\": 0 }";
-            return ResponseEntity.ok(userScoreJSON);}
-    }
-
-    // delete. not needed.
-    // GET Qsets and Results for the privateProfilePage.
-   // @ApiOperation(value = "getPrivateProfileQsets")
-   // @RequestMapping(value = "/pr", method = RequestMethod.GET)
-   // public ResponseEntity<Set<UserAnswersEntity>>getPrivateProfileQsets(
-   //         @RequestHeader("Authorization") String token) {
-
-        // secured by token
-   //     String base64Credentials = token.substring("Basic".length()).trim();
-   //     byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
-   //     String credentials = new String(credDecoded, StandardCharsets.UTF_8);
-        // credentials = username:password
-   //     final String[] values = credentials.split(":", 2);
-   //     String user = values[0];
-
-    //    Set<UserAnswersEntity> userAnswersEntities = userAnswersRepositoryDAO.findSome();
-
-
-    //    if (userAnswersEntities == null) {
-    //        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    //    }
-
-    //    return ResponseEntity.ok(userAnswersEntities);
-    //}
 
 }
