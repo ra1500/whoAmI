@@ -14,6 +14,7 @@ public interface UserAnswersRepositoryDAO extends JpaRepository<UserAnswersEntit
 
     UserAnswersEntity findOneById(Long id); // used in UserAnswersEntity Test
     UserAnswersEntity findOneByUserNameAndAuditeeAndQuestionsEntityId(String userName, String auditee, Long questionsEntityId);
+    UserAnswersEntity findOneByUserNameAndAuditeeAndQuestionSetVersionEntityId(String userName, String auditee, Long questionSetVersionEntityId);
 
 
     Set<UserAnswersEntity> findAllByUserNameAndAuditeeAndQuestionSetVersionEntityId(String userName, String auditee, Long questinSetVersionEntityId); // used in setting auditors

@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -78,24 +79,64 @@ public class UserAnswersEntityService {
         }
     }
 
-    // POST audit permissions (adding a user's answers to the auditor's lists/sets of answers).
-    public String createUserAnswersEntitiesForAudits(final String user, final Long questionSetVersionEntityId) {
-
+    // POST audit permissions. Group: Friend, Colleague, Other. (replicating a user's set of answers but making userName = to the auditor).
+    public String createUserAnswersEntitiesForAudits(final String user, final Long questionSetVersionEntityId, final String group) {
 
         Set<FriendshipsEntity> foundFriendshipsEntities = userRepositoryDAO.findOneByUserName(user).getFriendsSet();
         Set<UserAnswersEntity> foundUserAnswersEntities = userAnswersEntityRepository.findAllByUserNameAndAuditeeAndQuestionSetVersionEntityId(user, user, questionSetVersionEntityId);
 
-
-        Stream<FriendshipsEntity> stream1 = foundFriendshipsEntities.stream().filter(element -> element.getConnectionType().equals("Friend"));
+        Stream<FriendshipsEntity> stream1 = foundFriendshipsEntities.stream().filter(element -> element.getConnectionType().equals(group));
         Stream<UserAnswersEntity> stream2 = foundUserAnswersEntities.stream();
 
-        stream1.forEach(element1 ->  stream2.forEach(element2 -> userAnswersEntityRepository.save(
-                new UserAnswersEntity( element1.getFriend(), element2.getAnswer(), element2.getAnswerPoints(), element2.getAuditee(), element2.getComments(), element2.getQuestionsEntity(), element2.getQuestionSetVersionEntity() ))
-        ));
+        stream1.forEach(element1 ->  stream2.forEach(element2 -> {if (userAnswersEntityRepository.findOneByUserNameAndAuditeeAndQuestionSetVersionEntityId(element1.getFriend(), user, questionSetVersionEntityId) == null) {
+                userAnswersEntityRepository.save(
+                new UserAnswersEntity( element1.getFriend(), element2.getAnswer(), element2.getAnswerPoints(), element2.getAuditee(),
+                        element2.getComments(), element2.getQuestionsEntity(), element2.getQuestionSetVersionEntity() ));
+          } // end if
+        }));
 
+        String auditorsSet = " {auditors added} ";
+        return auditorsSet;
+    }
 
+    // POST audit permissions. Everyone in friendships set. (replicating a user's set of answers but making userName = to the auditor).
+    public String createUserAnswersEntitiesForAuditsEveryone(final String user, final Long questionSetVersionEntityId) {
 
-        String auditorsSet = "{ auditors added }";
+        Stream<FriendshipsEntity> stream1 = userRepositoryDAO.findOneByUserName(user).getFriendsSet().stream();
+        Set<UserAnswersEntity> foundUserAnswersEntities = userAnswersEntityRepository.findAllByUserNameAndAuditeeAndQuestionSetVersionEntityId(user, user, questionSetVersionEntityId);
+
+        Stream<UserAnswersEntity> stream2 = foundUserAnswersEntities.stream();
+
+        stream1.forEach(element1 ->  stream2.forEach(element2 -> {if (userAnswersEntityRepository.findOneByUserNameAndAuditeeAndQuestionSetVersionEntityId(element1.getFriend(), user, questionSetVersionEntityId) == null) {
+            userAnswersEntityRepository.save(
+                    new UserAnswersEntity( element1.getFriend(), element2.getAnswer(), element2.getAnswerPoints(), element2.getAuditee(),
+                            element2.getComments(), element2.getQuestionsEntity(), element2.getQuestionSetVersionEntity() ));
+        } // end if
+        }));
+
+        String auditorsSet = " {auditors added} ";
+        return auditorsSet;
+    }
+
+    // POST audit permissions. Individual friend. (replicating a user's set of answers but making userName = to the auditor).
+    public String createUserAnswersEntitiesForAuditsIndividual(final String user, final String friend, final Long questionSetVersionEntityId) {
+
+        Stream<FriendshipsEntity> stream1 = userRepositoryDAO.findOneByUserName(user).getFriendsSet().stream();
+        boolean isAfriend = stream1.anyMatch(element -> element.getFriend().contains(friend));
+
+        Set<UserAnswersEntity> foundUserAnswersEntities = userAnswersEntityRepository.findAllByUserNameAndAuditeeAndQuestionSetVersionEntityId(user, user, questionSetVersionEntityId);
+        Stream<UserAnswersEntity> stream2 = foundUserAnswersEntities.stream();
+
+        if ( isAfriend ) {
+            stream2.forEach(element2 -> {if (userAnswersEntityRepository.findOneByUserNameAndAuditeeAndQuestionSetVersionEntityId(friend, user, questionSetVersionEntityId) == null) {
+                userAnswersEntityRepository.save(
+                        new UserAnswersEntity( friend, element2.getAnswer(), element2.getAnswerPoints(), element2.getAuditee(),
+                                element2.getComments(), element2.getQuestionsEntity(), element2.getQuestionSetVersionEntity() ));
+            } // end if
+            });
+        }
+
+        String auditorsSet = " {auditor added} ";
         return auditorsSet;
     }
 

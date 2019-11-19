@@ -51,6 +51,30 @@ public class UserAnswersEntityController extends AbstractRestController {
         return ResponseEntity.ok(userAnswersEntityDto);
     }
 
+    // GET userScores Total for 'Questions'
+    @ApiOperation(value = "getUserScoresAggregates")
+    @RequestMapping(method = RequestMethod.GET)
+    public ResponseEntity<String> getUserScoresAggregate(
+            @RequestHeader("Authorization") String token,
+            @RequestParam("sv") final Long questionSetVersionEntityId,
+            @RequestParam("au") final String auditee) {
+        String base64Credentials = token.substring("Basic".length()).trim();
+        byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
+        String credentials = new String(credDecoded, StandardCharsets.UTF_8);
+        // credentials = username:password
+        final String[] values = credentials.split(":", 2);
+        String user = values[0];
+
+        Long userScore = userAnswersRepositoryDAO.findUserScoresTotal(user, auditee, questionSetVersionEntityId);
+
+        if (userScore == null) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            String userScoreJSON = "{\"userScore\":" + userScore + "}";
+            return ResponseEntity.ok(userScoreJSON);
+        }
+    }
+
     // POST/PATCH a user's answer to a question.
     @RequestMapping(value = "/{qId}",method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserAnswersEntityDto> createUserAnswersEntity(
@@ -96,8 +120,37 @@ public class UserAnswersEntityController extends AbstractRestController {
     }
 
     // POST audit permissions for a qset. from 'ScoresList'/manageAudits.
-    @RequestMapping(value = "/fr/{qsId}",method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/fr/{qsId}/{grp}",method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> allowAuditsFriends(
+            @Valid
+            @RequestBody
+            final UserAnswersEntityDto userAnswersEntityDto,
+            @RequestHeader("Authorization") String token,
+            @PathVariable("qsId") final Long questionSetVersionEntityId,
+            @PathVariable("grp") String group) {
+
+        String base64Credentials = token.substring("Basic".length()).trim();
+        byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
+        String credentials = new String(credDecoded, StandardCharsets.UTF_8);
+        // credentials = username:password
+        final String[] values = credentials.split(":", 2);
+        String user = values[0];
+
+        if (group.equals("e")) {
+            String auditorsSet = userAnswersEntityService.createUserAnswersEntitiesForAuditsEveryone(user, questionSetVersionEntityId);
+        };
+
+        if (group.equals("f")) { group = "Friend"; };
+        if (group.equals("c")) { group = "Colleague"; };
+        if (group.equals("o")) { group = "Other"; };
+        String auditorsSet = userAnswersEntityService.createUserAnswersEntitiesForAudits(user, questionSetVersionEntityId, group);
+
+        return ResponseEntity.ok(auditorsSet);
+    }
+
+    // POST audit permissions for a qset (Individual). from 'ScoresList'/manageAudits.
+    @RequestMapping(value = "/in/{qsId}",method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> allowAuditsIndividual(
             @Valid
             @RequestBody
             final UserAnswersEntityDto userAnswersEntityDto,
@@ -111,11 +164,10 @@ public class UserAnswersEntityController extends AbstractRestController {
         final String[] values = credentials.split(":", 2);
         String user = values[0];
 
-        String auditorsSet = userAnswersEntityService.createUserAnswersEntitiesForAudits(user, questionSetVersionEntityId);
+        String auditorsSet = userAnswersEntityService.createUserAnswersEntitiesForAuditsIndividual(user, userAnswersEntityDto.getUserName(), questionSetVersionEntityId);
 
         return ResponseEntity.ok(auditorsSet);
     }
-
 
 
 }
