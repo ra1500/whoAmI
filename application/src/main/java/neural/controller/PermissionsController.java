@@ -252,6 +252,31 @@ public class PermissionsController extends AbstractRestController {
         return ResponseEntity.ok(permissionsEntityDto);
     }
 
+    // GET. QSets & user scores for Private Profile Page.
+    @ApiOperation(value = "permissionsEntity")
+    @RequestMapping(value = "/sc/de{qsId}", method = RequestMethod.GET)
+    public ResponseEntity<Set<PermissionsEntity>> getPermissionsEntityViewAudits(
+            @RequestHeader("Authorization") String token,
+            @RequestParam("qsId") final Long questionSetVersionEntityId) {
+
+        String base64Credentials = token.substring("Basic".length()).trim();
+        byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
+        String credentials = new String(credDecoded, StandardCharsets.UTF_8);
+        // credentials = username:password
+        final String[] values = credentials.split(":", 2);
+        String user = values[0];
+
+        //PermissionsEntityDto permissionsEntityDto = permissionsEntityService.getPermissionsEntity(user);
+
+        // TODO: Create a set of Dto's in the transformer and return them as a Set instead of direct to repository.
+        Set<PermissionsEntity> permissionsEntities = permissionsRepositoryDAO.getAudits(user, questionSetVersionEntityId);
+
+        if (permissionsEntities == null) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return ResponseEntity.ok(permissionsEntities);
+    }
+
     // POST/DELETE. Delete a score completely from permissionsEntity
     @ApiOperation(value = "permissionsEntity")
     @RequestMapping(value = "/sc/dl", method = RequestMethod.POST)

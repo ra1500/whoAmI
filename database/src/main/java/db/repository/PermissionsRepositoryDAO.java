@@ -22,7 +22,7 @@ public interface PermissionsRepositoryDAO extends JpaRepository<PermissionsEntit
     @Transactional // used in QuestionSetVersionController when a user deletes their Qset.
     Integer deleteAllByQuestionSetVersionEntityId(Long id);
 
-    @Query("SELECT p FROM PermissionsEntity p WHERE p.userName = :userName AND p.typeNumber = 9 OR p.typeNumber = 10")
+    @Query("SELECT p FROM PermissionsEntity p WHERE p.userName = :userName AND p.typeNumber BETWEEN '9' AND 15")
     Set<PermissionsEntity> getPrivateProfilePageQsets(String userName);
 
     @Query("SELECT p FROM PermissionsEntity p WHERE p.userName = :userName AND p.typeNumber = 9")
@@ -31,11 +31,14 @@ public interface PermissionsRepositoryDAO extends JpaRepository<PermissionsEntit
     @Query("SELECT p FROM PermissionsEntity p WHERE p.typeNumber = 1 OR p.typeNumber = 2")
     Set<PermissionsEntity> getScoresPageQsets();
 
-    @Query("SELECT p FROM PermissionsEntity p WHERE p.userName = :userName AND p.auditee = :friend AND p.typeNumber BETWEEN '11' AND '15'")
+    @Query("SELECT p FROM PermissionsEntity p WHERE p.userName = :userName AND p.auditee = :friend AND p.typeNumber BETWEEN '11' AND '15' OR p.auditee = :friend AND p.typeNumber = '9'")
     Set<PermissionsEntity> getNetworkContactQsets(String userName, String friend);
 
     @Query("SELECT p FROM PermissionsEntity p WHERE p.userName = :userName AND p.auditee = :userName AND p.typeNumber = 3")
     Set<PermissionsEntity> getPrivateProfilePageSelfMadeQsets(String userName);
+
+    @Query("SELECT p FROM PermissionsEntity p JOIN FETCH p.questionSetVersionEntity b WHERE b.id = :questionSetVersionEntityId AND p.auditee = :userName AND p.typeNumber = 16")
+    Set<PermissionsEntity> getAudits(String userName, Long questionSetVersionEntityId);
 
 //    TypeIndex	    score	viewer	            owner	    view group	        PermissionType
 //    typenumber	score	username	        auditee	    group	            type/
@@ -56,5 +59,6 @@ public interface PermissionsRepositoryDAO extends JpaRepository<PermissionsEntit
 //      13	        score	(List of friends)	self	    Network Colleague	Score
 //      14	        score	(List of friends)	self	    Network Other	    Score
 //      15	        score	(individual)	    self	    (individual)	    Score
+//      16                                                                      audit posted
 
 }

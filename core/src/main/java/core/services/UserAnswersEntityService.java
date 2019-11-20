@@ -42,6 +42,11 @@ public class UserAnswersEntityService {
         return userAnswersEntityDtoTransformer.generate(userAnswersEntityRepository.findOneByUserNameAndAuditeeAndQuestionsEntityId(userName, auditee, questionsEntityId));
     }
 
+    // GET an answer. sequence = 1. For use in NetworkContactAudit.
+    public UserAnswersEntityDto getUserAnswersEntity(final String userName, final String auditee) {
+        return userAnswersEntityDtoTransformer.generateEAGER(userAnswersEntityRepository.findOneByUserNameAndAuditee(userName, auditee));
+    }
+
     // POST/PATCH a user's answer. If not found, POST, else if found, PATCH.
     public UserAnswersEntityDto createUserAnswersEntity(final UserAnswersEntityDto userAnswersEntityDto, final Long questionsEntityId) {
 
