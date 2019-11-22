@@ -88,7 +88,13 @@ public class UserEntityController extends AbstractRestController {
             @Valid
             @RequestBody
             final UserEntityDto userEntityDto) {
+
         UserEntityDto verifiedUserEntityDto = userEntityService.getUserEntity(userEntityDto.getUserName(),userEntityDto.getPassword());
+        verifiedUserEntityDto.setFriendsSet(null);
+        verifiedUserEntityDto.setPublicProfile(null);
+        verifiedUserEntityDto.setId(null);
+        verifiedUserEntityDto.setCreated(null);
+
         if (verifiedUserEntityDto == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
