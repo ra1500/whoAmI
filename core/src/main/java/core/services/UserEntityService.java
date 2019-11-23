@@ -30,8 +30,9 @@ public class UserEntityService {
         return userEntityDtoTransformer.generate(userEntityRepository.findOneByUserName(userName));
     }
 
-    // POST
+    // POST a new user
     public UserEntityDto createUserEntity(final UserEntityDto userEntityDto) {
+        userEntityDto.setPublicProfile("Private");
         UserEntity userEntity = userEntityRepository.saveAndFlush(userEntityDtoTransformer.generate(userEntityDto));
         return userEntityDtoTransformer.generate(userEntity);
     }
@@ -40,6 +41,14 @@ public class UserEntityService {
     public UserEntityDto patchUserEntity(final UserEntityDto userEntityDto) {
         UserEntity userEntity = userEntityRepository.findOneByUserName(userEntityDto.getUserName());
         userEntity.setPublicProfile(userEntityDto.getPublicProfile());
+        userEntityRepository.save(userEntity);
+        return userEntityDtoTransformer.generate(userEntity);
+    }
+
+    // PATCH password update
+    public UserEntityDto patchPasswordUserEntity(final String userName, final String password, final String newPassword) {
+        UserEntity userEntity = userEntityRepository.findOneByUserNameAndPassword(userName, password);
+        userEntity.setPassword(newPassword);
         userEntityRepository.save(userEntity);
         return userEntityDtoTransformer.generate(userEntity);
     }

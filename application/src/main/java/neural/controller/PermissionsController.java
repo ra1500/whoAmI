@@ -2,6 +2,7 @@ package neural.controller;
 
 import core.services.PermissionsEntityService;
 import db.entity.PermissionsEntity;
+import db.entity.UserEntity;
 import db.repository.FriendshipsRepositoryDAO;
 import db.repository.PermissionsRepositoryDAO;
 import db.repository.UserRepositoryDAO;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.HashSet;
 import java.util.Set;
 
 @RestController
@@ -25,11 +27,13 @@ public class PermissionsController extends AbstractRestController {
     private PermissionsEntityService permissionsEntityService;
     private PermissionsRepositoryDAO permissionsRepositoryDAO; // used for delete. shortcut to the repository.
     private FriendshipsRepositoryDAO friendshipsRepositoryDAO; // shortcut. TODO delete this and go through transformer
+    private UserRepositoryDAO userRepositoryDAO; // used for checking Public Profile permission to show public page
 
-    public PermissionsController(PermissionsEntityService permissionsEntityService, PermissionsRepositoryDAO permissionsRepositoryDAO, FriendshipsRepositoryDAO friendshipsRepositoryDAO) {
+    public PermissionsController(PermissionsEntityService permissionsEntityService, PermissionsRepositoryDAO permissionsRepositoryDAO, FriendshipsRepositoryDAO friendshipsRepositoryDAO, UserRepositoryDAO userRepositoryDAO) {
         this.permissionsEntityService = permissionsEntityService;
         this.permissionsRepositoryDAO = permissionsRepositoryDAO;
         this.friendshipsRepositoryDAO = friendshipsRepositoryDAO;
+        this.userRepositoryDAO = userRepositoryDAO;
     }
 
     // GET
@@ -163,23 +167,18 @@ public class PermissionsController extends AbstractRestController {
 
     // GET. QSets & user scores for Public Profile Page.
     @ApiOperation(value = "permissionsEntity")
-    @RequestMapping(value = "/sc/dc", method = RequestMethod.GET)
+    @RequestMapping(value = "/sc/dc{id}", method = RequestMethod.GET)
     public ResponseEntity<Set<PermissionsEntity>> getPermissionsEntityUserScorePublicProfilePage(
-            @RequestHeader("Authorization") String token) {
-
-        String base64Credentials = token.substring("Basic".length()).trim();
-        byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
-        String credentials = new String(credDecoded, StandardCharsets.UTF_8);
-        // credentials = username:password
-        final String[] values = credentials.split(":", 2);
-        String user = values[0];
-
-        // TODO: Create a set of Dto's in the transformer and return them as a Set instead of direct to repository.
-        Set<PermissionsEntity> permissionsEntities = permissionsRepositoryDAO.getPublicProfilePageQsets(user);
-
-        if (permissionsEntities == null) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            @RequestParam("id") final String userName) {
+        Set<PermissionsEntity> permissionsEntities = new HashSet<>();
+        UserEntity foundUserEntity = userRepositoryDAO.findOneByUserName(userName);
+        if (foundUserEntity == null) {
+            return ResponseEntity.ok(permissionsEntities);
         }
+        if (foundUserEntity.getPublicProfile().equals("Public")) {
+        // TODO: Create a set of Dto's in the transformer and return them as a Set instead of direct to repository.
+         permissionsEntities = permissionsRepositoryDAO.getPublicProfilePageQsets(userName);
+        }; // end if
         return ResponseEntity.ok(permissionsEntities);
     }
 
@@ -198,14 +197,14 @@ public class PermissionsController extends AbstractRestController {
         String user = values[0];
 
         String friend = friendshipsRepositoryDAO.findOneById(friendId).getFriend(); // TODO clean this up to transformer
-
-        // TODO: Create a set of Dto's in the transformer and return them as a Set instead of direct to repository.
-        Set<PermissionsEntity> permissionsEntities = permissionsRepositoryDAO.getNetworkContactQsets(user, friend);
-
-        if (permissionsEntities == null) {
+        if (userRepositoryDAO.findOneByUserName(friend).getPublicProfile().equals("Public") || userRepositoryDAO.findOneByUserName(friend).getPublicProfile().equals("Network") ) {
+            // TODO: Create a set of Dto's in the transformer and return them as a Set instead of direct to repository.
+            Set<PermissionsEntity> permissionsEntities = permissionsRepositoryDAO.getNetworkContactQsets(user, friend);
+            return ResponseEntity.ok(permissionsEntities);
+        }
+        else {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-        return ResponseEntity.ok(permissionsEntities);
     }
 
     // GET. Private Profile page self-made Qsets.

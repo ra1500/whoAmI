@@ -82,6 +82,33 @@ public class UserEntityController extends AbstractRestController {
         return ResponseEntity.ok(savedUserEntityDto);
     }
 
+    // POST change password
+    @RequestMapping(value = "/update", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<UserEntityDto> updatePassword(
+            @RequestHeader("Authorization") String token,
+            @Valid
+            @RequestBody
+            final UserEntityDto userEntityDto) {
+
+        String base64Credentials = token.substring("Basic".length()).trim();
+        byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
+        String credentials = new String(credDecoded, StandardCharsets.UTF_8);
+        final String[] values = credentials.split(":", 2);
+        String user = values[0];
+        String password = values[1];
+
+        if (userEntityDto.getUserName().equals(password)) { // this is a lame security check. front-end put 'old' password in as 'userName' as a security check, even though it is available in the sessionStorage.
+            UserEntityDto patchedUserEntityDto = userEntityService.patchPasswordUserEntity(user, password, userEntityDto.getPassword());
+            userEntityDto.setFriendsSet(null);
+            return ResponseEntity.ok(patchedUserEntityDto);
+        }
+        else {
+            userEntityDto.setUserName(null);
+            userEntityDto.setPassword("error");
+            return ResponseEntity.ok(userEntityDto);
+        }
+    }
+
     // POST from client Login form. Check if user exists. Return token.
     @RequestMapping(value = "/userId",method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserEntityDto> verifyLoginUserEntity(
@@ -124,6 +151,9 @@ public class UserEntityController extends AbstractRestController {
 
         UserEntityDto patchedUserEntityDto = userEntityService.patchUserEntity(userEntityDto);
         patchedUserEntityDto.setPassword(null); //outgoing dto shouldnt have the password.
+        patchedUserEntityDto.setFriendsSet(null);
+        patchedUserEntityDto.setCreated(null);
+        patchedUserEntityDto.setId(null);
 
         return ResponseEntity.ok(patchedUserEntityDto);
     }

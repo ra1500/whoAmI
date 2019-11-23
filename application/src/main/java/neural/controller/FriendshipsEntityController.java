@@ -2,6 +2,7 @@ package neural.controller;
 
 // import .Paths;     --use later if wish to have Paths restricted/opened via separate class--
 import db.entity.UserEntity;
+import db.repository.UserRepositoryDAO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import model.FriendshipsEntityDto;
@@ -21,11 +22,13 @@ import java.util.Base64;
 public class FriendshipsEntityController extends AbstractRestController {
 
     private FriendshipsEntityService friendshipsEntityService;
+    private UserRepositoryDAO userRepositoryDAO;
 
-    public FriendshipsEntityController(FriendshipsEntityService friendshipsEntityService) {
-        this.friendshipsEntityService = friendshipsEntityService; }
+    public FriendshipsEntityController(FriendshipsEntityService friendshipsEntityService, UserRepositoryDAO userRepositoryDAO) {
+        this.friendshipsEntityService = friendshipsEntityService;
+        this.userRepositoryDAO = userRepositoryDAO; };
 
-    // POST a friendship (new or amended, except invitation acceptance)
+    // POST a NEW friendship
     @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<FriendshipsEntityDto> createFriendshipsEntity(
             @RequestHeader("Authorization") String token,
@@ -40,9 +43,32 @@ public class FriendshipsEntityController extends AbstractRestController {
             final String[] values = credentials.split(":", 2);
             String user = values[0];
 
-            FriendshipsEntityDto savedFriendshipsEntityDto = friendshipsEntityService.createFriendshipsEntity(friendshipsEntityDto, user);
+            //UserEntity foundFriend = userRepositoryDAO.findOneByUserName(friendshipsEntityDto.getFriend());
 
+            if (userRepositoryDAO.findOneByUserName(friendshipsEntityDto.getFriend()) == null) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
+            FriendshipsEntityDto savedFriendshipsEntityDto = friendshipsEntityService.createFriendshipsEntity(friendshipsEntityDto, user);
             return ResponseEntity.ok(savedFriendshipsEntityDto);
+    }
+
+    // POST a friendship (amend an existing)
+    @RequestMapping(value = "/a", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<FriendshipsEntityDto> amendFriendshipsEntity(
+            @RequestHeader("Authorization") String token,
+            @Valid
+            @RequestBody
+            final FriendshipsEntityDto friendshipsEntityDto) {
+
+        String base64Credentials = token.substring("Basic".length()).trim();
+        byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
+        String credentials = new String(credDecoded, StandardCharsets.UTF_8);
+        // credentials = username:password
+        final String[] values = credentials.split(":", 2);
+        String user = values[0];
+
+        FriendshipsEntityDto savedFriendshipsEntityDto = friendshipsEntityService.createFriendshipsEntity(friendshipsEntityDto, user);
+        return ResponseEntity.ok(savedFriendshipsEntityDto);
     }
 
     // GET a single friendship
