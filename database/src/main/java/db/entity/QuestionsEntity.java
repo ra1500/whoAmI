@@ -108,6 +108,12 @@ public class QuestionsEntity implements Serializable {
         this.question = question;
     }
 
+    // constructor used in QuestionSetVersionEntityService to create a blank question for a new Qset.
+    public QuestionsEntity(Long sequenceNumber, String creativeSource) {
+        this.sequenceNumber = sequenceNumber;
+        this.creativeSource = creativeSource;
+    }
+
     public Long getId() {
         return id;
     }

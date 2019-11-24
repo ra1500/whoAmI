@@ -1,6 +1,7 @@
 package neural.controller;
 
 import core.services.QuestionSetVersionEntityService;
+import core.services.QuestionsEntityService;
 import db.entity.QuestionSetVersionEntity;
 import db.repository.PermissionsRepositoryDAO;
 import db.repository.QuestionSetVersionRepositoryDAO;
@@ -8,6 +9,7 @@ import db.repository.QuestionsRepositoryDAO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import model.QuestionSetVersionEntityDto;
+import model.QuestionsEntityDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -75,7 +77,6 @@ public class QuestionSetVersionController extends AbstractRestController {
 
         // userName from token
         questionSetVersionEntityDto.setCreativeSource(user);
-
         QuestionSetVersionEntityDto savedQuestionSetVersionEntityDto = questionSetVersionEntityService.createQuestionSetVersionEntity(questionSetVersionEntityDto, qsid, user);
         return ResponseEntity.ok(savedQuestionSetVersionEntityDto);
     }
