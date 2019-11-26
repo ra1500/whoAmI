@@ -1,21 +1,15 @@
 package core.services;
 
 import core.transformers.UserAnswersEntityDtoTransformer;
-import db.entity.FriendshipsEntity;
-import db.entity.QuestionSetVersionEntity;
-import db.entity.QuestionsEntity;
-import db.entity.UserAnswersEntity;
-import db.repository.QuestionSetVersionRepositoryDAO;
-import db.repository.QuestionsRepositoryDAO;
-import db.repository.UserAnswersRepositoryDAO;
-import db.repository.UserRepositoryDAO;
+import db.entity.*;
+import db.repository.*;
 import model.UserAnswersEntityDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
@@ -26,15 +20,18 @@ public class UserAnswersEntityService {
     private final QuestionsRepositoryDAO questionsRepositoryDAO;
     private final UserAnswersEntityDtoTransformer userAnswersEntityDtoTransformer;
     private final UserRepositoryDAO userRepositoryDAO;
+    private final FriendshipsRepositoryDAO friendshipsRepositoryDAO;
 
     public UserAnswersEntityService(final UserAnswersRepositoryDAO userAnswersEntityRepository,
                                     final UserAnswersEntityDtoTransformer userAnswersEntityDtoTransformer,
                                     final QuestionsRepositoryDAO questionsRepositoryDAO,
-                                    final UserRepositoryDAO userRepositoryDAO) {
+                                    final UserRepositoryDAO userRepositoryDAO,
+                                    FriendshipsRepositoryDAO friendshipsRepositoryDAO) {
         this.userAnswersEntityRepository = userAnswersEntityRepository;
         this.userAnswersEntityDtoTransformer = userAnswersEntityDtoTransformer;
         this.questionsRepositoryDAO = questionsRepositoryDAO;
         this.userRepositoryDAO = userRepositoryDAO;
+        this.friendshipsRepositoryDAO = friendshipsRepositoryDAO;
     }
 
     // GET an answer
@@ -88,17 +85,19 @@ public class UserAnswersEntityService {
     public String createUserAnswersEntitiesForAudits(final String user, final Long questionSetVersionEntityId, final String group) {
 
         Set<FriendshipsEntity> foundFriendshipsEntities = userRepositoryDAO.findOneByUserName(user).getFriendsSet();
+        foundFriendshipsEntities.removeIf(i -> !i.getConnectionType().equals(group)); // reduce list to group (if friend not in 'group'. Java8 'removeIf')
         Set<UserAnswersEntity> foundUserAnswersEntities = userAnswersEntityRepository.findAllByUserNameAndAuditeeAndQuestionSetVersionEntityId(user, user, questionSetVersionEntityId);
 
-        Stream<FriendshipsEntity> stream1 = foundFriendshipsEntities.stream().filter(element -> element.getConnectionType().equals(group));
-        Stream<UserAnswersEntity> stream2 = foundUserAnswersEntities.stream();
-
-        stream1.forEach(element1 ->  stream2.forEach(element2 -> {if (userAnswersEntityRepository.findOneByUserNameAndAuditeeAndQuestionSetVersionEntityId(element1.getFriend(), user, questionSetVersionEntityId) == null) {
-                userAnswersEntityRepository.save(
-                new UserAnswersEntity( element1.getFriend(), element2.getAnswer(), element2.getAnswerPoints(), element2.getAuditee(),
-                        element2.getComments(), element2.getQuestionsEntity(), element2.getQuestionSetVersionEntity() ));
-          } // end if
-        }));
+        // for each friendship add the list of auditee's answers to the db with friend's name on them. (if connection status is not 'pending')
+        for (FriendshipsEntity x : foundFriendshipsEntities) {
+               if (!x.getConnectionStatus().equals("pending") && userAnswersEntityRepository.findAllByUserNameAndAuditeeAndQuestionSetVersionEntityId(x.getFriend(), user, questionSetVersionEntityId).equals(Collections.emptySet())) {
+                 for (UserAnswersEntity y : foundUserAnswersEntities) {
+                            userAnswersEntityRepository.save(
+                            new UserAnswersEntity( x.getFriend(), y.getAnswer(), y.getAnswerPoints(), y.getAuditee(),
+                                    y.getComments(), y.getQuestionsEntity(), y.getQuestionSetVersionEntity() ));
+                      } // end for
+            } // end if
+        }
 
         String auditorsSet = " {auditors added} ";
         return auditorsSet;
@@ -107,17 +106,19 @@ public class UserAnswersEntityService {
     // POST audit permissions. Everyone in friendships set. (replicating a user's set of answers but making userName = to the auditor).
     public String createUserAnswersEntitiesForAuditsEveryone(final String user, final Long questionSetVersionEntityId) {
 
-        Stream<FriendshipsEntity> stream1 = userRepositoryDAO.findOneByUserName(user).getFriendsSet().stream();
+        Set<FriendshipsEntity> foundFriendshipsEntities = userRepositoryDAO.findOneByUserName(user).getFriendsSet();
         Set<UserAnswersEntity> foundUserAnswersEntities = userAnswersEntityRepository.findAllByUserNameAndAuditeeAndQuestionSetVersionEntityId(user, user, questionSetVersionEntityId);
 
-        Stream<UserAnswersEntity> stream2 = foundUserAnswersEntities.stream();
-
-        stream1.forEach(element1 ->  stream2.forEach(element2 -> {if (userAnswersEntityRepository.findOneByUserNameAndAuditeeAndQuestionSetVersionEntityId(element1.getFriend(), user, questionSetVersionEntityId) == null) {
-            userAnswersEntityRepository.save(
-                    new UserAnswersEntity( element1.getFriend(), element2.getAnswer(), element2.getAnswerPoints(), element2.getAuditee(),
-                            element2.getComments(), element2.getQuestionsEntity(), element2.getQuestionSetVersionEntity() ));
-        } // end if
-        }));
+        // for each friendship add the list of auditee's answers to the db with friend's name on them. (if connection status is not 'pending')
+        for (FriendshipsEntity x : foundFriendshipsEntities) {
+            if (!x.getConnectionStatus().equals("pending") && userAnswersEntityRepository.findAllByUserNameAndAuditeeAndQuestionSetVersionEntityId(x.getFriend(), user, questionSetVersionEntityId).equals(Collections.emptySet())) {
+                for (UserAnswersEntity y : foundUserAnswersEntities) {
+                    userAnswersEntityRepository.save(
+                            new UserAnswersEntity( x.getFriend(), y.getAnswer(), y.getAnswerPoints(), y.getAuditee(),
+                                    y.getComments(), y.getQuestionsEntity(), y.getQuestionSetVersionEntity() ));
+                } // end for
+            } // end if
+        }
 
         String auditorsSet = " {auditors added} ";
         return auditorsSet;
@@ -126,22 +127,32 @@ public class UserAnswersEntityService {
     // POST audit permissions. Individual friend. (replicating a user's set of answers but making userName = to the auditor).
     public String createUserAnswersEntitiesForAuditsIndividual(final String user, final String friend, final Long questionSetVersionEntityId) {
 
-        Stream<FriendshipsEntity> stream1 = userRepositoryDAO.findOneByUserName(user).getFriendsSet().stream();
-        boolean isAfriend = stream1.anyMatch(element -> element.getFriend().contains(friend));
+        UserEntity foundUserEntity = userRepositoryDAO.findOneByUserName(user);
+        FriendshipsEntity foundFriendshipsEntity = friendshipsRepositoryDAO.findOneByUserEntityIdAndFriend(foundUserEntity.getId(), friend);
 
-        Set<UserAnswersEntity> foundUserAnswersEntities = userAnswersEntityRepository.findAllByUserNameAndAuditeeAndQuestionSetVersionEntityId(user, user, questionSetVersionEntityId);
-        Stream<UserAnswersEntity> stream2 = foundUserAnswersEntities.stream();
-
-        if ( isAfriend ) {
-            stream2.forEach(element2 -> {if (userAnswersEntityRepository.findOneByUserNameAndAuditeeAndQuestionSetVersionEntityId(friend, user, questionSetVersionEntityId) == null) {
-                userAnswersEntityRepository.save(
-                        new UserAnswersEntity( friend, element2.getAnswer(), element2.getAnswerPoints(), element2.getAuditee(),
-                                element2.getComments(), element2.getQuestionsEntity(), element2.getQuestionSetVersionEntity() ));
-            } // end if
-            });
+        if (foundFriendshipsEntity == null) {
+            String auditorsSet = " {contact not found} ";
+            return auditorsSet;
         }
 
-        String auditorsSet = " {auditor added} ";
+        else {
+
+        Set<UserAnswersEntity> foundUserAnswersEntities = userAnswersEntityRepository.findAllByUserNameAndAuditeeAndQuestionSetVersionEntityId(user, user, questionSetVersionEntityId);
+
+        if (!foundFriendshipsEntity.getConnectionStatus().equals("pending") && userAnswersEntityRepository.findAllByUserNameAndAuditeeAndQuestionSetVersionEntityId(friend, user, questionSetVersionEntityId).equals(Collections.emptySet())) {
+                for (UserAnswersEntity y : foundUserAnswersEntities) {
+                    userAnswersEntityRepository.save(
+                            new UserAnswersEntity( friend, y.getAnswer(), y.getAnswerPoints(), y.getAuditee(),
+                                    y.getComments(), y.getQuestionsEntity(), y.getQuestionSetVersionEntity() ));
+                } // end for
+            } // end if
+
+
+        } // end else
+
+        // TODO; return message of status is pending and post on front-end to let user know not added.
+
+        String auditorsSet = " {auditors added} ";
         return auditorsSet;
     }
 

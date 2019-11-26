@@ -25,7 +25,9 @@ public interface UserAnswersRepositoryDAO extends JpaRepository<UserAnswersEntit
     @Query("SELECT SUM(answerPoints) FROM UserAnswersEntity WHERE userName = :userName AND questionSetVersionEntityId = :questionSetVersionEntityId AND auditee = :auditee")
     Long findUserScoresTotal(@Param("userName") String userName, @Param("auditee") String auditee, @Param("questionSetVersionEntityId") Long questionSetVersionEntityId);
 
-    @Query(value = "SELECT a FROM UserAnswersEntity a WHERE (auditee = :user AND userName = :friend) OR  (auditee = :user AND userName = :user)")
+    // TODO provide the original user's answers also so that comparison is easy between original answer and the auditors answer
+    // @Query(value = "SELECT a FROM UserAnswersEntity a WHERE (auditee = :user AND userName = :friend) OR  (auditee = :user AND userName = :user)")
+    @Query(value = "SELECT a FROM UserAnswersEntity a WHERE (auditee = :user AND userName = :friend)")
     List<UserAnswersEntity> findAuditDetails(String friend, String user);
 
     @Transactional
