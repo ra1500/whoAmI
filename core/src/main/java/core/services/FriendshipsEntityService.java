@@ -36,7 +36,7 @@ public class FriendshipsEntityService {
     // POST/PATCH a friendship (double entry of friendships(qty 2) + double entry of adding parent to child, and child to Set in parent)
     public FriendshipsEntityDto createFriendshipsEntity(final FriendshipsEntityDto friendshipsEntityDto, final String userName) {
 
-        // get friendshipsEntityDto from db, if it exists.
+        // get friendshipsEntity from db, if it exists.
         UserEntity foundUserEntity = userRepositoryDAO.findOneByUserName(userName);
         Long userId = foundUserEntity.getId();
         FriendshipsEntity foundFriendshipsEntity = friendshipsRepositoryDAO.findOneByUserEntityIdAndId(userId, friendshipsEntityDto.getId());
@@ -73,7 +73,9 @@ public class FriendshipsEntityService {
             // return only the 'main' 1st entry friendhsipsEntity
             return friendshipsEntityDtoTransformer.generate(newFriendshipsEntity1);
         }
-        else if (foundFriendshipsEntity.getConnectionStatus().equals("pending") && !friendshipsEntityDto.getConnectionStatus().equals("removed"))
+
+        // accept an invitation
+        else if (foundFriendshipsEntity.getConnectionStatus().equals("pending") && !foundFriendshipsEntity.getInviter().equals(userName) && friendshipsEntityDto.getConnectionStatus().equals("Connected"))
         {
             // first entry
             foundFriendshipsEntity.setConnectionStatus(friendshipsEntityDto.getConnectionStatus());
@@ -86,15 +88,32 @@ public class FriendshipsEntityService {
             secondFriendshipsEntity.setConnectionStatus("Connected");
             friendshipsRepositoryDAO.save(secondFriendshipsEntity);
             return friendshipsEntityDtoTransformer.generate(foundFriendshipsEntity);
-        } // end else if
+        }
+
+        // modify single-side. From 'removed' to 'Connected' (if invitation from friend).
+        else if (foundFriendshipsEntity.getConnectionStatus().equals("removed") && !foundFriendshipsEntity.getInviter().equals(userName) && friendshipsEntityDto.getConnectionStatus().equals("Connected"))
+        {
+            foundFriendshipsEntity.setConnectionStatus(friendshipsEntityDto.getConnectionStatus());
+            friendshipsRepositoryDAO.save(foundFriendshipsEntity);
+            return friendshipsEntityDtoTransformer.generate(foundFriendshipsEntity);
+        }
+
+        // modify single-side. From 'removed' to 'pending' (if invitation from username).
+        else if (foundFriendshipsEntity.getConnectionStatus().equals("removed") && foundFriendshipsEntity.getInviter().equals(userName) && friendshipsEntityDto.getConnectionStatus().equals("Connected"))
+        {
+            foundFriendshipsEntity.setConnectionStatus("pending");
+            friendshipsRepositoryDAO.save(foundFriendshipsEntity);
+            return friendshipsEntityDtoTransformer.generate(foundFriendshipsEntity);
+        }
+
+        // modify single-side. From 'pending' or 'Connected' to 'Decline' or 'remove'.
         else {
-        // for updates except accepting an invitation. (therefore only one-sided here)
         foundFriendshipsEntity.setConnectionStatus(friendshipsEntityDto.getConnectionStatus());
         foundFriendshipsEntity.setConnectionType(friendshipsEntityDto.getConnectionType());
         foundFriendshipsEntity.setVisibilityPermission(friendshipsEntityDto.getVisibilityPermission());
         friendshipsRepositoryDAO.save(foundFriendshipsEntity);
         return friendshipsEntityDtoTransformer.generate(foundFriendshipsEntity);
-        } // end else
+        }
     }
 
     // for DELETE.

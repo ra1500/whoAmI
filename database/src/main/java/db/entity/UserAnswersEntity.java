@@ -37,7 +37,7 @@ public class UserAnswersEntity implements Serializable {
     @JoinColumn(name = "questionId")
     private QuestionsEntity questionsEntity;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "questionSetVersionEntityId")
     private QuestionSetVersionEntity questionSetVersionEntity;
 

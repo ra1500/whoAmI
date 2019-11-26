@@ -197,10 +197,22 @@ public class PermissionsController extends AbstractRestController {
         String user = values[0];
 
         String friend = friendshipsRepositoryDAO.findOneById(friendId).getFriend(); // TODO clean this up to transformer
-        if (userRepositoryDAO.findOneByUserName(friend).getPublicProfile().equals("Public") || userRepositoryDAO.findOneByUserName(friend).getPublicProfile().equals("Network") ) {
+
+        if (userRepositoryDAO.findOneByUserName(friend).getPublicProfile() == null) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        else if (userRepositoryDAO.findOneByUserName(friend).getPublicProfile().equals("Public") || userRepositoryDAO.findOneByUserName(friend).getPublicProfile().equals("Network") ) {
             // TODO: Create a set of Dto's in the transformer and return them as a Set instead of direct to repository.
             Set<PermissionsEntity> permissionsEntities = permissionsRepositoryDAO.getNetworkContactQsets(user, friend);
-            return ResponseEntity.ok(permissionsEntities);
+
+            if (permissionsEntities == null) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
+            else {
+                return ResponseEntity.ok(permissionsEntities);
+            }
+
         }
         else {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);

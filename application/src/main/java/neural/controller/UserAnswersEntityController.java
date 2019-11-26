@@ -100,7 +100,7 @@ public class UserAnswersEntityController extends AbstractRestController {
         return ResponseEntity.ok(userAnswersEntityDto);
     }
 
-    // GET userScores Total for 'Questions'. (userName & auditee same).
+    // GET userScore Total for 'Questions'. (userName & auditee same).
     @ApiOperation(value = "getUserScoresAggregates")
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<String> getUserScoresAggregate(
@@ -123,7 +123,7 @@ public class UserAnswersEntityController extends AbstractRestController {
         }
     }
 
-    // GET userScores Total for 'AuditQuestions'. (userName & auditee different).
+    // GET userScore Total for 'AuditQuestions'. (userName & auditee different).
     @ApiOperation(value = "getUserScoresAggregatesDuringAudit")
     @RequestMapping(value = "/z{sv}{fId}", method = RequestMethod.GET)
     public ResponseEntity<String> getUserScoresAggregateDuringAudit(
