@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -78,10 +79,10 @@ public class UserAnswersEntityController extends AbstractRestController {
         return ResponseEntity.ok(userAnswersEntityDto);
     }
 
-    // GET an answer in order to load the qset. For use in 'NetworkContactAudit'
+    // GET a list of answers in order to load the qset. For use in 'NetworkContactAudit'.
     @ApiOperation(value = "getUserAnswersEntity")
     @RequestMapping(value = "/au/{friendId}", method = RequestMethod.GET)
-    public ResponseEntity<UserAnswersEntityDto> getUserAnswersEntityAudit(
+    public ResponseEntity<Set<UserAnswersEntity>> getUserAnswersEntityAudit(
             @RequestHeader("Authorization") String token,
             @PathVariable("friendId") final Long friendId) {
         String base64Credentials = token.substring("Basic".length()).trim();
@@ -93,11 +94,12 @@ public class UserAnswersEntityController extends AbstractRestController {
 
         String friend = friendshipsRepositoryDAO.findOneById(friendId).getFriend();
 
-        UserAnswersEntityDto userAnswersEntityDto = userAnswersEntityService.getUserAnswersEntity(user, friend);
-        if (userAnswersEntityDto == null) {
+        Set<UserAnswersEntity> userAnswersEntities = userAnswersEntityService.getUserAnswersEntities(user, friend);
+
+        if (userAnswersEntities.equals(Collections.emptySet())) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-        return ResponseEntity.ok(userAnswersEntityDto);
+        return ResponseEntity.ok(userAnswersEntities);
     }
 
     // GET userScore Total for 'Questions'. (userName & auditee same).

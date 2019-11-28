@@ -16,6 +16,10 @@ public interface PermissionsRepositoryDAO extends JpaRepository<PermissionsEntit
     PermissionsEntity findOneByUserNameAndTypeNumberAndQuestionSetVersionEntityId(String userName, Long typeNumber, Long questionSetVersionEntityId);
     PermissionsEntity findOneByIdAndUserName(Long Id, String userName);
 
+    //@Query("SELECT p FROM PermissionsEntity p WHERE p.userName = :userName AND p.questionSetVersionEntityId = :questionSetVersionEntityId AND p.typeNumber BETWEEN '9' AND 15")
+    @Query("SELECT p FROM PermissionsEntity p JOIN p.questionSetVersionEntity b WHERE b.id = :questionSetVersionEntityId AND p.userName = :userName AND p.typeNumber BETWEEN '9' AND 15")
+    PermissionsEntity findOneByUserNameAndQuestionSetVersionEntityId(String userName, Long questionSetVersionEntityId);
+
     @Transactional // PermissionsController
     Integer deleteOneById(Long id);
 
@@ -36,6 +40,9 @@ public interface PermissionsRepositoryDAO extends JpaRepository<PermissionsEntit
 
     @Query("SELECT p FROM PermissionsEntity p WHERE p.userName = :userName AND p.auditee = :userName AND p.typeNumber = 3")
     Set<PermissionsEntity> getPrivateProfilePageSelfMadeQsets(String userName);
+
+    @Query("SELECT p FROM PermissionsEntity p WHERE p.userName = :userName AND p.auditee != :userName AND p.typeNumber BETWEEN '4' AND '8'")
+    Set<PermissionsEntity> getNetworkCreatedQsets(String userName);
 
     @Query("SELECT p FROM PermissionsEntity p JOIN FETCH p.questionSetVersionEntity b WHERE b.id = :questionSetVersionEntityId AND p.auditee = :userName AND p.typeNumber = 16")
     Set<PermissionsEntity> getAudits(String userName, Long questionSetVersionEntityId);
@@ -58,7 +65,7 @@ public interface PermissionsRepositoryDAO extends JpaRepository<PermissionsEntit
 //      12	        score	(List of friends)	self	    Network Friend	    Score
 //      13	        score	(List of friends)	self	    Network Colleague	Score
 //      14	        score	(List of friends)	self	    Network Other	    Score
-//      15	        score	(individual)	    self	    (individual)	    Score
+//      15	        score	(individual)	    self	    (individual)	    Score immutable! don't change typeNumbe. Can only delete.
 //      16                                                                      audit posted
 
 }

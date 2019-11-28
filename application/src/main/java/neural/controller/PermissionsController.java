@@ -57,7 +57,7 @@ public class PermissionsController extends AbstractRestController {
         return ResponseEntity.ok(permissionsEntityDto);
     }
 
-    // POST/PATCH  posts a new one, updates an existing one
+    // POST/PATCH  SCORE permission. (Audit '16' permission below).
     @RequestMapping(value = "/sc/d{qsId}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PermissionsEntityDto> createPermissionsEntity(
             @Valid
@@ -76,6 +76,28 @@ public class PermissionsController extends AbstractRestController {
         permissionsEntityDto.setUserName(user);
 
         PermissionsEntityDto savedPermissionsEntityDto = permissionsEntityService.createPermissionsEntity(permissionsEntityDto, questionSetVersionEntityId, user);
+        return ResponseEntity.ok(savedPermissionsEntityDto);
+    }
+
+    // POST/PATCH  Audit Score '16' .
+    @RequestMapping(value = "/sc/q{qsId}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<PermissionsEntityDto> createPermissionsEntityAuditScore(
+            @Valid
+            @RequestBody final PermissionsEntityDto permissionsEntityDto,
+            @RequestHeader("Authorization") String token,
+            @RequestParam("qsId") final Long questionSetVersionEntityId) {
+
+        String base64Credentials = token.substring("Basic".length()).trim();
+        byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
+        String credentials = new String(credDecoded, StandardCharsets.UTF_8);
+        // credentials = username:password
+        final String[] values = credentials.split(":", 2);
+        String user = values[0];
+
+        // userName from token
+        permissionsEntityDto.setUserName(user);
+
+        PermissionsEntityDto savedPermissionsEntityDto = permissionsEntityService.createPermissionsEntityAuditScore(permissionsEntityDto, questionSetVersionEntityId, user);
         return ResponseEntity.ok(savedPermissionsEntityDto);
     }
 
@@ -219,7 +241,7 @@ public class PermissionsController extends AbstractRestController {
         }
     }
 
-    // GET. Private Profile page self-made Qsets.
+    // GET. Private Profile page self-made Qsets. Also for 'Scores'/'My Sets'.
     @ApiOperation(value = "permissionsEntity")
     @RequestMapping(value = "/sc/du", method = RequestMethod.GET)
     public ResponseEntity<Set<PermissionsEntity>> getPermissionsEntityPrivateProfilePage(
@@ -234,6 +256,28 @@ public class PermissionsController extends AbstractRestController {
 
         // TODO: Create a set of Dto's in the transformer and return them as a Set instead of direct to repository.
         Set<PermissionsEntity> permissionsEntities = permissionsRepositoryDAO.getPrivateProfilePageSelfMadeQsets(user);
+
+        if (permissionsEntities == null) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return ResponseEntity.ok(permissionsEntities);
+    }
+
+    // GET. For 'Scores'/'Network Sets'.
+    @ApiOperation(value = "permissionsEntity")
+    @RequestMapping(value = "/sc/dv", method = RequestMethod.GET)
+    public ResponseEntity<Set<PermissionsEntity>> getPermissionsEntityNetworkQsets(
+            @RequestHeader("Authorization") String token) {
+
+        String base64Credentials = token.substring("Basic".length()).trim();
+        byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
+        String credentials = new String(credDecoded, StandardCharsets.UTF_8);
+        // credentials = username:password
+        final String[] values = credentials.split(":", 2);
+        String user = values[0];
+
+        // TODO: Create a set of Dto's in the transformer and return them as a Set instead of direct to repository.
+        Set<PermissionsEntity> permissionsEntities = permissionsRepositoryDAO.getNetworkCreatedQsets(user);
 
         if (permissionsEntities == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);

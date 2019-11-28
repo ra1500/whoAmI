@@ -45,17 +45,79 @@ public class PermissionsEntityService {
         return permissionsEntityDtoTransformer.generate(permissionsRepositoryDAO.findOneByIdAndUserName(Id, userName));
     }
 
-    // POST/PATCH  post if not found, otherwise patch.
+    // POST/PATCH  SCORE. userAnswers Score permission. post if not found, otherwise patch. (not used for '16' to post audit answers, that method is below).
     public PermissionsEntityDto createPermissionsEntity(final PermissionsEntityDto permissionsEntityDto, final Long questionSetVersionEntityId, final String userName) {
 
         // find in db. if exists.
-        PermissionsEntity permissionsEntity = permissionsRepositoryDAO.findOneByUserNameAndTypeNumberAndQuestionSetVersionEntityId(permissionsEntityDto.getUserName(), permissionsEntityDto.getTypeNumber(),questionSetVersionEntityId);
+        PermissionsEntity permissionsEntity = permissionsRepositoryDAO.findOneByUserNameAndQuestionSetVersionEntityId(permissionsEntityDto.getUserName(), questionSetVersionEntityId);
 
         if (permissionsEntity == null) {
 
             // create a new 'raw' permissionsEntity based on incoming Dto. Add parent Qset after.
             PermissionsEntity newPermissionsEntity = permissionsEntityDtoTransformer.generate(permissionsEntityDto);
+            newPermissionsEntity.setType("Score"); //null from post DTO.
+            newPermissionsEntity.setAuditee(userName); //null from post DTO.
             newPermissionsEntity.setScore(userAnswersRepositoryDAO.findUserScoresTotal(userName, userName, questionSetVersionEntityId));
+
+            // find and add QuestionSetVersionEntity parent. (ManyToOne). (only adding parent to child. not adding child to a parent set/list).
+            QuestionSetVersionEntity foundQuestionSetVersionEntity = questionSetVersionRepositoryDAO.findOneById(questionSetVersionEntityId);
+            newPermissionsEntity.setQuestionSetVersionEntity(foundQuestionSetVersionEntity);
+
+            // set the initial permission 'typeNumber' to either 9 or 15 (public or 'privateprofile & qset creator')
+            if (foundQuestionSetVersionEntity.getCreativeSource().equals("company")) {
+                newPermissionsEntity.setTypeNumber(new Long(9));
+                newPermissionsEntity.setViewGroup("Public"); //null from post DTO.
+            }
+            else {
+                newPermissionsEntity.setTypeNumber(new Long(15));
+                newPermissionsEntity.setViewGroup("QsetCreator"); //null from post DTO.
+            }
+
+            // then save the overall new permission
+            permissionsRepositoryDAO.saveAndFlush(newPermissionsEntity);
+
+            return permissionsEntityDtoTransformer.generate(newPermissionsEntity);
+        }
+
+        // Note: when adding feature to allow updating typeNumber to NetworkFriends or NetworkColleagues etc. make sure typeNumber doesnt come from DTO. Internal/Back-end change only.
+        else {
+            if (permissionsEntityDto.getTypeNumber() != null) {
+                if (!permissionsEntity.getTypeNumber().equals(new Long(15))) {  // '15's not allowed to update. can only be viewed by creator and individual. not network or public.
+                permissionsEntity.setTypeNumber(permissionsEntityDto.getTypeNumber()); }
+            }
+            if (permissionsEntityDto.getType() != null) {
+                permissionsEntity.setType(permissionsEntityDto.getType());
+            }
+            if (permissionsEntityDto.getViewGroup() != null) {
+                permissionsEntity.setViewGroup(permissionsEntityDto.getViewGroup());
+            }
+            if (permissionsEntityDto.getAuditee() != null) {
+                permissionsEntity.setAuditee(permissionsEntityDto.getAuditee());
+            }
+            //permissionsEntity.setId(permissionsEntityDto.getId()); // cannot change primary key Id
+            //permissionsEntity.setCreated(permissionsEntityDto.getCreated()); // no need to update the original created date
+            permissionsEntity.setUserName(permissionsEntityDto.getUserName()); // coming from token (set in controller)
+            permissionsEntity.setScore(userAnswersRepositoryDAO.findUserScoresTotal(userName, userName, questionSetVersionEntityId)); // Yes, update it of course.
+            //permissionsEntity.setQuestionSetVersionEntity(permissionsEntityDto.getQuestionSetVersionEntity()); // should already by set!
+            permissionsRepositoryDAO.save(permissionsEntity);
+
+            return permissionsEntityDtoTransformer.generate(permissionsEntity);
+        }
+    }
+
+    // POST/PATCH  Audit Score '16'
+    public PermissionsEntityDto createPermissionsEntityAuditScore(final PermissionsEntityDto permissionsEntityDto, final Long questionSetVersionEntityId, final String userName) {
+
+        // find in db. if exists.
+        PermissionsEntity permissionsEntity = permissionsRepositoryDAO.findOneByUserNameAndTypeNumberAndQuestionSetVersionEntityId(permissionsEntityDto.getUserName(), new Long(16),questionSetVersionEntityId);
+
+        if (permissionsEntity == null) {
+
+            // create a new 'raw' permissionsEntity based on incoming Dto. Add parent Qset after.
+            PermissionsEntity newPermissionsEntity = permissionsEntityDtoTransformer.generate(permissionsEntityDto);
+            newPermissionsEntity.setType("Audit Score"); //null from post DTO.
+            newPermissionsEntity.setViewGroup("Auditee Individual"); //null from post DTO.
+            newPermissionsEntity.setTypeNumber(new Long(16));
 
             // find and add QuestionSetVersionEntity parent. (ManyToOne). (only adding parent to child. not adding child to a parent set/list).
             QuestionSetVersionEntity foundQuestionSetVersionEntity = questionSetVersionRepositoryDAO.findOneById(questionSetVersionEntityId);
@@ -66,21 +128,24 @@ public class PermissionsEntityService {
 
             return permissionsEntityDtoTransformer.generate(newPermissionsEntity);
         }
+
+        // Note: when adding feature to allow updating typeNumber to NetworkFriends or NetworkColleagues etc. make sure typeNumber doesnt come from DTO. Internal/Back-end change only.
         else {
-            //permissionsEntity.setId(permissionsEntityDto.getId()); // cannot change primary key Id!
-            //permissionsEntity.setCreated(permissionsEntityDto.getCreated());
-            permissionsEntity.setUserName(permissionsEntityDto.getUserName());
-            permissionsEntity.setAuditee(permissionsEntityDto.getAuditee());
-            permissionsEntity.setViewGroup(permissionsEntityDto.getViewGroup());
-            permissionsEntity.setType(permissionsEntityDto.getType());
-            permissionsEntity.setTypeNumber(permissionsEntityDto.getTypeNumber());
-            permissionsEntity.setScore(userAnswersRepositoryDAO.findUserScoresTotal(userName, userName, questionSetVersionEntityId));
-            //permissionsEntity.setQuestionSetVersionEntity(permissionsEntityDto.getQuestionSetVersionEntity()); // should already by set!
+            // permissionsEntity.setId(permissionsEntityDto.getId()); // cannot change primary key Id
+            // permissionsEntity.setCreated(permissionsEntityDto.getCreated()); // no need to update the original created date
+            // permissionsEntity.setTypeNumber(permissionsEntityDto.getTypeNumber()); // should already by set
+            // permissionsEntity.setAuditee(permissionsEntityDto.getAuditee()); // should already by set
+            // permissionsEntity.setViewGroup(permissionsEntityDto.getViewGroup()); // should already by set
+            // permissionsEntity.setType(permissionsEntityDto.getType()); // should already by set
+            permissionsEntity.setUserName(permissionsEntityDto.getUserName()); // coming from token (set in controller)
+            permissionsEntity.setScore(permissionsEntityDto.getScore());
+            //permissionsEntity.setQuestionSetVersionEntity(permissionsEntityDto.getQuestionSetVersionEntity()); // should already by set
             permissionsRepositoryDAO.save(permissionsEntity);
 
             return permissionsEntityDtoTransformer.generate(permissionsEntity);
         }
     }
+
 
     // POST generate a Set of QsetView permissions (for groups)
     public String createQsetViewPermissionEntities (Long typeNumber, Long questionSetVersionEntityId ,String userName) {

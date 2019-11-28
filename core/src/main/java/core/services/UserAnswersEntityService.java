@@ -39,9 +39,26 @@ public class UserAnswersEntityService {
         return userAnswersEntityDtoTransformer.generate(userAnswersEntityRepository.findOneByUserNameAndAuditeeAndQuestionsEntityId(userName, auditee, questionsEntityId));
     }
 
-    // GET an answer. sequence = 1. For use in NetworkContactAudit.
-    public UserAnswersEntityDto getUserAnswersEntity(final String userName, final String auditee) {
-        return userAnswersEntityDtoTransformer.generateEAGER(userAnswersEntityRepository.findOneByUserNameAndAuditee(userName, auditee));
+    // GET set of answers. sequence = 1. For use in NetworkContactAudit. Show list of qsets that you can audit of a network contact.
+    public Set<UserAnswersEntity> getUserAnswersEntities(final String userName, final String auditee) {
+
+        Set<UserAnswersEntity> foundUserAnswersEntities = userAnswersEntityRepository.findAllByUserNameAndAuditee(userName, auditee);
+        // lighten the load. take out the questionsEntity.
+        for (UserAnswersEntity y : foundUserAnswersEntities) {
+                y.setQuestionsEntity(null);
+                y.setCreated(null);
+                y.setId(null);
+                y.setComments(null);
+                y.setAnswerPoints(null);
+                y.setAnswer(null);
+                y.setAuditee(null);
+                y.setUserName(null);
+                y.setAnswerPoints(null);
+                y.getQuestionSetVersionEntity().setCreated(null);
+        }
+
+        return foundUserAnswersEntities;
+        //return userAnswersEntityDtoTransformer.generateEAGER(userAnswersEntityRepository.findOneByUserNameAndAuditee(userName, auditee));
     }
 
     // POST/PATCH a user's answer. If not found, POST, else if found, PATCH.
@@ -134,9 +151,7 @@ public class UserAnswersEntityService {
             String auditorsSet = " {contact not found} ";
             return auditorsSet;
         }
-
         else {
-
         Set<UserAnswersEntity> foundUserAnswersEntities = userAnswersEntityRepository.findAllByUserNameAndAuditeeAndQuestionSetVersionEntityId(user, user, questionSetVersionEntityId);
 
         if (!foundFriendshipsEntity.getConnectionStatus().equals("pending") && userAnswersEntityRepository.findAllByUserNameAndAuditeeAndQuestionSetVersionEntityId(friend, user, questionSetVersionEntityId).equals(Collections.emptySet())) {
@@ -146,8 +161,6 @@ public class UserAnswersEntityService {
                                     y.getComments(), y.getQuestionsEntity(), y.getQuestionSetVersionEntity() ));
                 } // end for
             } // end if
-
-
         } // end else
 
         // TODO; return message of status is pending and post on front-end to let user know not added.

@@ -74,8 +74,8 @@ public class QuestionSetVersionEntityService {
             questionSetVersionEntity.setTitle(questionSetVersionEntityDto.getTitle());
             questionSetVersionEntity.setCategory(questionSetVersionEntityDto.getCategory());
             questionSetVersionEntity.setDescription(questionSetVersionEntityDto.getDescription());
-            questionSetVersionEntity.setVersion(questionSetVersionEntityDto.getVersion());
-            questionSetVersionEntity.setCreativeSource(questionSetVersionEntityDto.getCreativeSource());
+            questionSetVersionEntity.setVersion(questionSetVersionEntityDto.getVersion());  // no need to allow changes to version. currently controlled by administrator at the mysql Database
+            //questionSetVersionEntity.setCreativeSource(questionSetVersionEntityDto.getCreativeSource()); no need to allow changes to creator
             questionSetVersionEntityRepository.save(questionSetVersionEntity);
             return questionSetVersionEntityDtoTransformer.generate(questionSetVersionEntity);
         }

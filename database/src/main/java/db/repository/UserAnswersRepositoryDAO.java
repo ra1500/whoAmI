@@ -20,6 +20,9 @@ public interface UserAnswersRepositoryDAO extends JpaRepository<UserAnswersEntit
     @Query("SELECT a FROM UserAnswersEntity a JOIN FETCH a.questionsEntity b WHERE a.userName = :userName AND  auditee = :auditee AND b.sequenceNumber = 1")
     UserAnswersEntity findOneByUserNameAndAuditee(@Param("userName") String userName, @Param("auditee") String auditee);
 
+    @Query("SELECT a FROM UserAnswersEntity a JOIN FETCH a.questionsEntity b WHERE a.userName = :userName AND  auditee = :auditee AND b.sequenceNumber = 1")
+    Set<UserAnswersEntity> findAllByUserNameAndAuditee(@Param("userName") String userName, @Param("auditee") String auditee);
+
     Set<UserAnswersEntity> findAllByUserNameAndAuditeeAndQuestionSetVersionEntityId(String userName, String auditee, Long questinSetVersionEntityId); // used in setting auditors
 
     @Query("SELECT SUM(answerPoints) FROM UserAnswersEntity WHERE userName = :userName AND questionSetVersionEntityId = :questionSetVersionEntityId AND auditee = :auditee")
