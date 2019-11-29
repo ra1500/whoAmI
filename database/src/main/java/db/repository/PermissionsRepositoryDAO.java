@@ -66,6 +66,7 @@ public interface PermissionsRepositoryDAO extends JpaRepository<PermissionsEntit
 //      13	        score	(List of friends)	self	    Network Colleague	Score
 //      14	        score	(List of friends)	self	    Network Other	    Score
 //      15	        score	(individual)	    self	    (individual)	    Score immutable! don't change typeNumbe. Can only delete.
-//      16                                                                      audit posted
+
+//      16          score                                                       audit score
 
 }
