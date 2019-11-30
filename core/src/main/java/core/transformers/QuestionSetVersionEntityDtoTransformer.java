@@ -34,7 +34,6 @@ public class QuestionSetVersionEntityDtoTransformer {
         dto.setResult1start(questionSetVersionEntity.getResult1start());
         dto.setResult2start(questionSetVersionEntity.getResult2start());
         dto.setResult3start(questionSetVersionEntity.getResult3start());
-        dto.setResult4start(questionSetVersionEntity.getResult4start());
         return dto;
     }
 
@@ -42,6 +41,6 @@ public class QuestionSetVersionEntityDtoTransformer {
     public QuestionSetVersionEntity generate(final QuestionSetVersionEntityDto dto) {
         return new QuestionSetVersionEntity( dto.getTitle(), dto.getCategory(), dto.getDescription(), dto.getVersion(),
                  dto.getCreativeSource(), dto.getScoringStyle(), dto.getBadges(), dto.getResult1(), dto.getResult2(), dto.getResult3(), dto.getResult4(),
-        dto.getResult1start(), dto.getResult2start(), dto.getResult3start(), dto.getResult4start());
+        dto.getResult1start(), dto.getResult2start(), dto.getResult3start());
     }
 }

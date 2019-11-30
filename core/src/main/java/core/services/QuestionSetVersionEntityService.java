@@ -86,7 +86,6 @@ public class QuestionSetVersionEntityService {
             questionSetVersionEntity.setResult1start(questionSetVersionEntityDto.getResult1start()); // update
             questionSetVersionEntity.setResult2start(questionSetVersionEntityDto.getResult2start()); // update
             questionSetVersionEntity.setResult3start(questionSetVersionEntityDto.getResult3start()); // update
-            questionSetVersionEntity.setResult4start(questionSetVersionEntityDto.getResult4start()); // update
             questionSetVersionEntityRepository.save(questionSetVersionEntity);
             return questionSetVersionEntityDtoTransformer.generate(questionSetVersionEntity);
         }

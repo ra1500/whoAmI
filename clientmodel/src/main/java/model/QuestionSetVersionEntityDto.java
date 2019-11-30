@@ -60,9 +60,6 @@ public class QuestionSetVersionEntityDto implements Serializable {
     @JsonProperty("result3start")
     private Long result3start;
 
-    @JsonProperty("result4start")
-    private Long result4start;
-
     public QuestionSetVersionEntityDto() {
     }
 
@@ -194,12 +191,5 @@ public class QuestionSetVersionEntityDto implements Serializable {
         this.result3start = result3start;
     }
 
-    public Long getResult4start() {
-        return result4start;
-    }
-
-    public void setResult4start(Long result4start) {
-        this.result4start = result4start;
-    }
 
 }

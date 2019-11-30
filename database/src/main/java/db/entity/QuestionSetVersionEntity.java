@@ -62,9 +62,6 @@ public class QuestionSetVersionEntity implements Serializable {
     @Column (length = 3)
     private Long result3start;
 
-    @Column (length = 3)
-    private Long result4start;
-
     public QuestionSetVersionEntity() {
         super();
     }
@@ -72,7 +69,7 @@ public class QuestionSetVersionEntity implements Serializable {
     public QuestionSetVersionEntity(String title, String category, String description, String version, String creativeSource,
                                     Long scoringStyle, Long badges, String result1, String result2, String result3, String result4,
                                     Long result1start, Long result2start,
-                                    Long result3start, Long result4start) {
+                                    Long result3start) {
         this.title = title;
         this.category = category;
         this.description = description;
@@ -87,7 +84,6 @@ public class QuestionSetVersionEntity implements Serializable {
         this.result1start = result1start;
         this.result2start = result2start;
         this.result3start = result3start;
-        this.result4start = result4start;
     }
 
     // constructor used in UserAnswersEntity Test.
@@ -223,19 +219,12 @@ public class QuestionSetVersionEntity implements Serializable {
         this.result3start = result3start;
     }
 
-    public Long getResult4start() {
-        return result4start;
-    }
-
-    public void setResult4start(Long result4start) {
-        this.result4start = result4start;
-    }
 
     @Override
     public String toString() {
         return String.format("QuestionSetVersion Profile", id, created, title, category, description, version, creativeSource,
                 scoringStyle, badges, result1, result2, result3, result4, result1start, result2start,
-                result3start, result4start);
+                result3start);
     }
 
 }
