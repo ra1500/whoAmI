@@ -27,6 +27,8 @@ public class PermissionsEntityDtoTransformer {
         dto.setType(permissionsEntity.getType());
         dto.setTypeNumber(permissionsEntity.getTypeNumber());
         dto.setScore(permissionsEntity.getScore());
+        dto.setResult(permissionsEntity.getResult());
+        dto.setBadge(permissionsEntity.getBadge());
         dto.setQuestionSetVersionEntity(permissionsEntity.getQuestionSetVersionEntity());
         return dto;
     }
@@ -34,6 +36,6 @@ public class PermissionsEntityDtoTransformer {
     // POST
     public PermissionsEntity generate(final PermissionsEntityDto dto) {
         return new PermissionsEntity( dto.getUserName(), dto.getAuditee(), dto.getViewGroup(),
-                 dto.getType(), dto.getTypeNumber(), dto.getScore(), dto.getQuestionSetVersionEntity());
+                 dto.getType(), dto.getTypeNumber(), dto.getScore(), dto.getResult(), dto.getBadge(),dto.getQuestionSetVersionEntity());
     }
 }

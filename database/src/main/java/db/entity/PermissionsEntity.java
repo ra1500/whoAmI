@@ -40,6 +40,12 @@ public class PermissionsEntity implements Serializable {
     @Column
     private Long score;
 
+    @Column  // what the score means.
+    private String result;
+
+    @Column  // badge type to display.
+    private Long badge;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "questionSetVersionEntityId")
     private QuestionSetVersionEntity questionSetVersionEntity;
@@ -48,23 +54,28 @@ public class PermissionsEntity implements Serializable {
         super();
     }
 
-    public PermissionsEntity(String userName, String auditee, String viewGroup, String type, Long typeNumber, Long score, QuestionSetVersionEntity questionSetVersionEntity) {
+    public PermissionsEntity(String userName, String auditee, String viewGroup, String type, Long typeNumber, Long score, String result, Long badge ,QuestionSetVersionEntity questionSetVersionEntity) {
         this.userName = userName;
         this.auditee = auditee;
         this.viewGroup = viewGroup;
         this.type = type;
         this.typeNumber = typeNumber;
         this.score = score;
+        this.result = result;
+        this.badge = badge;
         this.questionSetVersionEntity = questionSetVersionEntity;
     }
 
     // constructor used in QuestionSetVersionEntityService.
-    public PermissionsEntity(String userName, String auditee, String viewGroup, String type, Long typeNumber, Long score) {
+    public PermissionsEntity(String userName, String auditee, String viewGroup, String type, Long typeNumber, Long score,
+                             String result, Long badge) {
         this.userName = userName;
         this.auditee = auditee;
         this.viewGroup = viewGroup;
         this.type = type;
         this.typeNumber = typeNumber;
+        this.result = result;
+        this.badge = badge;
         this.score = score;
     }
 
@@ -132,6 +143,22 @@ public class PermissionsEntity implements Serializable {
         this.score = score;
     }
 
+    public String getResult() {
+        return result;
+    }
+
+    public void setResult(String result) {
+        this.result = result;
+    }
+
+    public Long getBadge() {
+        return badge;
+    }
+
+    public void setBadge(Long badge) {
+        this.badge = badge;
+    }
+
     public QuestionSetVersionEntity getQuestionSetVersionEntity() {
         return questionSetVersionEntity;
     }
@@ -142,7 +169,7 @@ public class PermissionsEntity implements Serializable {
 
     @Override
     public String toString() {
-        return String.format("Permissions profile", id, created, userName, auditee, viewGroup, type);
+        return String.format("Permissions profile", id, created, userName, auditee, viewGroup, type, result, badge);
     }
 
 }

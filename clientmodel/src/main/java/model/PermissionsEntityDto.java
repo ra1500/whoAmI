@@ -36,6 +36,12 @@ public class PermissionsEntityDto implements Serializable {
     @JsonProperty("score")
     private Long score;
 
+    @JsonProperty("result")
+    private String result;
+
+    @JsonProperty("badge")
+    private Long badge;
+
     @JsonProperty("questionSetVersionEntity")
     private QuestionSetVersionEntity questionSetVersionEntity;
 
@@ -104,6 +110,22 @@ public class PermissionsEntityDto implements Serializable {
 
     public void setScore(Long score) {
         this.score = score;
+    }
+
+    public String getResult() {
+        return result;
+    }
+
+    public void setResult(String result) {
+        this.result = result;
+    }
+
+    public Long getBadge() {
+        return badge;
+    }
+
+    public void setBadge(Long badge) {
+        this.badge = badge;
     }
 
     public QuestionSetVersionEntity getQuestionSetVersionEntity() {

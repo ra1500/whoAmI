@@ -98,6 +98,8 @@ public class PermissionsEntityService {
             //permissionsEntity.setCreated(permissionsEntityDto.getCreated()); // no need to update the original created date
             permissionsEntity.setUserName(permissionsEntityDto.getUserName()); // coming from token (set in controller)
             permissionsEntity.setScore(userAnswersRepositoryDAO.findUserScoresTotal(userName, userName, questionSetVersionEntityId)); // Yes, update it of course.
+            permissionsEntity.setResult(permissionsEntityDto.getResult());
+            permissionsEntity.setBadge(permissionsEntityDto.getBadge()); // TODO: for now comes from client, but later should be if/then on back-end to avoid manipulation.
             //permissionsEntity.setQuestionSetVersionEntity(permissionsEntityDto.getQuestionSetVersionEntity()); // should already by set!
             permissionsRepositoryDAO.save(permissionsEntity);
 
@@ -138,7 +140,9 @@ public class PermissionsEntityService {
             // permissionsEntity.setViewGroup(permissionsEntityDto.getViewGroup()); // should already by set
             // permissionsEntity.setType(permissionsEntityDto.getType()); // should already by set
             permissionsEntity.setUserName(permissionsEntityDto.getUserName()); // coming from token (set in controller)
-            permissionsEntity.setScore(permissionsEntityDto.getScore());
+            permissionsEntity.setScore(permissionsEntityDto.getScore()); // update
+            permissionsEntity.setResult(permissionsEntityDto.getResult()); // update
+            permissionsEntity.setBadge(permissionsEntityDto.getBadge()); // update TODO: update so back-end determined not front-end determined
             //permissionsEntity.setQuestionSetVersionEntity(permissionsEntityDto.getQuestionSetVersionEntity()); // should already by set
             permissionsRepositoryDAO.save(permissionsEntity);
 
@@ -164,22 +168,22 @@ public class PermissionsEntityService {
         if (typeNumber == 5) {
         Stream<FriendshipsEntity> stream = foundFriendshipsEntities.stream().filter(element -> element.getConnectionType().equals("Friend"));
         stream.forEach(element -> permissionsRepositoryDAO.saveAndFlush(new PermissionsEntity(element.getFriend(),
-                userName, "Network", "viewQuestionSet", typeNumber, new Long(0), foundQuestionSetVersionEntity))); }
+                userName, "Network", "viewQuestionSet", typeNumber, new Long(0), null, null, foundQuestionSetVersionEntity))); }
 
         if (typeNumber == 6) {
             Stream<FriendshipsEntity> stream = foundFriendshipsEntities.stream().filter(element -> element.getConnectionType().equals("Colleague"));
             stream.forEach(element -> permissionsRepositoryDAO.saveAndFlush(new PermissionsEntity(element.getFriend(),
-                    userName, "Network", "viewQuestionSet", typeNumber, new Long(0), foundQuestionSetVersionEntity))); }
+                    userName, "Network", "viewQuestionSet", typeNumber, new Long(0), null, null,  foundQuestionSetVersionEntity))); }
 
         if (typeNumber == 7) {
             Stream<FriendshipsEntity> stream = foundFriendshipsEntities.stream().filter(element -> element.getConnectionType().equals("Other"));
             stream.forEach(element -> permissionsRepositoryDAO.saveAndFlush(new PermissionsEntity(element.getFriend(),
-                    userName, "Network", "viewQuestionSet", typeNumber, new Long(0), foundQuestionSetVersionEntity))); }
+                    userName, "Network", "viewQuestionSet", typeNumber, new Long(0), null, null,  foundQuestionSetVersionEntity))); }
 
         // all connections.
         if (typeNumber == 4) {
             foundFriendshipsEntities.stream().forEach(element -> permissionsRepositoryDAO.saveAndFlush(new PermissionsEntity(element.getFriend(),
-                    userName, "Network", "viewQuestionSet", typeNumber, new Long(0), foundQuestionSetVersionEntity))); }
+                    userName, "Network", "viewQuestionSet", typeNumber, new Long(0), null, null,  foundQuestionSetVersionEntity))); }
 
         return new String("Qset Permissions set");
     }
@@ -200,7 +204,7 @@ public class PermissionsEntityService {
 
         Stream<FriendshipsEntity> stream = foundFriendshipsEntities.stream().filter(element -> element.getFriend().equals(invitee));
         stream.forEach(element -> permissionsRepositoryDAO.saveAndFlush(new PermissionsEntity(element.getFriend(),
-                    userName, "Network", "viewQuestionSet",  new Long(8), new Long(0), foundQuestionSetVersionEntity)));
+                    userName, "Network", "viewQuestionSet",  new Long(8), new Long(0), null, null,  foundQuestionSetVersionEntity)));
 
         return new String("Qset Permission set");
     }
