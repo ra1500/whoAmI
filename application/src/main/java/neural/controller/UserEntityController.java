@@ -72,6 +72,27 @@ public class UserEntityController extends AbstractRestController {
         return ResponseEntity.ok(userEntityDto);
     }
 
+    // GET a user with new friendships for alerts.
+    @ApiOperation(value = "getUserEntity")
+    @RequestMapping(value = "/al", method = RequestMethod.GET)
+    public ResponseEntity<UserEntityDto> getUserEntityAlerts(
+            @RequestHeader("Authorization") String token)               {
+
+        String base64Credentials = token.substring("Basic".length()).trim();
+        byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
+        String credentials = new String(credDecoded, StandardCharsets.UTF_8);
+        // credentials = username:password
+        final String[] values = credentials.split(":", 2);
+        String user = values[0];
+
+        UserEntityDto userEntityDto = userEntityService.getUserEntityRecentFriends(user);
+        userEntityDto.setPassword(null);
+        if (userEntityDto == null) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return ResponseEntity.ok(userEntityDto);
+    }
+
     // POST to add a new user
     @RequestMapping(value = "/signup",method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserEntityDto> createUserEntity(

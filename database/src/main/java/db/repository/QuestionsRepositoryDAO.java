@@ -14,8 +14,10 @@ import java.util.Set;
 public interface QuestionsRepositoryDAO extends JpaRepository<QuestionsEntity, Long> {
 
     QuestionsEntity findOneById(Long id); // used in UserAnswersEntity Test.
-    Set<QuestionsEntity> findAllByQuestionSetVersionEntity(QuestionSetVersionEntity questionSetVersionEntity);
     QuestionsEntity findOneBySequenceNumberAndQuestionSetVersionEntityId(Long sequenceNumber, Long questionSetVersionEntityId);
+
+    @Query("SELECT a FROM QuestionsEntity a JOIN FETCH a.questionSetVersionEntity b WHERE b.id = :questionSetVersionEntityId")
+    Set<QuestionsEntity> findStuff(Long questionSetVersionEntityId);
 
     // indexed parameter (first method parameter is indicated as ?1)
     @Query("SELECT MAX(sequenceNumber) FROM QuestionsEntity WHERE questionSetVersionEntityId = ?1")

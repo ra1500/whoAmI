@@ -26,6 +26,7 @@ public class QuestionSetVersionEntityDtoTransformer {
         dto.setVersion(questionSetVersionEntity.getVersion());
         dto.setCreativeSource(questionSetVersionEntity.getCreativeSource());
         dto.setScoringStyle(questionSetVersionEntity.getScoringStyle());
+        dto.setDisplayAnswers(questionSetVersionEntity.getDisplayAnswers());
         dto.setBadges(questionSetVersionEntity.getBadges());
         dto.setResult1(questionSetVersionEntity.getResult1());
         dto.setResult2(questionSetVersionEntity.getResult2());
@@ -40,7 +41,7 @@ public class QuestionSetVersionEntityDtoTransformer {
     // POST
     public QuestionSetVersionEntity generate(final QuestionSetVersionEntityDto dto) {
         return new QuestionSetVersionEntity( dto.getTitle(), dto.getCategory(), dto.getDescription(), dto.getVersion(),
-                 dto.getCreativeSource(), dto.getScoringStyle(), dto.getBadges(), dto.getResult1(), dto.getResult2(), dto.getResult3(), dto.getResult4(),
+                 dto.getCreativeSource(), dto.getScoringStyle(), dto.getDisplayAnswers(),dto.getBadges(), dto.getResult1(), dto.getResult2(), dto.getResult3(), dto.getResult4(),
         dto.getResult1start(), dto.getResult2start(), dto.getResult3start());
     }
 }

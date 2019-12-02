@@ -1,12 +1,18 @@
 package core.services;
 
 import core.transformers.UserEntityDtoTransformer;
+import db.entity.FriendshipsEntity;
 import db.entity.UserEntity;
 import db.repository.UserRepositoryDAO;
 import model.UserEntityDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
+import java.util.Set;
 
 @Service
 public class UserEntityService {
@@ -28,6 +34,17 @@ public class UserEntityService {
     // GET
     public UserEntityDto getUserEntity(final String userName) {
         return userEntityDtoTransformer.generate(userEntityRepository.findOneByUserName(userName));
+    }
+
+    // GET (for alerts list of recent friendships invitations).
+    public UserEntityDto getUserEntityRecentFriends(final String userName) {
+        LocalDate windowDate = LocalDate.now().minusDays(14);
+        UserEntityDto foundUser = userEntityDtoTransformer.generate(userEntityRepository.findOneByUserName(userName));
+        Set<FriendshipsEntity> foundFriendshipsEntities = foundUser.getFriendsSet();
+        foundFriendshipsEntities.removeIf(i -> !i.getConnectionStatus().equals("pending"));
+        foundFriendshipsEntities.removeIf(i -> windowDate.isAfter(i.getCreated().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()));
+        foundUser.setFriendsSet(foundFriendshipsEntities);
+        return foundUser;
     }
 
     // POST a new user

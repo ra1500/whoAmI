@@ -36,6 +36,9 @@ public class QuestionSetVersionEntityDto implements Serializable {
     @JsonProperty("scoringStyle")
     private Long scoringStyle;
 
+    @JsonProperty("displayAnswers")
+    private Long displayAnswers;
+
     @JsonProperty("badges")
     private Long badges;
 
@@ -125,6 +128,14 @@ public class QuestionSetVersionEntityDto implements Serializable {
 
     public void setScoringStyle(Long scoringStyle) {
         this.scoringStyle = scoringStyle;
+    }
+
+    public Long getDisplayAnswers() {
+        return displayAnswers;
+    }
+
+    public void setDisplayAnswers(Long displayAnswers) {
+        this.displayAnswers = displayAnswers;
     }
 
     public Long getBadges() {

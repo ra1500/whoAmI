@@ -8,6 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -55,6 +57,29 @@ public class UserAnswersEntityService {
                 y.setUserName(null);
                 y.setAnswerPoints(null);
                 y.getQuestionSetVersionEntity().setCreated(null);
+        }
+
+        return foundUserAnswersEntities;
+        //return userAnswersEntityDtoTransformer.generateEAGER(userAnswersEntityRepository.findOneByUserNameAndAuditee(userName, auditee));
+    }
+
+    // GET Alerts Audits. set of answers. sequence = 1. For use in Alerts. Show list of qsets that you can audit within 2 weeks.
+    public Set<UserAnswersEntity> getUserAnswersEntitiesAuditAlerts(final String userName) {
+        LocalDate windowDate = LocalDate.now().minusDays(14);
+        Set<UserAnswersEntity> foundUserAnswersEntities = userAnswersEntityRepository.findAllByUserNameAlerts(userName);
+        foundUserAnswersEntities.removeIf(i -> i.getAuditee().equals(userName));
+        foundUserAnswersEntities.removeIf(i -> windowDate.isAfter(i.getCreated().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()));
+
+        for (UserAnswersEntity y : foundUserAnswersEntities) {
+            y.setQuestionsEntity(null);
+            y.setCreated(null);
+            y.setId(null);
+            y.setComments(null);
+            y.setAnswerPoints(null);
+            y.setAnswer(null);
+            y.setUserName(null);
+            y.setAnswerPoints(null);
+            y.getQuestionSetVersionEntity().setCreated(null);
         }
 
         return foundUserAnswersEntities;

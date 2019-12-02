@@ -102,6 +102,26 @@ public class UserAnswersEntityController extends AbstractRestController {
         return ResponseEntity.ok(userAnswersEntities);
     }
 
+    // GET Alerts of new audit invitations.
+    @ApiOperation(value = "getUserAnswersEntity")
+    @RequestMapping(value = "/al", method = RequestMethod.GET)
+    public ResponseEntity<Set<UserAnswersEntity>> getUserAnswersEntityAuditAlerts(
+            @RequestHeader("Authorization") String token) {
+        String base64Credentials = token.substring("Basic".length()).trim();
+        byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
+        String credentials = new String(credDecoded, StandardCharsets.UTF_8);
+        // credentials = username:password
+        final String[] values = credentials.split(":", 2);
+        String user = values[0];
+
+        Set<UserAnswersEntity> userAnswersEntities = userAnswersEntityService.getUserAnswersEntitiesAuditAlerts(user);
+
+        if (userAnswersEntities.equals(Collections.emptySet())) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return ResponseEntity.ok(userAnswersEntities);
+    }
+
     // GET userScore Total for 'Questions'. (userName & auditee same).
     @ApiOperation(value = "getUserScoresAggregates")
     @RequestMapping(method = RequestMethod.GET)

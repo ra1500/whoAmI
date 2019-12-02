@@ -39,6 +39,9 @@ public class QuestionSetVersionEntity implements Serializable {
     private Long scoringStyle; // 1 for display at completed qset. 2 for displayed/continuous scoring,
 
     @Column (length = 3)
+    private Long displayAnswers; // 1 for ability to show full list of correct answers after completion. 2 to hide.
+
+    @Column (length = 3)
     private Long badges; // which types of ribbons/badges used to match with results (1 'company created qset' badges or 2 'user created qset' badges.
 
     @Column (length = 20)
@@ -67,7 +70,7 @@ public class QuestionSetVersionEntity implements Serializable {
     }
 
     public QuestionSetVersionEntity(String title, String category, String description, String version, String creativeSource,
-                                    Long scoringStyle, Long badges, String result1, String result2, String result3, String result4,
+                                    Long scoringStyle, Long displayAnswers ,Long badges, String result1, String result2, String result3, String result4,
                                     Long result1start, Long result2start,
                                     Long result3start) {
         this.title = title;
@@ -76,6 +79,7 @@ public class QuestionSetVersionEntity implements Serializable {
         this.version = version;
         this.creativeSource = creativeSource;
         this.scoringStyle = scoringStyle;
+        this.displayAnswers = displayAnswers;
         this.badges = badges;
         this.result1 = result1;
         this.result2 = result2;
@@ -155,6 +159,14 @@ public class QuestionSetVersionEntity implements Serializable {
         this.scoringStyle = scoringStyle;
     }
 
+    public Long getDisplayAnswers() {
+        return displayAnswers;
+    }
+
+    public void setDisplayAnswers(Long displayAnswers) {
+        this.displayAnswers = displayAnswers;
+    }
+
     public Long getBadges() {
         return badges;
     }
@@ -223,7 +235,7 @@ public class QuestionSetVersionEntity implements Serializable {
     @Override
     public String toString() {
         return String.format("QuestionSetVersion Profile", id, created, title, category, description, version, creativeSource,
-                scoringStyle, badges, result1, result2, result3, result4, result1start, result2start,
+                scoringStyle, displayAnswers,badges, result1, result2, result3, result4, result1start, result2start,
                 result3start);
     }
 

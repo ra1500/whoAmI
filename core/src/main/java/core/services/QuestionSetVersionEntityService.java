@@ -77,7 +77,8 @@ public class QuestionSetVersionEntityService {
             questionSetVersionEntity.setDescription(questionSetVersionEntityDto.getDescription());
             questionSetVersionEntity.setVersion(questionSetVersionEntityDto.getVersion());  // no need to allow changes to version. currently controlled by administrator at the mysql Database
             //questionSetVersionEntity.setCreativeSource(questionSetVersionEntityDto.getCreativeSource()); no need to allow changes to creator
-            questionSetVersionEntity.setScoringStyle(questionSetVersionEntityDto.getScoringStyle());
+            questionSetVersionEntity.setScoringStyle(questionSetVersionEntityDto.getScoringStyle()); // update
+            questionSetVersionEntity.setDisplayAnswers(questionSetVersionEntityDto.getDisplayAnswers()); // update
             // questionSetVersionEntity.setBadges(questionSetVersionEntityDto.getBadges()); default is '2' and stays at '2'
             questionSetVersionEntity.setResult1(questionSetVersionEntityDto.getResult1()); // update
             questionSetVersionEntity.setResult2(questionSetVersionEntityDto.getResult2()); // update
