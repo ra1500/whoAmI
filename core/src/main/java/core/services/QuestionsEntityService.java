@@ -11,6 +11,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
+
+import static com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type.Int;
 
 @Service
 public class QuestionsEntityService {
@@ -88,4 +91,33 @@ public class QuestionsEntityService {
             return questionsEntityDtoTransformer.generate(foundQuestionsEntity);
         }
     }
+
+    // DELETE a question
+    public Integer deleteQuestionsEntity(final QuestionsEntityDto questionsEntityDto) {
+
+         // find the question
+         QuestionsEntity foundQuestionsEntity = questionsEntityRepository.findOneById(questionsEntityDto.getId());
+
+         // user validation
+         if (!foundQuestionsEntity.getCreativeSource().equals(questionsEntityDto.getCreativeSource())) { return new Integer(0);};
+
+        // get info
+        Long sequenceNumber = foundQuestionsEntity.getSequenceNumber();
+        Long questionSetVersionEntityId = foundQuestionsEntity.getQuestionSetVersionEntity().getId();
+
+        // delete the question
+        Integer deleted = questionsEntityRepository.deleteOneById(questionsEntityDto.getId());
+
+        // change all sequence numbers to accommodate delete (subtract 1 from sequence number for those that are after this question)
+        Set<QuestionsEntity> questionsEntities = questionsEntityRepository.findStuff(questionSetVersionEntityId);
+        questionsEntities.removeIf(i -> i.getSequenceNumber() < sequenceNumber);
+
+        for (QuestionsEntity x : questionsEntities) {
+            x.setSequenceNumber(x.getSequenceNumber()-1);
+            questionsEntityRepository.save(x);
+        }
+
+        return deleted;
+    }
+
 }

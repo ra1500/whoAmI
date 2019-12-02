@@ -144,4 +144,26 @@ public class QuestionsEntityController extends AbstractRestController {
         return ResponseEntity.ok(savedQuestionsEntityDto);
     }
 
+    // POST/DELETE  delete a question
+    @RequestMapping(value = "/del", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> deleteQuestionsEntity(
+            @Valid
+            @RequestBody final QuestionsEntityDto questionsEntityDto,
+            @RequestHeader("Authorization") String token,
+            final Long questionSetVersionEntityId) {
+
+        String base64Credentials = token.substring("Basic".length()).trim();
+        byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
+        String credentials = new String(credDecoded, StandardCharsets.UTF_8);
+        // credentials = username:password
+        final String[] values = credentials.split(":", 2);
+        String user = values[0];
+
+        questionsEntityDto.setCreativeSource(user);  // for validation to allow only token user to delete own questions.
+        questionsEntityService.deleteQuestionsEntity(questionsEntityDto);
+
+        String allDeleted = "Deleted";
+        return ResponseEntity.ok(allDeleted);
+    }
+
 }
