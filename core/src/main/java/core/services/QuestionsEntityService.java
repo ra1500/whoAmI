@@ -3,8 +3,10 @@ package core.services;
 import core.transformers.QuestionsEntityDtoTransformer;
 import db.entity.QuestionSetVersionEntity;
 import db.entity.QuestionsEntity;
+import db.entity.UserAnswersEntity;
 import db.repository.QuestionSetVersionRepositoryDAO;
 import db.repository.QuestionsRepositoryDAO;
+import db.repository.UserAnswersRepositoryDAO;
 import model.QuestionsEntityDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,14 +24,16 @@ public class QuestionsEntityService {
 
     private final QuestionsRepositoryDAO questionsEntityRepository;
     private final QuestionSetVersionRepositoryDAO questionSetVersionRepositoryDAO;
+    private final UserAnswersRepositoryDAO userAnswersRepositoryDAO;
 
     private final QuestionsEntityDtoTransformer questionsEntityDtoTransformer;
 
     public QuestionsEntityService(final QuestionsRepositoryDAO questionsEntityRepository, final QuestionsEntityDtoTransformer questionsEntityDtoTransformer,
-                                  final QuestionSetVersionRepositoryDAO questionSetVersionRepositoryDAO) {
+                                  final QuestionSetVersionRepositoryDAO questionSetVersionRepositoryDAO, final UserAnswersRepositoryDAO userAnswersRepositoryDAO) {
         this.questionsEntityRepository = questionsEntityRepository;
         this.questionsEntityDtoTransformer = questionsEntityDtoTransformer;
         this.questionSetVersionRepositoryDAO = questionSetVersionRepositoryDAO;
+        this.userAnswersRepositoryDAO = userAnswersRepositoryDAO;
     }
 
     // GET a question (lazy load, no parent)
@@ -104,6 +108,8 @@ public class QuestionsEntityService {
         // get info
         Long sequenceNumber = foundQuestionsEntity.getSequenceNumber();
         Long questionSetVersionEntityId = foundQuestionsEntity.getQuestionSetVersionEntity().getId();
+
+
 
         // delete the question
         Integer deleted = questionsEntityRepository.deleteOneById(questionsEntityDto.getId());
