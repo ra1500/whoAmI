@@ -1,5 +1,6 @@
 package db.repository;
 
+import db.entity.QuestionsEntity;
 import db.entity.UserAnswersEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -39,5 +40,7 @@ public interface UserAnswersRepositoryDAO extends JpaRepository<UserAnswersEntit
     @Transactional
     Integer deleteAllByUserNameAndAuditeeAndQuestionSetVersionEntityId(String userName, String auditee, Long questionSetVersionEntityId);
 
+    @Transactional
+    Integer deleteAllByQuestionsEntity(QuestionsEntity questionsEntity);
 
 }

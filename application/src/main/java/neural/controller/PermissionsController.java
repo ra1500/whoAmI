@@ -285,6 +285,7 @@ public class PermissionsController extends AbstractRestController {
         return ResponseEntity.ok(permissionsEntities);
     }
 
+    // Delete? Not used?
     // GET a single permission for a Qset for 'manageAudit'
     @ApiOperation(value = "permissionsEntity")
     @RequestMapping(value = "/sc/dg{id}", method = RequestMethod.GET)

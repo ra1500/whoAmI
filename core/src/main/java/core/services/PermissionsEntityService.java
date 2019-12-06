@@ -98,7 +98,7 @@ public class PermissionsEntityService {
             //permissionsEntity.setCreated(permissionsEntityDto.getCreated()); // no need to update the original created date
             permissionsEntity.setUserName(permissionsEntityDto.getUserName()); // coming from token (set in controller)
             permissionsEntity.setScore(userAnswersRepositoryDAO.findUserScoresTotal(userName, userName, questionSetVersionEntityId)); // Yes, update it of course.
-            permissionsEntity.setResult(permissionsEntityDto.getResult());
+            permissionsEntity.setResult(permissionsEntityDto.getResult()); // not updated by client. back-end calculated.
             permissionsEntity.setBadge(permissionsEntityDto.getBadge()); // TODO: for now comes from client, but later should be if/then on back-end to avoid manipulation.
             //permissionsEntity.setQuestionSetVersionEntity(permissionsEntityDto.getQuestionSetVersionEntity()); // should already by set!
             permissionsRepositoryDAO.save(permissionsEntity);

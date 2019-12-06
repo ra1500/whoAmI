@@ -144,7 +144,7 @@ public class QuestionsEntityController extends AbstractRestController {
         return ResponseEntity.ok(savedQuestionsEntityDto);
     }
 
-    // POST/DELETE  delete a question
+    // POST/DELETE  delete a question Manage/(AskFormQuestion)
     @RequestMapping(value = "/del", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> deleteQuestionsEntity(
             @Valid

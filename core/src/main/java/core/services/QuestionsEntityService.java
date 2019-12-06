@@ -105,11 +105,12 @@ public class QuestionsEntityService {
          // user validation
          if (!foundQuestionsEntity.getCreativeSource().equals(questionsEntityDto.getCreativeSource())) { return new Integer(0);};
 
-        // get info
+        // get info on the question
         Long sequenceNumber = foundQuestionsEntity.getSequenceNumber();
         Long questionSetVersionEntityId = foundQuestionsEntity.getQuestionSetVersionEntity().getId();
 
-
+        // delete all answers to this question from all users.
+        userAnswersRepositoryDAO.deleteAllByQuestionsEntity(foundQuestionsEntity);
 
         // delete the question
         Integer deleted = questionsEntityRepository.deleteOneById(questionsEntityDto.getId());
