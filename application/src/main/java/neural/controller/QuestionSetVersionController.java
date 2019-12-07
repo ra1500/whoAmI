@@ -77,6 +77,11 @@ public class QuestionSetVersionController extends AbstractRestController {
 
         // userName from token
         questionSetVersionEntityDto.setCreativeSource(user);
+
+        // limit quantity to 10 qsets per account
+        Long countOfQsets = questionSetVersionRepositoryDAO.countQuantityQsetsByUsername(user);
+        if (countOfQsets > 9) { return new ResponseEntity<>(HttpStatus.NO_CONTENT); };
+
         QuestionSetVersionEntityDto savedQuestionSetVersionEntityDto = questionSetVersionEntityService.createQuestionSetVersionEntity(questionSetVersionEntityDto, qsid, user);
         return ResponseEntity.ok(savedQuestionSetVersionEntityDto);
     }
@@ -130,7 +135,6 @@ public class QuestionSetVersionController extends AbstractRestController {
         permissionsRepositoryDAO.deleteAllByQuestionSetVersionEntityId(questionSetVersionEntityDto.getId());
         questionsRepositoryDAO.deleteAllByQuestionSetVersionEntityId(questionSetVersionEntityDto.getId());
         questionSetVersionRepositoryDAO.deleteById(questionSetVersionEntityDto.getId());
-
 
         String allDeleted = "Deleted";
 

@@ -99,6 +99,10 @@ public class UserEntityController extends AbstractRestController {
             @Valid
             @RequestBody
             final UserEntityDto userEntityDto) {
+
+        if (userEntityDto.getUserName().length() < 4 ) { return new ResponseEntity<>(HttpStatus.NO_CONTENT); };
+        if (userEntityDto.getPassword().length() < 4 ) { return new ResponseEntity<>(HttpStatus.NO_CONTENT); };
+
         UserEntityDto savedUserEntityDto = userEntityService.createUserEntity(userEntityDto);
         return ResponseEntity.ok(savedUserEntityDto);
     }

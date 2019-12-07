@@ -23,17 +23,23 @@ public class UserAnswersEntityService {
     private final UserAnswersEntityDtoTransformer userAnswersEntityDtoTransformer;
     private final UserRepositoryDAO userRepositoryDAO;
     private final FriendshipsRepositoryDAO friendshipsRepositoryDAO;
+    private final PermissionsRepositoryDAO permissionsRepositoryDAO;
+    private final QuestionSetVersionRepositoryDAO questionSetVersionRepositoryDAO;
 
     public UserAnswersEntityService(final UserAnswersRepositoryDAO userAnswersEntityRepository,
                                     final UserAnswersEntityDtoTransformer userAnswersEntityDtoTransformer,
                                     final QuestionsRepositoryDAO questionsRepositoryDAO,
                                     final UserRepositoryDAO userRepositoryDAO,
-                                    FriendshipsRepositoryDAO friendshipsRepositoryDAO) {
+                                    FriendshipsRepositoryDAO friendshipsRepositoryDAO,
+                                    PermissionsRepositoryDAO permissionsRepositoryDAO,
+                                    QuestionSetVersionRepositoryDAO questionSetVersionRepositoryDAO) {
         this.userAnswersEntityRepository = userAnswersEntityRepository;
         this.userAnswersEntityDtoTransformer = userAnswersEntityDtoTransformer;
         this.questionsRepositoryDAO = questionsRepositoryDAO;
         this.userRepositoryDAO = userRepositoryDAO;
         this.friendshipsRepositoryDAO = friendshipsRepositoryDAO;
+        this.permissionsRepositoryDAO = permissionsRepositoryDAO;
+        this.questionSetVersionRepositoryDAO = questionSetVersionRepositoryDAO;
     }
 
     // GET an answer
@@ -194,8 +200,19 @@ public class UserAnswersEntityService {
         return auditorsSet;
     }
 
+    // DELETE userAnswers (Questions)
     public String deleteAllAnswersForUserNameAndAuditeeAndQuestionSetVersionEntityId(String user, String auditee, Long questionSetVersionEntityId) {
         userAnswersEntityRepository.deleteAllByUserNameAndAuditeeAndQuestionSetVersionEntityId(user, auditee, questionSetVersionEntityId);
+        String allDeleted = "{ all answers deleted for this set }";
+        return allDeleted;
+    }
+
+    // DELETE audit userAnswers
+    public String deleteAllAnswersForUserNameAndAuditeeAndQuestionSetVersionEntityIdAudit(String user, String auditee, Long questionSetVersionEntityId) {
+        userAnswersEntityRepository.deleteAllByUserNameAndAuditeeAndQuestionSetVersionEntityId(user, auditee, questionSetVersionEntityId);
+        QuestionSetVersionEntity foundQuestionSetVersionEntity = questionSetVersionRepositoryDAO.findOneById(questionSetVersionEntityId);
+
+        permissionsRepositoryDAO.deleteOneByUserNameAndAuditeeAndQuestionSetVersionEntity(user, auditee, foundQuestionSetVersionEntity);
         String allDeleted = "{ all answers deleted for this set }";
         return allDeleted;
     }

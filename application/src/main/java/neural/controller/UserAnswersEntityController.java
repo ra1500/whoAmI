@@ -217,7 +217,7 @@ public class UserAnswersEntityController extends AbstractRestController {
         return ResponseEntity.ok(savedUserAnswersEntityDto);
     }
 
-    // POST delete all of a user's answers
+    // POST DELETE all of a user's answers
     @RequestMapping(value = "/del/{qsId}",method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> deleteAllUserAnswers(
             @Valid
@@ -234,6 +234,27 @@ public class UserAnswersEntityController extends AbstractRestController {
         String user = values[0];
 
         String deleted = userAnswersEntityService.deleteAllAnswersForUserNameAndAuditeeAndQuestionSetVersionEntityId(user, userAnswersEntityDto.getAuditee(), questionSetVersionEntityId);
+
+        return ResponseEntity.ok(deleted);
+    }
+
+    // POST DELETE all of a user's answers
+    @RequestMapping(value = "/dll/{qsId}",method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> deleteAllUserAnswersAudit(
+            @Valid
+            @RequestBody
+            final UserAnswersEntityDto userAnswersEntityDto,
+            @RequestHeader("Authorization") String token,
+            @PathVariable("qsId") final Long questionSetVersionEntityId) {
+
+        String base64Credentials = token.substring("Basic".length()).trim();
+        byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
+        String credentials = new String(credDecoded, StandardCharsets.UTF_8);
+        // credentials = username:password
+        final String[] values = credentials.split(":", 2);
+        String user = values[0];
+
+        String deleted = userAnswersEntityService.deleteAllAnswersForUserNameAndAuditeeAndQuestionSetVersionEntityIdAudit(user, userAnswersEntityDto.getAuditee(), questionSetVersionEntityId);
 
         return ResponseEntity.ok(deleted);
     }

@@ -15,6 +15,8 @@ public interface PermissionsRepositoryDAO extends JpaRepository<PermissionsEntit
     PermissionsEntity findOneByUserNameAndAuditeeAndQuestionSetVersionEntityId(String userName, String auditee, Long questionSetVersionEntityId);
     PermissionsEntity findOneByUserNameAndTypeNumberAndQuestionSetVersionEntityId(String userName, Long typeNumber, Long questionSetVersionEntityId);
     PermissionsEntity findOneByIdAndUserName(Long Id, String userName);
+    PermissionsEntity findOneById(Long Id);
+
 
     //@Query("SELECT p FROM PermissionsEntity p WHERE p.userName = :userName AND p.questionSetVersionEntityId = :questionSetVersionEntityId AND p.typeNumber BETWEEN '9' AND 15")
     @Query("SELECT p FROM PermissionsEntity p JOIN p.questionSetVersionEntity b WHERE b.id = :questionSetVersionEntityId AND p.userName = :userName AND p.typeNumber BETWEEN '9' AND 15")
@@ -25,6 +27,9 @@ public interface PermissionsRepositoryDAO extends JpaRepository<PermissionsEntit
 
     @Transactional // used in QuestionSetVersionController when a user deletes their Qset.
     Integer deleteAllByQuestionSetVersionEntityId(Long id);
+
+    @Transactional // used to delete a '16' permission when an auditor deletes their answers.
+    Integer deleteOneByUserNameAndAuditeeAndQuestionSetVersionEntity(String user, String auditee, QuestionSetVersionEntity foundQuestionSetVersionEntity);
 
     @Query("SELECT p FROM PermissionsEntity p WHERE p.userName = :userName AND p.typeNumber BETWEEN '9' AND 15")
     Set<PermissionsEntity> getPrivateProfilePageQsets(String userName);
@@ -46,6 +51,7 @@ public interface PermissionsRepositoryDAO extends JpaRepository<PermissionsEntit
 
     @Query("SELECT p FROM PermissionsEntity p JOIN FETCH p.questionSetVersionEntity b WHERE b.id = :questionSetVersionEntityId AND p.auditee = :userName AND p.typeNumber = 16")
     Set<PermissionsEntity> getAudits(String userName, Long questionSetVersionEntityId);
+
 
 //    TypeIndex	    score	viewer	            owner	    view group	        PermissionType
 //    typenumber	score	username	        auditee	    group	            type/

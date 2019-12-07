@@ -2,9 +2,11 @@ package neural.controller;
 
 import core.services.PermissionsEntityService;
 import db.entity.PermissionsEntity;
+import db.entity.QuestionSetVersionEntity;
 import db.entity.UserEntity;
 import db.repository.FriendshipsRepositoryDAO;
 import db.repository.PermissionsRepositoryDAO;
+import db.repository.UserAnswersRepositoryDAO;
 import db.repository.UserRepositoryDAO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -28,12 +30,14 @@ public class PermissionsController extends AbstractRestController {
     private PermissionsRepositoryDAO permissionsRepositoryDAO; // used for delete. shortcut to the repository.
     private FriendshipsRepositoryDAO friendshipsRepositoryDAO; // shortcut. TODO delete this and go through transformer
     private UserRepositoryDAO userRepositoryDAO; // used for checking Public Profile permission to show public page
+    private UserAnswersRepositoryDAO userAnswersRepositoryDAO; // used for 'Delete' to also delete all related audit answers.
 
-    public PermissionsController(PermissionsEntityService permissionsEntityService, PermissionsRepositoryDAO permissionsRepositoryDAO, FriendshipsRepositoryDAO friendshipsRepositoryDAO, UserRepositoryDAO userRepositoryDAO) {
+    public PermissionsController(PermissionsEntityService permissionsEntityService, PermissionsRepositoryDAO permissionsRepositoryDAO, FriendshipsRepositoryDAO friendshipsRepositoryDAO, UserRepositoryDAO userRepositoryDAO, UserAnswersRepositoryDAO userAnswersRepositoryDAO) {
         this.permissionsEntityService = permissionsEntityService;
         this.permissionsRepositoryDAO = permissionsRepositoryDAO;
         this.friendshipsRepositoryDAO = friendshipsRepositoryDAO;
         this.userRepositoryDAO = userRepositoryDAO;
+        this.userAnswersRepositoryDAO = userAnswersRepositoryDAO;
     }
 
     // GET
@@ -333,7 +337,7 @@ public class PermissionsController extends AbstractRestController {
         return ResponseEntity.ok(permissionsEntities);
     }
 
-    // POST/DELETE. Delete a score completely from permissionsEntity
+    // POST/DELETE. Delete a score completely from permissionsEntity (and related audits).
     @ApiOperation(value = "permissionsEntity")
     @RequestMapping(value = "/sc/dl", method = RequestMethod.POST)
     public ResponseEntity<Integer> deletePermissionsEntityUserScorePrivateProfilePage(
@@ -348,11 +352,16 @@ public class PermissionsController extends AbstractRestController {
         final String[] values = credentials.split(":", 2);
         String user = values[0];
 
-        Integer deletedScore = permissionsRepositoryDAO.deleteOneById(permissionsEntityDto.getId());
+        PermissionsEntity foundPermissionsEntity = permissionsRepositoryDAO.findOneById(permissionsEntityDto.getId());
+        QuestionSetVersionEntity foundQuestionSetVersionEntity = foundPermissionsEntity.getQuestionSetVersionEntity();
 
-        if (deletedScore == null) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
+        // delete the Permission
+        Integer deletedScore = permissionsRepositoryDAO.deleteOneById(permissionsEntityDto.getId());
+        if (deletedScore == null) { return new ResponseEntity<>(HttpStatus.NO_CONTENT); }
+
+        // delete all the related audits/audit answers
+        userAnswersRepositoryDAO.deleteAllByAuditeeAndQuestionSetVersionEntity(user, foundQuestionSetVersionEntity);
+
         return ResponseEntity.ok(deletedScore);
     }
 }

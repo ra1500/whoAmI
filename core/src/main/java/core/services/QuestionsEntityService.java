@@ -50,6 +50,9 @@ public class QuestionsEntityService {
     // POST/PATCH
     public QuestionsEntityDto createQuestionsEntity(final QuestionsEntityDto questionsEntityDto, final Long questionSetVersionEntityId, final String userName) {
 
+        // limit sequence# to <= 40 questions per set
+        if (questionsEntityDto.getSequenceNumber() > 40) { return questionsEntityDto; };
+
         // get questionsEntityDto from db, if it exists.
         QuestionsEntity foundQuestionsEntity = questionsEntityRepository.findOneBySequenceNumberAndQuestionSetVersionEntityId(questionsEntityDto.getSequenceNumber(), questionSetVersionEntityId);
 
@@ -58,8 +61,11 @@ public class QuestionsEntityService {
             // create a 'raw' questionsEntity based on the incoming questionsEntityDto (before adding parent)
             QuestionsEntity newQuestionsEntity = questionsEntityDtoTransformer.generate(questionsEntityDto);
 
-            // add the parent questionSetVersionEntity
+            // validate that questionsetversionentity creator is same as user adding the new question
             QuestionSetVersionEntity foundQuestionSetVersionEntity = questionSetVersionRepositoryDAO.findOneById(questionSetVersionEntityId);
+            if (!foundQuestionSetVersionEntity.getCreativeSource().equals(userName)) { return questionsEntityDto; };
+
+            // add the parent questionSetVersionEntity
             newQuestionsEntity.setQuestionSetVersionEntity(foundQuestionSetVersionEntity);
 
             // save the completed questionsEntity
@@ -69,9 +75,7 @@ public class QuestionsEntityService {
 
         else {
             // validate that user and creator are the same (to allow edits to this questionSet).
-            if (!foundQuestionsEntity.getCreativeSource().equals(userName)) {
-                return questionsEntityDto;}
-
+            if (!foundQuestionsEntity.getCreativeSource().equals(userName)) { return questionsEntityDto;} ;
 
             // this else statement is an update/patch. no need to update parent since client already 'knows' who they are. and they are already set.
             foundQuestionsEntity.setSequenceNumber(questionsEntityDto.getSequenceNumber());
