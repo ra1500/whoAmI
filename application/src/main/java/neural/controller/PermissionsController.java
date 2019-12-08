@@ -312,7 +312,7 @@ public class PermissionsController extends AbstractRestController {
         return ResponseEntity.ok(permissionsEntityDto);
     }
 
-    // GET. QSets & user scores for Private Profile Page.
+    // GET. ViewAudits
     @ApiOperation(value = "permissionsEntity")
     @RequestMapping(value = "/sc/de{qsId}", method = RequestMethod.GET)
     public ResponseEntity<Set<PermissionsEntity>> getPermissionsEntityViewAudits(

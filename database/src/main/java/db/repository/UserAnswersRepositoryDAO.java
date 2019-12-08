@@ -19,10 +19,10 @@ public interface UserAnswersRepositoryDAO extends JpaRepository<UserAnswersEntit
     UserAnswersEntity findOneByUserNameAndAuditeeAndQuestionsEntityId(String userName, String auditee, Long questionsEntityId);
     UserAnswersEntity findOneByUserNameAndAuditeeAndQuestionSetVersionEntityId(String userName, String auditee, Long questionSetVersionEntityId);
 
-    @Query("SELECT a FROM UserAnswersEntity a JOIN FETCH a.questionsEntity b WHERE a.userName = :userName AND  auditee = :auditee AND b.sequenceNumber = 1")
+    @Query("SELECT a FROM UserAnswersEntity a JOIN FETCH a.questionsEntity b WHERE a.userName = :userName AND auditee = :auditee AND b.sequenceNumber = 1")
     UserAnswersEntity findOneByUserNameAndAuditee(@Param("userName") String userName, @Param("auditee") String auditee);
 
-    @Query("SELECT a FROM UserAnswersEntity a JOIN FETCH a.questionsEntity b WHERE a.userName = :userName AND  auditee = :auditee AND b.sequenceNumber = 1")
+    @Query("SELECT a FROM UserAnswersEntity a JOIN FETCH a.questionsEntity b WHERE a.userName = :userName AND auditee = :auditee AND b.sequenceNumber = 1")
     Set<UserAnswersEntity> findAllByUserNameAndAuditee(@Param("userName") String userName, @Param("auditee") String auditee);
 
     @Query("SELECT a FROM UserAnswersEntity a JOIN FETCH a.questionsEntity b WHERE a.userName = :userName AND b.sequenceNumber = 1")
@@ -32,6 +32,12 @@ public interface UserAnswersRepositoryDAO extends JpaRepository<UserAnswersEntit
 
     @Query("SELECT SUM(answerPoints) FROM UserAnswersEntity WHERE userName = :userName AND questionSetVersionEntityId = :questionSetVersionEntityId AND auditee = :auditee")
     Long findUserScoresTotal(@Param("userName") String userName, @Param("auditee") String auditee, @Param("questionSetVersionEntityId") Long questionSetVersionEntityId);
+
+    @Query("SELECT COUNT(distinct a.questionSetVersionEntity) FROM UserAnswersEntity a WHERE a.userName <> :userName AND auditee = :userName")
+    Long getCountAuditInvites(String userName);
+
+    @Query("SELECT a FROM UserAnswersEntity a JOIN FETCH a.questionSetVersionEntity b WHERE a.userName <> :userName AND auditee = :userName AND b.id = :questionSetVersionEntityId")
+    Set<UserAnswersEntity> findAllByUserNameAndAuditeeDifferent(String userName, Long questionSetVersionEntityId);
 
     // TODO provide the original user's answers also so that comparison is easy between original answer and the auditors answer
     // @Query(value = "SELECT a FROM UserAnswersEntity a WHERE (auditee = :user AND userName = :friend) OR  (auditee = :user AND userName = :user)")

@@ -102,6 +102,29 @@ public class UserAnswersEntityController extends AbstractRestController {
         return ResponseEntity.ok(userAnswersEntities);
     }
 
+    // GET count of invited audits and status of currently selected posted score of '1' or '2' indicating if out for audit or not.
+    @ApiOperation(value = "getCountAudits")
+    @RequestMapping(value = "/ac/{qsId}", method = RequestMethod.GET)
+    public ResponseEntity<String> getUserAnswersEntityAuditCount(
+            @RequestHeader("Authorization") String token,
+            @PathVariable("qsId") final Long questionSetVersionEntityId) {
+        String base64Credentials = token.substring("Basic".length()).trim();
+        byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
+        String credentials = new String(credDecoded, StandardCharsets.UTF_8);
+        // credentials = username:password
+        final String[] values = credentials.split(":", 2);
+        String user = values[0];
+
+        Long isAudited;
+        Set<UserAnswersEntity> foundUserAnswersEntities = userAnswersRepositoryDAO.findAllByUserNameAndAuditeeDifferent(user, questionSetVersionEntityId);
+        if (foundUserAnswersEntities.size() > 0) { isAudited = new Long(1); }
+        else { { isAudited = new Long(2); }; };
+        Long countAuditInvites  = userAnswersRepositoryDAO.getCountAuditInvites(user);
+        String data = "{\"auditCount\":" + countAuditInvites + ",\"isAudited\":" + isAudited + "}";
+
+        return ResponseEntity.ok(data);
+    }
+
     // GET Alerts of new audit invitations.
     @ApiOperation(value = "getUserAnswersEntity")
     @RequestMapping(value = "/al", method = RequestMethod.GET)
@@ -121,6 +144,7 @@ public class UserAnswersEntityController extends AbstractRestController {
         }
         return ResponseEntity.ok(userAnswersEntities);
     }
+
 
     // GET userScore Total for 'Questions'. (userName & auditee same).
     @ApiOperation(value = "getUserScoresAggregates")
@@ -276,6 +300,10 @@ public class UserAnswersEntityController extends AbstractRestController {
         final String[] values = credentials.split(":", 2);
         String user = values[0];
 
+        // first check if under limit of 4 qset invitations (validated on front-end as well)
+        Long countAuditInvites  = userAnswersRepositoryDAO.getCountAuditInvites(user);
+        if (countAuditInvites > 3) { return new ResponseEntity<>(HttpStatus.NO_CONTENT);}
+
         if (group.equals("e")) {
             String auditorsSet = userAnswersEntityService.createUserAnswersEntitiesForAuditsEveryone(user, questionSetVersionEntityId);
         };
@@ -303,6 +331,10 @@ public class UserAnswersEntityController extends AbstractRestController {
         // credentials = username:password
         final String[] values = credentials.split(":", 2);
         String user = values[0];
+
+        // first check if under limit of 4 qset invitations (validated on front-end as well)
+        Long countAuditInvites  = userAnswersRepositoryDAO.getCountAuditInvites(user);
+        if (countAuditInvites > 3) { return new ResponseEntity<>(HttpStatus.NO_CONTENT);}
 
         String auditorsSet = userAnswersEntityService.createUserAnswersEntitiesForAuditsIndividual(user, userAnswersEntityDto.getUserName(), questionSetVersionEntityId);
 
