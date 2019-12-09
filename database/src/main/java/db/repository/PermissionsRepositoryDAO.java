@@ -18,7 +18,6 @@ public interface PermissionsRepositoryDAO extends JpaRepository<PermissionsEntit
     PermissionsEntity findOneById(Long Id);
 
 
-    //@Query("SELECT p FROM PermissionsEntity p WHERE p.userName = :userName AND p.questionSetVersionEntityId = :questionSetVersionEntityId AND p.typeNumber BETWEEN '9' AND 15")
     @Query("SELECT p FROM PermissionsEntity p JOIN p.questionSetVersionEntity b WHERE b.id = :questionSetVersionEntityId AND p.userName = :userName AND p.typeNumber BETWEEN '9' AND 15")
     PermissionsEntity findOneByUserNameAndQuestionSetVersionEntityId(String userName, Long questionSetVersionEntityId);
 
@@ -51,6 +50,9 @@ public interface PermissionsRepositoryDAO extends JpaRepository<PermissionsEntit
 
     @Query("SELECT p FROM PermissionsEntity p JOIN FETCH p.questionSetVersionEntity b WHERE b.id = :questionSetVersionEntityId AND p.auditee = :userName AND p.typeNumber = 16")
     Set<PermissionsEntity> getAudits(String userName, Long questionSetVersionEntityId);
+
+    @Query("SELECT p FROM PermissionsEntity p JOIN FETCH p.questionSetVersionEntity b WHERE p.auditee = :userName AND p.typeNumber = 16")
+    Set<PermissionsEntity> getAuditsRecent(String userName);
 
 
 //    TypeIndex	    score	viewer	            owner	    view group	        PermissionType

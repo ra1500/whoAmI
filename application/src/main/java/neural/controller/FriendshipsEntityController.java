@@ -46,6 +46,7 @@ public class FriendshipsEntityController extends AbstractRestController {
             if (userRepositoryDAO.findOneByUserName(friendshipsEntityDto.getFriend()) == null) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
+
             FriendshipsEntityDto savedFriendshipsEntityDto = friendshipsEntityService.createFriendshipsEntity(friendshipsEntityDto, user);
             return ResponseEntity.ok(savedFriendshipsEntityDto);
     }

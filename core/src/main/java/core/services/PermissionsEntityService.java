@@ -13,6 +13,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -43,6 +45,25 @@ public class PermissionsEntityService {
     // GET
     public PermissionsEntityDto getPermissionsEntity(final Long Id, final String userName) {
         return permissionsEntityDtoTransformer.generate(permissionsRepositoryDAO.findOneByIdAndUserName(Id, userName));
+    }
+
+    // GET. Alerts. Newly posted '16' audits posted.
+    public Set<PermissionsEntity> getPermissionsEntityNewAuditsPosted(final String userName) {
+        LocalDate windowDate = LocalDate.now().minusDays(7);
+        Set<PermissionsEntity> foundNewAuditsPosted = permissionsRepositoryDAO.getAuditsRecent(userName);
+        foundNewAuditsPosted.removeIf(i -> windowDate.isAfter(i.getCreated().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()));
+
+        for (PermissionsEntity y : foundNewAuditsPosted) {
+            y.setCreated(null);
+            y.setId(null);
+            y.getQuestionSetVersionEntity().setCreated(null);
+            y.getQuestionSetVersionEntity().setResult1(null); y.getQuestionSetVersionEntity().setResult2(null);
+            y.getQuestionSetVersionEntity().setResult3(null); y.getQuestionSetVersionEntity().setResult4(null);
+            y.getQuestionSetVersionEntity().setResult1start(null); y.getQuestionSetVersionEntity().setResult2start(null);
+            y.getQuestionSetVersionEntity().setResult3start(null);
+        }
+
+        return foundNewAuditsPosted;
     }
 
     // POST/PATCH  SCORE. userAnswers Score permission. post if not found, otherwise patch. (not used for '16' to post audit answers, that method is below).
@@ -185,7 +206,7 @@ public class PermissionsEntityService {
             foundFriendshipsEntities.stream().forEach(element -> permissionsRepositoryDAO.saveAndFlush(new PermissionsEntity(element.getFriend(),
                     userName, "Network", "viewQuestionSet", typeNumber, new Long(0), null, null,  foundQuestionSetVersionEntity))); }
 
-        return new String("Qset Permissions set");
+        return new String("can now answer your set");
     }
 
     // POST generate a QsetView permissions (for an individual invitee)
@@ -199,14 +220,22 @@ public class PermissionsEntityService {
             return new String("invalid operation");
         }
 
-        // Stream through list of connections and then create the respective permission
+        // get list of friends
         Set<FriendshipsEntity> foundFriendshipsEntities = userRepositoryDAO.findOneByUserName(userName).getFriendsSet();
 
+        // reduce to just friend/invitee
+        foundFriendshipsEntities.removeIf(i -> !i.getFriend().equals(invitee));
+
+        // check if empty (meaning friend is not in contacts list)
+        if (foundFriendshipsEntities.isEmpty()) { return new String(" not found in your contacts list."); };
+
+        // Stream through list of contacts and then create the respective permission
         Stream<FriendshipsEntity> stream = foundFriendshipsEntities.stream().filter(element -> element.getFriend().equals(invitee));
+
         stream.forEach(element -> permissionsRepositoryDAO.saveAndFlush(new PermissionsEntity(element.getFriend(),
                     userName, "Network", "viewQuestionSet",  new Long(8), new Long(0), null, null,  foundQuestionSetVersionEntity)));
 
-        return new String("Qset Permission set");
+        return new String("can now answer your set");
     }
 
 }

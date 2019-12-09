@@ -120,8 +120,9 @@ public class PermissionsController extends AbstractRestController {
         final String[] values = credentials.split(":", 2);
         String user = values[0];
 
-        String savedQsetViewPermissionsEntities = permissionsEntityService.createQsetViewPermissionEntities(permissionsEntityDto.getTypeNumber(), questionSetVersionEntityId, user);
-        return ResponseEntity.ok(savedQsetViewPermissionsEntities);
+        String invitationMessage = permissionsEntityService.createQsetViewPermissionEntities(permissionsEntityDto.getTypeNumber(), questionSetVersionEntityId, user);
+        invitationMessage = "{\"invitationMessage\":" + "\"" + invitationMessage + "\"" + "}";
+        return ResponseEntity.ok(invitationMessage);
     }
 
     // POST/PATCH  post to let an individual connection view new user Qset
@@ -139,8 +140,9 @@ public class PermissionsController extends AbstractRestController {
         final String[] values = credentials.split(":", 2);
         String user = values[0];
 
-        String savedQsetViewPermissionsEntities = permissionsEntityService.createIndividualQsetViewPermissionEntity(questionSetVersionEntityId, user, permissionsEntityDto.getUserName());
-        return ResponseEntity.ok(savedQsetViewPermissionsEntities);
+        String invitationMessage = permissionsEntityService.createIndividualQsetViewPermissionEntity(questionSetVersionEntityId, user, permissionsEntityDto.getUserName());
+        invitationMessage = "{\"invitationMessage\":" + "\"" + invitationMessage + "\"" + "}";
+        return ResponseEntity.ok(invitationMessage);
     }
 
     // GET. QSets & user scores for Private Profile Page.
@@ -330,6 +332,27 @@ public class PermissionsController extends AbstractRestController {
 
         // TODO: Create a set of Dto's in the transformer and return them as a Set instead of direct to repository.
         Set<PermissionsEntity> permissionsEntities = permissionsRepositoryDAO.getAudits(user, questionSetVersionEntityId);
+
+        if (permissionsEntities == null) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return ResponseEntity.ok(permissionsEntities);
+    }
+
+    // GET. Alerts - Newly posted '16' audits posted.
+    @ApiOperation(value = "permissionsEntity")
+    @RequestMapping(value = "/sc/dh", method = RequestMethod.GET)
+    public ResponseEntity<Set<PermissionsEntity>> getPermissionsEntityNewAuditsPosted(
+            @RequestHeader("Authorization") String token) {
+
+        String base64Credentials = token.substring("Basic".length()).trim();
+        byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
+        String credentials = new String(credDecoded, StandardCharsets.UTF_8);
+        // credentials = username:password
+        final String[] values = credentials.split(":", 2);
+        String user = values[0];
+
+        Set<PermissionsEntity> permissionsEntities = permissionsEntityService.getPermissionsEntityNewAuditsPosted(user);
 
         if (permissionsEntities == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);

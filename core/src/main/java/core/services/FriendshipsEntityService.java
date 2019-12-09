@@ -40,6 +40,7 @@ public class FriendshipsEntityService {
         UserEntity foundUserEntity = userRepositoryDAO.findOneByUserName(userName);
         Long userId = foundUserEntity.getId();
         FriendshipsEntity foundFriendshipsEntity = friendshipsRepositoryDAO.findOneByUserEntityIdAndId(userId, friendshipsEntityDto.getId());
+        if (friendshipsRepositoryDAO.findOneByUserEntityIdAndFriend(userId, friendshipsEntityDto.getFriend()) != null) { return friendshipsEntityDto; }; // break if friendship already exists. no duplicates.
 
         // get friend userEntity if it exists
         UserEntity friendExistsUserEntity = userRepositoryDAO.findOneByUserName(friendshipsEntityDto.getFriend());

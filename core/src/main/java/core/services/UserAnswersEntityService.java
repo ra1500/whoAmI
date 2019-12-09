@@ -89,7 +89,6 @@ public class UserAnswersEntityService {
         }
 
         return foundUserAnswersEntities;
-        //return userAnswersEntityDtoTransformer.generateEAGER(userAnswersEntityRepository.findOneByUserNameAndAuditee(userName, auditee));
     }
 
     // POST/PATCH a user's answer. If not found, POST, else if found, PATCH.
@@ -147,8 +146,7 @@ public class UserAnswersEntityService {
             } // end if
         }
 
-        String auditorsSet = " {auditors added} ";
-        return auditorsSet;
+        return new String("auditors added.");
     }
 
     // POST audit permissions. Everyone in friendships set. (replicating a user's set of answers but making userName = to the auditor).
@@ -168,8 +166,7 @@ public class UserAnswersEntityService {
             } // end if
         }
 
-        String auditorsSet = " {auditors added} ";
-        return auditorsSet;
+        return new String("auditors added.");
     }
 
     // POST audit permissions. Individual friend. (replicating a user's set of answers but making userName = to the auditor).
@@ -178,10 +175,7 @@ public class UserAnswersEntityService {
         UserEntity foundUserEntity = userRepositoryDAO.findOneByUserName(user);
         FriendshipsEntity foundFriendshipsEntity = friendshipsRepositoryDAO.findOneByUserEntityIdAndFriend(foundUserEntity.getId(), friend);
 
-        if (foundFriendshipsEntity == null) {
-            String auditorsSet = " {contact not found} ";
-            return auditorsSet;
-        }
+        if (foundFriendshipsEntity == null) { return new String("not found in your contacts list."); }
         else {
         Set<UserAnswersEntity> foundUserAnswersEntities = userAnswersEntityRepository.findAllByUserNameAndAuditeeAndQuestionSetVersionEntityId(user, user, questionSetVersionEntityId);
 
@@ -196,8 +190,7 @@ public class UserAnswersEntityService {
 
         // TODO; return message of status is pending and post on front-end to let user know not added.
 
-        String auditorsSet = " {auditors added} ";
-        return auditorsSet;
+        return new String("has been invited to audit your answers");
     }
 
     // DELETE userAnswers (Questions)

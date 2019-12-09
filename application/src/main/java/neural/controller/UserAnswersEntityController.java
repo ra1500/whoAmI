@@ -305,15 +305,15 @@ public class UserAnswersEntityController extends AbstractRestController {
         if (countAuditInvites > 3) { return new ResponseEntity<>(HttpStatus.NO_CONTENT);}
 
         if (group.equals("e")) {
-            String auditorsSet = userAnswersEntityService.createUserAnswersEntitiesForAuditsEveryone(user, questionSetVersionEntityId);
+            String inviteAuditorMessage = userAnswersEntityService.createUserAnswersEntitiesForAuditsEveryone(user, questionSetVersionEntityId);
         };
 
         if (group.equals("f")) { group = "Friend"; };
         if (group.equals("c")) { group = "Colleague"; };
         if (group.equals("o")) { group = "Other"; };
-        String auditorsSet = userAnswersEntityService.createUserAnswersEntitiesForAudits(user, questionSetVersionEntityId, group);
-
-        return ResponseEntity.ok(auditorsSet);
+        String invitationMessage = userAnswersEntityService.createUserAnswersEntitiesForAudits(user, questionSetVersionEntityId, group);
+        invitationMessage = "{\"invitationMessage\":" + "\"" + invitationMessage + "\"" + "}";
+        return ResponseEntity.ok(invitationMessage);
     }
 
     // POST audit permissions for a qset (Individual). from 'ScoresList'/manageAudits.
@@ -336,9 +336,9 @@ public class UserAnswersEntityController extends AbstractRestController {
         Long countAuditInvites  = userAnswersRepositoryDAO.getCountAuditInvites(user);
         if (countAuditInvites > 3) { return new ResponseEntity<>(HttpStatus.NO_CONTENT);}
 
-        String auditorsSet = userAnswersEntityService.createUserAnswersEntitiesForAuditsIndividual(user, userAnswersEntityDto.getUserName(), questionSetVersionEntityId);
-
-        return ResponseEntity.ok(auditorsSet);
+        String invitationMessage = userAnswersEntityService.createUserAnswersEntitiesForAuditsIndividual(user, userAnswersEntityDto.getUserName(), questionSetVersionEntityId);
+        invitationMessage = "{\"invitationMessage\":" + "\"" + invitationMessage + "\"" + "}";
+        return ResponseEntity.ok(invitationMessage);
     }
 
 
