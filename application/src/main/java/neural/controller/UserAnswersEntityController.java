@@ -2,6 +2,7 @@ package neural.controller;
 
 // import Paths;     --use later if wish to have Paths restricted/opened via separate class--
 import core.services.UserAnswersEntityService;
+import db.entity.QuestionsEntity;
 import db.entity.UserAnswersEntity;
 import db.repository.FriendshipsRepositoryDAO;
 import db.repository.UserAnswersRepositoryDAO;
@@ -15,10 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.nio.charset.StandardCharsets;
-import java.util.Base64;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @RestController
 @RequestMapping(value = "a", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -194,7 +192,7 @@ public class UserAnswersEntityController extends AbstractRestController {
         }
     }
 
-    // GET list of audit answers. used in 'ViewAudits'
+    // GET list of audit answers. used in 'ViewAuditsDetails'
     @ApiOperation(value = "ViewAudits list")
     @RequestMapping(value = "/y{sv}{fnm}", method = RequestMethod.GET)
     public ResponseEntity<List<UserAnswersEntity>> getAuditorsAnswersComments(
@@ -209,11 +207,11 @@ public class UserAnswersEntityController extends AbstractRestController {
         String user = values[0];
 
         List<UserAnswersEntity> data = userAnswersRepositoryDAO.findAuditDetails(friend, user);
+        data.sort(Comparator.comparing(UserAnswersEntity::getId).reversed()); // TODO sort properly by sequenceNumber. This reverse 'trick' works since the userAnswers created for audit get created in 'revere order'.
 
         if (data == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
-            //String userScoreJSON = "{\"userScore\":" + userScore + "}";
             return ResponseEntity.ok(data);
         }
     }

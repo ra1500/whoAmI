@@ -4,10 +4,8 @@ import core.transformers.PermissionsEntityDtoTransformer;
 import db.entity.FriendshipsEntity;
 import db.entity.PermissionsEntity;
 import db.entity.QuestionSetVersionEntity;
-import db.repository.PermissionsRepositoryDAO;
-import db.repository.QuestionSetVersionRepositoryDAO;
-import db.repository.UserAnswersRepositoryDAO;
-import db.repository.UserRepositoryDAO;
+import db.entity.UserEntity;
+import db.repository.*;
 import model.PermissionsEntityDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,13 +26,15 @@ public class PermissionsEntityService {
     private final UserAnswersRepositoryDAO userAnswersRepositoryDAO;
     private final QuestionSetVersionRepositoryDAO questionSetVersionRepositoryDAO;
     private final UserRepositoryDAO userRepositoryDAO;
+    private final FriendshipsRepositoryDAO friendshipsRepositoryDAO;
 
-    public PermissionsEntityService(final PermissionsRepositoryDAO permissionsRepositoryDAO, final PermissionsEntityDtoTransformer permissionsEntityDtoTransformer, QuestionSetVersionRepositoryDAO questionSetVersionRepositoryDAO, UserAnswersRepositoryDAO userAnswersRepositoryDAO, UserRepositoryDAO userRepositoryDAO) {
+    public PermissionsEntityService(final PermissionsRepositoryDAO permissionsRepositoryDAO, final PermissionsEntityDtoTransformer permissionsEntityDtoTransformer, QuestionSetVersionRepositoryDAO questionSetVersionRepositoryDAO, UserAnswersRepositoryDAO userAnswersRepositoryDAO, UserRepositoryDAO userRepositoryDAO, FriendshipsRepositoryDAO friendshipsRepositoryDAO) {
         this.permissionsRepositoryDAO = permissionsRepositoryDAO;
         this.permissionsEntityDtoTransformer = permissionsEntityDtoTransformer;
         this.questionSetVersionRepositoryDAO = questionSetVersionRepositoryDAO;
         this.userAnswersRepositoryDAO = userAnswersRepositoryDAO;
         this.userRepositoryDAO = userRepositoryDAO;
+        this.friendshipsRepositoryDAO = friendshipsRepositoryDAO;
     }
 
     // GET
@@ -183,8 +183,9 @@ public class PermissionsEntityService {
             return new String("invalid operation");
         }
 
-        // Stream through list of connections and then create all the related permissions
+        // Reduce to those friends not in 'pending' status. Then Stream through list of connections and then create all the related permissions
         Set<FriendshipsEntity> foundFriendshipsEntities = userRepositoryDAO.findOneByUserName(userName).getFriendsSet();
+        foundFriendshipsEntities.removeIf(i -> i.getConnectionType().equals("pending"));
 
         if (typeNumber == 5) {
         Stream<FriendshipsEntity> stream = foundFriendshipsEntities.stream().filter(element -> element.getConnectionType().equals("Friend"));
@@ -212,28 +213,18 @@ public class PermissionsEntityService {
     // POST generate a QsetView permissions (for an individual invitee)
     public String createIndividualQsetViewPermissionEntity (Long questionSetVersionEntityId, String userName, String invitee) {
 
+        UserEntity foundUserEntity = userRepositoryDAO.findOneByUserName(userName);
+        FriendshipsEntity foundFriendshipsEntity = friendshipsRepositoryDAO.findOneByUserEntityIdAndFriend(foundUserEntity.getId(), invitee);
+        if (foundFriendshipsEntity == null) { return new String(" not found in your contacts list."); };
+        if (foundFriendshipsEntity.getConnectionStatus().equals("pending")) { return new String("is in pending status."); }
+
         // get the QsetEntity to add as parent to the permissionEntity
         QuestionSetVersionEntity foundQuestionSetVersionEntity = questionSetVersionRepositoryDAO.findOneById(questionSetVersionEntityId);
 
         // validate that token user is same as Qset creator
-        if (!foundQuestionSetVersionEntity.getCreativeSource().equals(userName)) {
-            return new String("invalid operation");
-        }
+        if (!foundQuestionSetVersionEntity.getCreativeSource().equals(userName)) { return new String("invalid operation"); }
 
-        // get list of friends
-        Set<FriendshipsEntity> foundFriendshipsEntities = userRepositoryDAO.findOneByUserName(userName).getFriendsSet();
-
-        // reduce to just friend/invitee
-        foundFriendshipsEntities.removeIf(i -> !i.getFriend().equals(invitee));
-
-        // check if empty (meaning friend is not in contacts list)
-        if (foundFriendshipsEntities.isEmpty()) { return new String(" not found in your contacts list."); };
-
-        // Stream through list of contacts and then create the respective permission
-        Stream<FriendshipsEntity> stream = foundFriendshipsEntities.stream().filter(element -> element.getFriend().equals(invitee));
-
-        stream.forEach(element -> permissionsRepositoryDAO.saveAndFlush(new PermissionsEntity(element.getFriend(),
-                    userName, "Network", "viewQuestionSet",  new Long(8), new Long(0), null, null,  foundQuestionSetVersionEntity)));
+        permissionsRepositoryDAO.saveAndFlush(new PermissionsEntity(invitee, userName, "Network", "viewQuestionSet",  new Long(8), new Long(0), null, null,  foundQuestionSetVersionEntity));
 
         return new String("can now answer your set");
     }

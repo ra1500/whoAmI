@@ -176,6 +176,7 @@ public class UserAnswersEntityService {
         FriendshipsEntity foundFriendshipsEntity = friendshipsRepositoryDAO.findOneByUserEntityIdAndFriend(foundUserEntity.getId(), friend);
 
         if (foundFriendshipsEntity == null) { return new String("not found in your contacts list."); }
+        if (foundFriendshipsEntity.getConnectionStatus().equals("pending")) { return new String("is in pending status."); }
         else {
         Set<UserAnswersEntity> foundUserAnswersEntities = userAnswersEntityRepository.findAllByUserNameAndAuditeeAndQuestionSetVersionEntityId(user, user, questionSetVersionEntityId);
 

@@ -28,10 +28,10 @@ public class UserEntityController extends AbstractRestController {
         this.userEntityService = userEntityService;
     }
 
-    // GET a user (and user's friendships)
+    // GET a user's  (and user's friendships). Excludes removed friends.
     @ApiOperation(value = "getUserEntity")
-    @RequestMapping(value = "/", method = RequestMethod.GET)
-    public ResponseEntity<UserEntityDto> getUserEntity(
+    @RequestMapping(value = "/n", method = RequestMethod.GET)
+    public ResponseEntity<UserEntityDto> getUserEntitySansRemovedFriends(
             @RequestHeader("Authorization") String token)               {
 
         String base64Credentials = token.substring("Basic".length()).trim();
@@ -41,11 +41,30 @@ public class UserEntityController extends AbstractRestController {
         final String[] values = credentials.split(":", 2);
         String user = values[0];
 
-        UserEntityDto userEntityDto = userEntityService.getUserEntity(user);
+        UserEntityDto userEntityDto = userEntityService.getUserEntityWithoutRemovedFriends(user);
         userEntityDto.setPassword(null);
-        if (userEntityDto == null) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-         }
+        if (userEntityDto == null) { return new ResponseEntity<>(HttpStatus.NO_CONTENT); }
+        if (userEntityDto.getFriendsSet().isEmpty()) { return new ResponseEntity<>(HttpStatus.NO_CONTENT); };
+        return ResponseEntity.ok(userEntityDto);
+    }
+
+    // GET a user's  (and user's friendships). Removed friends only.
+    @ApiOperation(value = "getUserEntity")
+    @RequestMapping(value = "/r", method = RequestMethod.GET)
+    public ResponseEntity<UserEntityDto> getUserEntityRemovedFriends(
+            @RequestHeader("Authorization") String token)               {
+
+        String base64Credentials = token.substring("Basic".length()).trim();
+        byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
+        String credentials = new String(credDecoded, StandardCharsets.UTF_8);
+        // credentials = username:password
+        final String[] values = credentials.split(":", 2);
+        String user = values[0];
+
+        UserEntityDto userEntityDto = userEntityService.getUserEntityRemovedFriendsOnly(user);
+        userEntityDto.setPassword(null);
+        if (userEntityDto == null) { return new ResponseEntity<>(HttpStatus.NO_CONTENT); }
+        if (userEntityDto.getFriendsSet().isEmpty()) { return new ResponseEntity<>(HttpStatus.NO_CONTENT); };
         return ResponseEntity.ok(userEntityDto);
     }
 

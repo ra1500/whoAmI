@@ -31,9 +31,27 @@ public class UserEntityService {
         return userEntityDtoTransformer.generate(userEntityRepository.findOneByUserNameAndPassword(userName, password));
     }
 
-    // GET
+    // GET - General
     public UserEntityDto getUserEntity(final String userName) {
         return userEntityDtoTransformer.generate(userEntityRepository.findOneByUserName(userName));
+    }
+
+    // GET - without removed friends
+    public UserEntityDto getUserEntityWithoutRemovedFriends(final String userName) {
+        UserEntityDto foundUser = userEntityDtoTransformer.generate(userEntityRepository.findOneByUserName(userName));
+        Set<FriendshipsEntity> foundFriendshipsEntities = foundUser.getFriendsSet();
+        foundFriendshipsEntities.removeIf(i -> i.getConnectionStatus().equals("removed"));
+        foundUser.setFriendsSet(foundFriendshipsEntities);
+        return foundUser;
+    }
+
+    // GET - with removed friends only
+    public UserEntityDto getUserEntityRemovedFriendsOnly(final String userName) {
+        UserEntityDto foundUser = userEntityDtoTransformer.generate(userEntityRepository.findOneByUserName(userName));
+        Set<FriendshipsEntity> foundFriendshipsEntities = foundUser.getFriendsSet();
+        foundFriendshipsEntities.removeIf(i -> !i.getConnectionStatus().equals("removed"));
+        foundUser.setFriendsSet(foundFriendshipsEntities);
+        return foundUser;
     }
 
     // GET (for alerts list of recent friendships invitations).

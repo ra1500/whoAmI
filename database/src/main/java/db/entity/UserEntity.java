@@ -36,10 +36,7 @@ public class UserEntity implements Serializable {
     private String publicProfile; // not boolean for possible future variations
 
     @JsonIgnore
-    @OneToMany(mappedBy = "userEntity",
-            fetch = FetchType.EAGER,
-            cascade = CascadeType.ALL,
-            orphanRemoval = true)
+    @OneToMany(mappedBy = "userEntity", fetch = FetchType.EAGER)
     private Set<FriendshipsEntity> friendsSet = new HashSet<>();
 
     public UserEntity() {

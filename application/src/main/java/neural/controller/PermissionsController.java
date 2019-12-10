@@ -232,7 +232,7 @@ public class PermissionsController extends AbstractRestController {
 
         else if (userRepositoryDAO.findOneByUserName(friend).getPublicProfile().equals("Public") || userRepositoryDAO.findOneByUserName(friend).getPublicProfile().equals("Network") ) {
             // TODO: Create a set of Dto's in the transformer and return them as a Set instead of direct to repository.
-            Set<PermissionsEntity> permissionsEntities = permissionsRepositoryDAO.getNetworkContactQsets(user, friend);
+            Set<PermissionsEntity> permissionsEntities = permissionsRepositoryDAO.getNetworkContactQsets(friend);
 
             if (permissionsEntities == null) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);

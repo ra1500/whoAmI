@@ -39,8 +39,9 @@ public interface PermissionsRepositoryDAO extends JpaRepository<PermissionsEntit
     @Query("SELECT p FROM PermissionsEntity p WHERE p.typeNumber = 1 OR p.typeNumber = 2")
     Set<PermissionsEntity> getScoresPageQsets();
 
-    @Query("SELECT p FROM PermissionsEntity p WHERE p.userName = :userName AND p.auditee = :friend AND p.typeNumber BETWEEN '11' AND '15' OR p.auditee = :friend AND p.typeNumber = '9'")
-    Set<PermissionsEntity> getNetworkContactQsets(String userName, String friend);
+    // currently any score posted is can be seen by a user's network contacts. specific permissions per qset can be introduced later. TODO
+    @Query("SELECT p FROM PermissionsEntity p WHERE p.auditee = :friend AND p.typeNumber BETWEEN '11' AND '15' OR p.auditee = :friend AND p.typeNumber = '9'")
+    Set<PermissionsEntity> getNetworkContactQsets(String friend);
 
     @Query("SELECT p FROM PermissionsEntity p WHERE p.userName = :userName AND p.auditee = :userName AND p.typeNumber = 3")
     Set<PermissionsEntity> getPrivateProfilePageSelfMadeQsets(String userName);
