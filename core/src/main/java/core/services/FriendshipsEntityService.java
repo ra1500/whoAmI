@@ -91,20 +91,28 @@ public class FriendshipsEntityService {
             return friendshipsEntityDtoTransformer.generate(foundFriendshipsEntity);
         }
 
-        // modify single-side. From 'removed' to 'Connected' (if invitation from friend).
-        else if (foundFriendshipsEntity.getConnectionStatus().equals("removed") && !foundFriendshipsEntity.getInviter().equals(userName) && friendshipsEntityDto.getConnectionStatus().equals("Connected"))
+        // modify single-side. From 'removed' to 'pending' or 'Connected' (depending on friend's connection status with user).
+        else if (foundFriendshipsEntity.getConnectionStatus().equals("removed") && friendshipsEntityDto.getConnectionStatus().equals("Connected"))
         {
-            foundFriendshipsEntity.setConnectionStatus(friendshipsEntityDto.getConnectionStatus());
-            friendshipsRepositoryDAO.save(foundFriendshipsEntity);
-            return friendshipsEntityDtoTransformer.generate(foundFriendshipsEntity);
-        }
+            String secondUser = foundFriendshipsEntity.getFriend();
+            Long friendId = userRepositoryDAO.findOneByUserName(secondUser).getId();
+            String friendsStatus = friendshipsRepositoryDAO.findOneByUserEntityIdAndFriend(friendId, userName).getConnectionStatus();
 
-        // modify single-side. From 'removed' to 'pending' (if invitation from username).
-        else if (foundFriendshipsEntity.getConnectionStatus().equals("removed") && foundFriendshipsEntity.getInviter().equals(userName) && friendshipsEntityDto.getConnectionStatus().equals("Connected"))
-        {
+            if (friendsStatus.equals("pending")) {
             foundFriendshipsEntity.setConnectionStatus("pending");
             friendshipsRepositoryDAO.save(foundFriendshipsEntity);
             return friendshipsEntityDtoTransformer.generate(foundFriendshipsEntity);
+            }
+            else if (friendsStatus.equals("Connected")){
+                foundFriendshipsEntity.setConnectionStatus("Connected");
+                friendshipsRepositoryDAO.save(foundFriendshipsEntity);
+                return friendshipsEntityDtoTransformer.generate(foundFriendshipsEntity);
+            }
+            else  {  // if  friend is 'removed' then the only possibility is to make it 'pending' here.
+                foundFriendshipsEntity.setConnectionStatus("pending");
+                friendshipsRepositoryDAO.save(foundFriendshipsEntity);
+                return friendshipsEntityDtoTransformer.generate(foundFriendshipsEntity);
+            }
         }
 
         // modify single-side. From 'pending' or 'Connected' to 'Decline' or 'remove'.

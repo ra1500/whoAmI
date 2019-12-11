@@ -85,9 +85,7 @@ public class UserEntityController extends AbstractRestController {
         userEntityDto.setPassword(null);
         userEntityDto.setFriendsSet(null);
         userEntityDto.setUserName(null);
-        if (userEntityDto == null) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
+        if (userEntityDto == null) { return new ResponseEntity<>(HttpStatus.NO_CONTENT); }
         return ResponseEntity.ok(userEntityDto);
     }
 
@@ -106,9 +104,7 @@ public class UserEntityController extends AbstractRestController {
 
         UserEntityDto userEntityDto = userEntityService.getUserEntityRecentFriends(user);
         userEntityDto.setPassword(null);
-        if (userEntityDto == null) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
+        if (userEntityDto == null) { return new ResponseEntity<>(HttpStatus.NO_CONTENT); }
         return ResponseEntity.ok(userEntityDto);
     }
 
@@ -166,9 +162,7 @@ public class UserEntityController extends AbstractRestController {
         verifiedUserEntityDto.setId(null);
         verifiedUserEntityDto.setCreated(null);
 
-        if (verifiedUserEntityDto == null) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
+        if (verifiedUserEntityDto == null) { return new ResponseEntity<>(HttpStatus.NO_CONTENT); }
         return ResponseEntity.ok(verifiedUserEntityDto);
     }
 

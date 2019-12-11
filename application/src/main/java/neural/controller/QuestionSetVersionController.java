@@ -53,10 +53,7 @@ public class QuestionSetVersionController extends AbstractRestController {
 
         QuestionSetVersionEntityDto questionSetVersionEntityDto = questionSetVersionEntityService.getQuestionSetVersionEntity(qsid);
 
-        if (questionSetVersionEntityDto == null) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-
+        if (questionSetVersionEntityDto == null) { return new ResponseEntity<>(HttpStatus.NO_CONTENT); }
         return ResponseEntity.ok(questionSetVersionEntityDto);
     }
 

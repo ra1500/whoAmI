@@ -86,9 +86,7 @@ public class FriendshipsEntityController extends AbstractRestController {
 
         FriendshipsEntityDto friendshipsEntityDto = friendshipsEntityService.getFriendshipsEntity(user, ct);
 
-        if (friendshipsEntityDto == null) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
+        if (friendshipsEntityDto == null) { return new ResponseEntity<>(HttpStatus.NO_CONTENT); }
         return ResponseEntity.ok(friendshipsEntityDto);
     }
 

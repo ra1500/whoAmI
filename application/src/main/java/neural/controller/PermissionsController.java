@@ -1,6 +1,7 @@
 package neural.controller;
 
 import core.services.PermissionsEntityService;
+import db.entity.FriendshipsEntity;
 import db.entity.PermissionsEntity;
 import db.entity.QuestionSetVersionEntity;
 import db.entity.UserEntity;
@@ -162,10 +163,11 @@ public class PermissionsController extends AbstractRestController {
 
         // TODO: Create a set of Dto's in the transformer and return them as a Set instead of direct to repository.
         Set<PermissionsEntity> permissionsEntities = permissionsRepositoryDAO.getPrivateProfilePageQsets(user);
-
-        if (permissionsEntities == null) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        for (PermissionsEntity x : permissionsEntities) {
+            x.getQuestionSetVersionEntity().setCreated(null); x.setViewGroup(null);
         }
+
+        if (permissionsEntities.isEmpty()) { return new ResponseEntity<>(HttpStatus.NO_CONTENT); }
         return ResponseEntity.ok(permissionsEntities);
     }
 
@@ -187,9 +189,7 @@ public class PermissionsController extends AbstractRestController {
         // TODO: Create a set of Dto's in the transformer and return them as a Set instead of direct to repository.
         Set<PermissionsEntity> permissionsEntities = permissionsRepositoryDAO.getScoresPageQsets();
 
-        if (permissionsEntities == null) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
+        if (permissionsEntities.isEmpty()) { return new ResponseEntity<>(HttpStatus.NO_CONTENT); }
         return ResponseEntity.ok(permissionsEntities);
     }
 
@@ -210,7 +210,7 @@ public class PermissionsController extends AbstractRestController {
         return ResponseEntity.ok(permissionsEntities);
     }
 
-    // GET. QSets & user scores for a Network Contact
+    // GET. scores for a Network Contact (checks UserEntity PublicProfile permission & FriendshipsEntity Privacy permission)
     @ApiOperation(value = "permissionsEntity")
     @RequestMapping(value = "/sc/df{ctc}", method = RequestMethod.GET)
     public ResponseEntity<Set<PermissionsEntity>> getPermissionsEntityUserScoreNetworkContact(
@@ -224,27 +224,24 @@ public class PermissionsController extends AbstractRestController {
         final String[] values = credentials.split(":", 2);
         String user = values[0];
 
-        String friend = friendshipsRepositoryDAO.findOneById(friendId).getFriend(); // TODO clean this up to transformer
+        // TODO: validate again that incoming friendID is indeed a friend of user.
 
-        if (userRepositoryDAO.findOneByUserName(friend).getPublicProfile() == null) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
+        FriendshipsEntity foundFriendshipsEntity = friendshipsRepositoryDAO.findOneById(friendId);
+        UserEntity friendsUserEntity = userRepositoryDAO.findOneByUserName(foundFriendshipsEntity.getFriend());
 
-        else if (userRepositoryDAO.findOneByUserName(friend).getPublicProfile().equals("Public") || userRepositoryDAO.findOneByUserName(friend).getPublicProfile().equals("Network") ) {
-            // TODO: Create a set of Dto's in the transformer and return them as a Set instead of direct to repository.
-            Set<PermissionsEntity> permissionsEntities = permissionsRepositoryDAO.getNetworkContactQsets(friend);
+        if (friendsUserEntity.getPublicProfile() == null) { return new ResponseEntity<>(HttpStatus.NO_CONTENT); }
+        else if (friendsUserEntity.getPublicProfile().equals("Public") || friendsUserEntity.getPublicProfile().equals("Network") ) {
+            // get the visibilityPermission from the friend
+            FriendshipsEntity friendsFriendshipsEntity = friendshipsRepositoryDAO.findOneByUserEntityIdAndFriend( friendsUserEntity.getId(),user);
 
-            if (permissionsEntities == null) {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            if (friendsFriendshipsEntity.getVisibilityPermission().equals("Yes")) {
+            Set<PermissionsEntity> permissionsEntities = permissionsRepositoryDAO.getNetworkContactScores(foundFriendshipsEntity.getFriend());
+              if (permissionsEntities.isEmpty()) { return new ResponseEntity<>(HttpStatus.NO_CONTENT); }
+              else { return ResponseEntity.ok(permissionsEntities); }
             }
-            else {
-                return ResponseEntity.ok(permissionsEntities);
-            }
-
+            else { return new ResponseEntity<>(HttpStatus.NO_CONTENT); }
         }
-        else {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
+        else { return new ResponseEntity<>(HttpStatus.NO_CONTENT); }
     }
 
     // GET. Private Profile page self-made Qsets. Also for 'Scores'/'My Sets'.
@@ -263,13 +260,15 @@ public class PermissionsController extends AbstractRestController {
         // TODO: Create a set of Dto's in the transformer and return them as a Set instead of direct to repository.
         Set<PermissionsEntity> permissionsEntities = permissionsRepositoryDAO.getPrivateProfilePageSelfMadeQsets(user);
 
-        if (permissionsEntities == null) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        for (PermissionsEntity x : permissionsEntities) {
+            x.setViewGroup(null);
         }
+
+        if (permissionsEntities.isEmpty()) { return new ResponseEntity<>(HttpStatus.NO_CONTENT); }
         return ResponseEntity.ok(permissionsEntities);
     }
 
-    // GET. For 'Scores'/'Network Sets'.
+    // GET. For Answers - 'Network Sets'.
     @ApiOperation(value = "permissionsEntity")
     @RequestMapping(value = "/sc/dv", method = RequestMethod.GET)
     public ResponseEntity<Set<PermissionsEntity>> getPermissionsEntityNetworkQsets(
@@ -285,9 +284,28 @@ public class PermissionsController extends AbstractRestController {
         // TODO: Create a set of Dto's in the transformer and return them as a Set instead of direct to repository.
         Set<PermissionsEntity> permissionsEntities = permissionsRepositoryDAO.getNetworkCreatedQsets(user);
 
-        if (permissionsEntities == null) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
+        if (permissionsEntities.isEmpty()) { return new ResponseEntity<>(HttpStatus.NO_CONTENT); }
+        return ResponseEntity.ok(permissionsEntities);
+    }
+
+    // GET. Contact NetworkPages Qsets of a friend.
+    @ApiOperation(value = "permissionsEntity")
+    @RequestMapping(value = "/sc/dy{fid}", method = RequestMethod.GET)
+    public ResponseEntity<Set<PermissionsEntity>> getPermissionsEntityNetworkProfileQsets(
+            @RequestHeader("Authorization") String token,
+            @RequestParam("fid") final Long friendId) {
+
+        String base64Credentials = token.substring("Basic".length()).trim();
+        byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
+        String credentials = new String(credDecoded, StandardCharsets.UTF_8);
+        // credentials = username:password
+        final String[] values = credentials.split(":", 2);
+        String user = values[0];
+
+        String friend = friendshipsRepositoryDAO.findOneById(friendId).getFriend();
+        Set<PermissionsEntity> permissionsEntities = permissionsRepositoryDAO.getNetworkProfilePageQsets(user, friend);
+
+        if (permissionsEntities.isEmpty()) { return new ResponseEntity<>(HttpStatus.NO_CONTENT); }
         return ResponseEntity.ok(permissionsEntities);
     }
 
@@ -308,9 +326,7 @@ public class PermissionsController extends AbstractRestController {
 
         PermissionsEntityDto permissionsEntityDto = permissionsEntityService.getPermissionsEntity(id, user);
 
-        if (permissionsEntityDto == null) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
+        if (permissionsEntityDto == null) { return new ResponseEntity<>(HttpStatus.NO_CONTENT); }
         return ResponseEntity.ok(permissionsEntityDto);
     }
 
@@ -333,9 +349,7 @@ public class PermissionsController extends AbstractRestController {
         // TODO: Create a set of Dto's in the transformer and return them as a Set instead of direct to repository.
         Set<PermissionsEntity> permissionsEntities = permissionsRepositoryDAO.getAudits(user, questionSetVersionEntityId);
 
-        if (permissionsEntities == null) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
+        if (permissionsEntities.isEmpty()) { return new ResponseEntity<>(HttpStatus.NO_CONTENT); }
         return ResponseEntity.ok(permissionsEntities);
     }
 
@@ -354,9 +368,7 @@ public class PermissionsController extends AbstractRestController {
 
         Set<PermissionsEntity> permissionsEntities = permissionsEntityService.getPermissionsEntityNewAuditsPosted(user);
 
-        if (permissionsEntities == null) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
+        if (permissionsEntities.isEmpty()) { return new ResponseEntity<>(HttpStatus.NO_CONTENT); }
         return ResponseEntity.ok(permissionsEntities);
     }
 
@@ -378,11 +390,14 @@ public class PermissionsController extends AbstractRestController {
         PermissionsEntity foundPermissionsEntity = permissionsRepositoryDAO.findOneById(permissionsEntityDto.getId());
         QuestionSetVersionEntity foundQuestionSetVersionEntity = foundPermissionsEntity.getQuestionSetVersionEntity();
 
-        // delete the Permission
+        // delete the score posted Permission
         Integer deletedScore = permissionsRepositoryDAO.deleteOneById(permissionsEntityDto.getId());
         if (deletedScore == null) { return new ResponseEntity<>(HttpStatus.NO_CONTENT); }
 
-        // delete all the related audits/audit answers
+        // delete the '16' auditor scores posted permissions
+        permissionsRepositoryDAO.deleteAllByAuditeeAndQuestionSetVersionEntityAndTypeNumber(user, foundQuestionSetVersionEntity, new Long(16));
+
+        // delete all the related audit userAnswers
         userAnswersRepositoryDAO.deleteAllByAuditeeAndQuestionSetVersionEntity(user, foundQuestionSetVersionEntity);
 
         return ResponseEntity.ok(deletedScore);

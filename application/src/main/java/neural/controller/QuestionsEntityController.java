@@ -54,9 +54,7 @@ public class QuestionsEntityController extends AbstractRestController {
 
         QuestionsEntityDto questionsEntityDto = questionsEntityService.getQuestionsEntity(sequenceNumber, questionSetVersionEntityId);
 
-        if (questionsEntityDto == null) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
+        if (questionsEntityDto == null) { return new ResponseEntity<>(HttpStatus.NO_CONTENT); }
         return ResponseEntity.ok(questionsEntityDto);
     }
 
@@ -77,9 +75,7 @@ public class QuestionsEntityController extends AbstractRestController {
 
         QuestionsEntityDto questionsEntityDto = questionsEntityService.getQuestionsEntityWithParent(questionSetVersionEntityId);
 
-        if (questionsEntityDto == null) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
+        if (questionsEntityDto == null) { return new ResponseEntity<>(HttpStatus.NO_CONTENT); }
         return ResponseEntity.ok(questionsEntityDto);
     }
 

@@ -42,6 +42,9 @@ public class UserEntityService {
         Set<FriendshipsEntity> foundFriendshipsEntities = foundUser.getFriendsSet();
         foundFriendshipsEntities.removeIf(i -> i.getConnectionStatus().equals("removed"));
         foundUser.setFriendsSet(foundFriendshipsEntities);
+        for (FriendshipsEntity x : foundUser.getFriendsSet() ) {
+            x.setUserEntity(null); x.setCreated(null); }
+        foundUser.setId(null); foundUser.setCreated(null); foundUser.setPublicProfile(null); foundUser.setId(null);
         return foundUser;
     }
 
@@ -51,6 +54,9 @@ public class UserEntityService {
         Set<FriendshipsEntity> foundFriendshipsEntities = foundUser.getFriendsSet();
         foundFriendshipsEntities.removeIf(i -> !i.getConnectionStatus().equals("removed"));
         foundUser.setFriendsSet(foundFriendshipsEntities);
+        for (FriendshipsEntity x : foundUser.getFriendsSet() ) {
+            x.setUserEntity(null); x.setCreated(null); }
+        foundUser.setId(null); foundUser.setCreated(null); foundUser.setPublicProfile(null); foundUser.setId(null);
         return foundUser;
     }
 
@@ -60,8 +66,12 @@ public class UserEntityService {
         UserEntityDto foundUser = userEntityDtoTransformer.generate(userEntityRepository.findOneByUserName(userName));
         Set<FriendshipsEntity> foundFriendshipsEntities = foundUser.getFriendsSet();
         foundFriendshipsEntities.removeIf(i -> !i.getConnectionStatus().equals("pending"));
+        foundFriendshipsEntities.removeIf(i -> i.getInviter().equals(userName));
         foundFriendshipsEntities.removeIf(i -> windowDate.isAfter(i.getCreated().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()));
         foundUser.setFriendsSet(foundFriendshipsEntities);
+        for (FriendshipsEntity x : foundUser.getFriendsSet() ) {
+            x.setUserEntity(null); x.setCreated(null); x.setId(null); }
+        foundUser.setId(null); foundUser.setCreated(null); foundUser.setPublicProfile(null); foundUser.setId(null);
         return foundUser;
     }
 

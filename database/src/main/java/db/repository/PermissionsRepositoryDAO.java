@@ -30,6 +30,9 @@ public interface PermissionsRepositoryDAO extends JpaRepository<PermissionsEntit
     @Transactional // used to delete a '16' permission when an auditor deletes their answers.
     Integer deleteOneByUserNameAndAuditeeAndQuestionSetVersionEntity(String user, String auditee, QuestionSetVersionEntity foundQuestionSetVersionEntity);
 
+    @Transactional // used to delete all '16' audit score postings permissions when an auditee deletes their posted score.
+    Integer deleteAllByAuditeeAndQuestionSetVersionEntityAndTypeNumber(String auditee, QuestionSetVersionEntity foundQuestionSetVersionEntity, Long typeNumber);
+
     @Query("SELECT p FROM PermissionsEntity p WHERE p.userName = :userName AND p.typeNumber BETWEEN '9' AND 15")
     Set<PermissionsEntity> getPrivateProfilePageQsets(String userName);
 
@@ -39,12 +42,15 @@ public interface PermissionsRepositoryDAO extends JpaRepository<PermissionsEntit
     @Query("SELECT p FROM PermissionsEntity p WHERE p.typeNumber = 1 OR p.typeNumber = 2")
     Set<PermissionsEntity> getScoresPageQsets();
 
-    // currently any score posted is can be seen by a user's network contacts. specific permissions per qset can be introduced later. TODO
+    // two permissions indicate if a user can see a friend's posted scores. UserEntity PublicProfile & FriendshipsEntity Privacy settings.
     @Query("SELECT p FROM PermissionsEntity p WHERE p.auditee = :friend AND p.typeNumber BETWEEN '11' AND '15' OR p.auditee = :friend AND p.typeNumber = '9'")
-    Set<PermissionsEntity> getNetworkContactQsets(String friend);
+    Set<PermissionsEntity> getNetworkContactScores(String friend);
 
     @Query("SELECT p FROM PermissionsEntity p WHERE p.userName = :userName AND p.auditee = :userName AND p.typeNumber = 3")
     Set<PermissionsEntity> getPrivateProfilePageSelfMadeQsets(String userName);
+
+    @Query("SELECT p FROM PermissionsEntity p WHERE p.userName = :userName AND p.auditee = :friend AND p.typeNumber BETWEEN '4' AND '8'")
+    Set<PermissionsEntity> getNetworkProfilePageQsets(String userName, String friend);
 
     @Query("SELECT p FROM PermissionsEntity p WHERE p.userName = :userName AND p.auditee != :userName AND p.typeNumber BETWEEN '4' AND '8'")
     Set<PermissionsEntity> getNetworkCreatedQsets(String userName);

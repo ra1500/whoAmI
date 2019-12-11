@@ -48,9 +48,7 @@ public class UserAnswersEntityController extends AbstractRestController {
         String user = values[0];
 
         UserAnswersEntityDto userAnswersEntityDto = userAnswersEntityService.getUserAnswersEntity(user, user, questionsEntityId );
-        if (userAnswersEntityDto == null) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
+        if (userAnswersEntityDto == null) { return new ResponseEntity<>(HttpStatus.NO_CONTENT); }
         return ResponseEntity.ok(userAnswersEntityDto);
     }
 
@@ -71,9 +69,7 @@ public class UserAnswersEntityController extends AbstractRestController {
         String auditee = friendshipsRepositoryDAO.findOneById(friendshipsEntityId).getFriend();
 
         UserAnswersEntityDto userAnswersEntityDto = userAnswersEntityService.getUserAnswersEntity(user, auditee, questionsEntityId );
-        if (userAnswersEntityDto == null) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
+        if (userAnswersEntityDto == null) { return new ResponseEntity<>(HttpStatus.NO_CONTENT); }
         return ResponseEntity.ok(userAnswersEntityDto);
     }
 
@@ -94,9 +90,7 @@ public class UserAnswersEntityController extends AbstractRestController {
 
         Set<UserAnswersEntity> userAnswersEntities = userAnswersEntityService.getUserAnswersEntities(user, friend);
 
-        if (userAnswersEntities.equals(Collections.emptySet())) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
+        if (userAnswersEntities.isEmpty()) { return new ResponseEntity<>(HttpStatus.NO_CONTENT); }
         return ResponseEntity.ok(userAnswersEntities);
     }
 
@@ -137,9 +131,7 @@ public class UserAnswersEntityController extends AbstractRestController {
 
         Set<UserAnswersEntity> userAnswersEntities = userAnswersEntityService.getUserAnswersEntitiesAuditAlerts(user);
 
-        if (userAnswersEntities.equals(Collections.emptySet())) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
+        if (userAnswersEntities.isEmpty()) { return new ResponseEntity<>(HttpStatus.NO_CONTENT); }
         return ResponseEntity.ok(userAnswersEntities);
     }
 
