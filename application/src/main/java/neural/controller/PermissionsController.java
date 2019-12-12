@@ -285,7 +285,6 @@ public class PermissionsController extends AbstractRestController {
         UserEntity foundUserEntity = userRepositoryDAO.findOneByUserName(user);
         Set<FriendshipsEntity> foundFriendshipsEntities = foundUserEntity.getFriendsSet();
         foundFriendshipsEntities.removeIf(i -> i.getConnectionStatus().equals("Connected"));  // black listed friends 'removed' or 'pending'
-
         for (FriendshipsEntity x : foundFriendshipsEntities ) {
             permissionsEntities.removeIf(i -> i.getAuditee().equals(x.getFriend())); }
 
@@ -349,10 +348,13 @@ public class PermissionsController extends AbstractRestController {
         final String[] values = credentials.split(":", 2);
         String user = values[0];
 
-        //PermissionsEntityDto permissionsEntityDto = permissionsEntityService.getPermissionsEntity(user);
-
-        // TODO: Create a set of Dto's in the transformer and return them as a Set instead of direct to repository.
         Set<PermissionsEntity> permissionsEntities = permissionsRepositoryDAO.getAudits(user, questionSetVersionEntityId);
+
+        UserEntity foundUserEntity = userRepositoryDAO.findOneByUserName(user);
+        Set<FriendshipsEntity> foundFriendshipsEntities = foundUserEntity.getFriendsSet();
+        foundFriendshipsEntities.removeIf(i -> i.getConnectionStatus().equals("Connected"));  // black listed friends 'removed' or 'pending'
+        for (FriendshipsEntity x : foundFriendshipsEntities ) {
+            permissionsEntities.removeIf(i -> i.getUserName().equals(x.getFriend())); }
 
         if (permissionsEntities.isEmpty()) { return new ResponseEntity<>(HttpStatus.NO_CONTENT); }
         return ResponseEntity.ok(permissionsEntities);

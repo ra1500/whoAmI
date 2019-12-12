@@ -40,9 +40,8 @@ public interface UserAnswersRepositoryDAO extends JpaRepository<UserAnswersEntit
     Set<UserAnswersEntity> findAllByUserNameAndAuditeeDifferent(String userName, Long questionSetVersionEntityId);
 
     // TODO provide the original user's answers also so that comparison is easy between original answer and the auditors answer
-    // @Query(value = "SELECT a FROM UserAnswersEntity a WHERE (auditee = :user AND userName = :friend) OR  (auditee = :user AND userName = :user)")
-    @Query(value = "SELECT a FROM UserAnswersEntity a WHERE (auditee = :user AND userName = :friend)")
-    List<UserAnswersEntity> findAuditDetails(String friend, String user);
+    @Query("SELECT a FROM UserAnswersEntity a JOIN a.questionSetVersionEntity b WHERE a.userName = :friend AND auditee = :user AND b.id = :questionSetVersionEntityId")
+    List<UserAnswersEntity> findAuditDetails(String friend, String user, Long questionSetVersionEntityId);
 
     @Transactional
     Integer deleteAllByUserNameAndAuditeeAndQuestionSetVersionEntityId(String userName, String auditee, Long questionSetVersionEntityId);

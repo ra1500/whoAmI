@@ -76,6 +76,13 @@ public class UserAnswersEntityService {
         foundUserAnswersEntities.removeIf(i -> i.getAuditee().equals(userName));
         foundUserAnswersEntities.removeIf(i -> windowDate.isAfter(i.getCreated().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()));
 
+        // only for 'Connected'. If someone pending or removed, then remove.
+        UserEntity foundUserEntity = userRepositoryDAO.findOneByUserName(userName);
+        Set<FriendshipsEntity> foundFriendshipsEntities = foundUserEntity.getFriendsSet();
+        foundFriendshipsEntities.removeIf(i -> i.getConnectionStatus().equals("Connected"));  // black listed friends 'removed' or 'pending'
+        for (FriendshipsEntity x : foundFriendshipsEntities ) {
+            foundUserAnswersEntities.removeIf(i -> i.getAuditee().equals(x.getFriend())); }
+
         for (UserAnswersEntity y : foundUserAnswersEntities) {
             y.setQuestionsEntity(null);
             y.setCreated(null);

@@ -53,6 +53,13 @@ public class PermissionsEntityService {
         Set<PermissionsEntity> foundNewAuditsPosted = permissionsRepositoryDAO.getAuditsRecent(userName);
         foundNewAuditsPosted.removeIf(i -> windowDate.isAfter(i.getCreated().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()));
 
+        // only for 'Connected'. If someone pending or removed, then remove.
+        UserEntity foundUserEntity = userRepositoryDAO.findOneByUserName(userName);
+        Set<FriendshipsEntity> foundFriendshipsEntities = foundUserEntity.getFriendsSet();
+        foundFriendshipsEntities.removeIf(i -> i.getConnectionStatus().equals("Connected"));  // black listed friends 'removed' or 'pending'
+        for (FriendshipsEntity x : foundFriendshipsEntities ) {
+            foundNewAuditsPosted.removeIf(i -> i.getUserName().equals(x.getFriend())); }
+
         for (PermissionsEntity y : foundNewAuditsPosted) {
             y.setCreated(null);
             y.setId(null);

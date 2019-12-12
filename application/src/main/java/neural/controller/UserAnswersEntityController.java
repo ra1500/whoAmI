@@ -2,10 +2,13 @@ package neural.controller;
 
 // import Paths;     --use later if wish to have Paths restricted/opened via separate class--
 import core.services.UserAnswersEntityService;
+import db.entity.FriendshipsEntity;
 import db.entity.QuestionsEntity;
 import db.entity.UserAnswersEntity;
+import db.entity.UserEntity;
 import db.repository.FriendshipsRepositoryDAO;
 import db.repository.UserAnswersRepositoryDAO;
+import db.repository.UserRepositoryDAO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import model.UserAnswersEntityDto;
@@ -26,12 +29,14 @@ public class UserAnswersEntityController extends AbstractRestController {
     private UserAnswersEntityService userAnswersEntityService;
     private UserAnswersRepositoryDAO userAnswersRepositoryDAO; // used for delete. shortcut to the repository.
     private FriendshipsRepositoryDAO friendshipsRepositoryDAO; // used in GET to pull an answer for use in NetworkContactAudit
+    private UserRepositoryDAO userRepositoryDAO; // used in GET to get audits (filter out 'pending' and 'removed' friends.
 
     public UserAnswersEntityController(UserAnswersEntityService userAnswersEntityService, UserAnswersRepositoryDAO userAnswersRepositoryDAO,
-                                       FriendshipsRepositoryDAO friendshipsRepositoryDAO) {
+                                       FriendshipsRepositoryDAO friendshipsRepositoryDAO, UserRepositoryDAO userRepositoryDAO) {
         this.userAnswersEntityService = userAnswersEntityService;
         this.userAnswersRepositoryDAO = userAnswersRepositoryDAO;
         this.friendshipsRepositoryDAO = friendshipsRepositoryDAO;
+        this.userRepositoryDAO = userRepositoryDAO;
     }
 
     // GET a user's answer to a question. self self. for 'Questions'.
@@ -198,14 +203,25 @@ public class UserAnswersEntityController extends AbstractRestController {
         final String[] values = credentials.split(":", 2);
         String user = values[0];
 
-        List<UserAnswersEntity> data = userAnswersRepositoryDAO.findAuditDetails(friend, user);
-        data.sort(Comparator.comparing(UserAnswersEntity::getId).reversed()); // TODO sort properly by sequenceNumber. This reverse 'trick' works since the userAnswers created for audit get created in 'revere order'.
+        List<UserAnswersEntity> data = userAnswersRepositoryDAO.findAuditDetails(friend, user, questionSetVersionEntityId);
+        if (data == null) { return new ResponseEntity<>(HttpStatus.NO_CONTENT); }
 
-        if (data == null) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } else {
-            return ResponseEntity.ok(data);
+        // only for 'Connected'. If someone pending or removed, then remove. Using for loop for all blocked friends just in case this end-point exploited.
+        UserEntity foundUserEntity = userRepositoryDAO.findOneByUserName(user);
+        Set<FriendshipsEntity> foundFriendshipsEntities = foundUserEntity.getFriendsSet();
+        foundFriendshipsEntities.removeIf(i -> i.getConnectionStatus().equals("Connected"));  // black listed friends 'removed' or 'pending'
+        for (FriendshipsEntity x : foundFriendshipsEntities ) {
+            data.removeIf(i -> i.getUserName().equals(x.getFriend())); }
+
+        // lighten the load/data transfer
+        for (UserAnswersEntity y : data ) {
+            y.setQuestionSetVersionEntity(null);
+            y.getQuestionsEntity().setQuestionSetVersionEntity(null);
+            y.getQuestionsEntity().setCreated(null);
         }
+
+        data.sort(Comparator.comparing(UserAnswersEntity::getId)); //
+        return ResponseEntity.ok(data);
     }
 
     // POST/PATCH a user's answer to a question.
