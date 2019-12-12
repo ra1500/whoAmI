@@ -183,29 +183,38 @@ public class PermissionsEntityService {
             return new String("invalid operation");
         }
 
-        // Reduce to those friends not in 'pending' status. Then Stream through list of connections and then create all the related permissions
+        // Reduce to those friends in 'Connected' status. Then Stream through list of connections and then create all the related permissions
         Set<FriendshipsEntity> foundFriendshipsEntities = userRepositoryDAO.findOneByUserName(userName).getFriendsSet();
-        foundFriendshipsEntities.removeIf(i -> i.getConnectionType().equals("pending"));
+        foundFriendshipsEntities.removeIf(i -> i.getConnectionType().equals("Connected"));
 
         if (typeNumber == 5) {
-        Stream<FriendshipsEntity> stream = foundFriendshipsEntities.stream().filter(element -> element.getConnectionType().equals("Friend"));
-        stream.forEach(element -> permissionsRepositoryDAO.saveAndFlush(new PermissionsEntity(element.getFriend(),
-                userName, "Network", "viewQuestionSet", typeNumber, new Long(0), null, null, foundQuestionSetVersionEntity))); }
+            for (FriendshipsEntity x : foundFriendshipsEntities) {
+               if (permissionsRepositoryDAO.findQsetPermission(x.getFriend(), questionSetVersionEntityId) == null) {
+                   permissionsRepositoryDAO.saveAndFlush(new PermissionsEntity(x.getFriend(),
+                           userName, "Network", "viewQuestionSet", typeNumber, new Long(0), null, null, foundQuestionSetVersionEntity));
+         }  }     }
 
         if (typeNumber == 6) {
-            Stream<FriendshipsEntity> stream = foundFriendshipsEntities.stream().filter(element -> element.getConnectionType().equals("Colleague"));
-            stream.forEach(element -> permissionsRepositoryDAO.saveAndFlush(new PermissionsEntity(element.getFriend(),
-                    userName, "Network", "viewQuestionSet", typeNumber, new Long(0), null, null,  foundQuestionSetVersionEntity))); }
+            for (FriendshipsEntity x : foundFriendshipsEntities) {
+                if (permissionsRepositoryDAO.findQsetPermission(x.getFriend(), questionSetVersionEntityId) == null) {
+                    permissionsRepositoryDAO.saveAndFlush(new PermissionsEntity(x.getFriend(),
+                            userName, "Network", "viewQuestionSet", typeNumber, new Long(0), null, null, foundQuestionSetVersionEntity));
+                }  }     }
 
         if (typeNumber == 7) {
-            Stream<FriendshipsEntity> stream = foundFriendshipsEntities.stream().filter(element -> element.getConnectionType().equals("Other"));
-            stream.forEach(element -> permissionsRepositoryDAO.saveAndFlush(new PermissionsEntity(element.getFriend(),
-                    userName, "Network", "viewQuestionSet", typeNumber, new Long(0), null, null,  foundQuestionSetVersionEntity))); }
+            for (FriendshipsEntity x : foundFriendshipsEntities) {
+                if (permissionsRepositoryDAO.findQsetPermission(x.getFriend(), questionSetVersionEntityId) == null) {
+                    permissionsRepositoryDAO.saveAndFlush(new PermissionsEntity(x.getFriend(),
+                            userName, "Network", "viewQuestionSet", typeNumber, new Long(0), null, null, foundQuestionSetVersionEntity));
+                }  }     }
 
         // all connections.
         if (typeNumber == 4) {
-            foundFriendshipsEntities.stream().forEach(element -> permissionsRepositoryDAO.saveAndFlush(new PermissionsEntity(element.getFriend(),
-                    userName, "Network", "viewQuestionSet", typeNumber, new Long(0), null, null,  foundQuestionSetVersionEntity))); }
+            for (FriendshipsEntity x : foundFriendshipsEntities) {
+                if (permissionsRepositoryDAO.findQsetPermission(x.getFriend(), questionSetVersionEntityId) == null) {
+                    permissionsRepositoryDAO.saveAndFlush(new PermissionsEntity(x.getFriend(),
+                            userName, "Network", "viewQuestionSet", typeNumber, new Long(0), null, null, foundQuestionSetVersionEntity));
+                }  }     }
 
         return new String("can now answer your set");
     }
@@ -217,6 +226,7 @@ public class PermissionsEntityService {
         FriendshipsEntity foundFriendshipsEntity = friendshipsRepositoryDAO.findOneByUserEntityIdAndFriend(foundUserEntity.getId(), invitee);
         if (foundFriendshipsEntity == null) { return new String(" not found in your contacts list."); };
         if (foundFriendshipsEntity.getConnectionStatus().equals("pending")) { return new String("is in pending status."); }
+        if (foundFriendshipsEntity.getConnectionStatus().equals("removed")) { return new String("is in removed status."); }
 
         // get the QsetEntity to add as parent to the permissionEntity
         QuestionSetVersionEntity foundQuestionSetVersionEntity = questionSetVersionRepositoryDAO.findOneById(questionSetVersionEntityId);
@@ -224,8 +234,9 @@ public class PermissionsEntityService {
         // validate that token user is same as Qset creator
         if (!foundQuestionSetVersionEntity.getCreativeSource().equals(userName)) { return new String("invalid operation"); }
 
-        permissionsRepositoryDAO.saveAndFlush(new PermissionsEntity(invitee, userName, "Network", "viewQuestionSet",  new Long(8), new Long(0), null, null,  foundQuestionSetVersionEntity));
-
+        if (permissionsRepositoryDAO.findQsetPermission(invitee, questionSetVersionEntityId) == null) {
+            permissionsRepositoryDAO.saveAndFlush(new PermissionsEntity(invitee, userName, "Network", "viewQuestionSet", new Long(8), new Long(0), null, null, foundQuestionSetVersionEntity));
+        }
         return new String("can now answer your set");
     }
 

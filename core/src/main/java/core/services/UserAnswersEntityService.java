@@ -135,9 +135,9 @@ public class UserAnswersEntityService {
         foundFriendshipsEntities.removeIf(i -> !i.getConnectionType().equals(group)); // reduce list to group (if friend not in 'group'. Java8 'removeIf')
         Set<UserAnswersEntity> foundUserAnswersEntities = userAnswersEntityRepository.findAllByUserNameAndAuditeeAndQuestionSetVersionEntityId(user, user, questionSetVersionEntityId);
 
-        // for each friendship add the list of auditee's answers to the db with friend's name on them. (if connection status is not 'pending')
+        // for each friendship add the list of auditee's answers to the db with friend's name on them. (if connection status is 'Connected' and not 'pending' or 'removed')
         for (FriendshipsEntity x : foundFriendshipsEntities) {
-               if (!x.getConnectionStatus().equals("pending") && userAnswersEntityRepository.findAllByUserNameAndAuditeeAndQuestionSetVersionEntityId(x.getFriend(), user, questionSetVersionEntityId).equals(Collections.emptySet())) {
+               if (x.getConnectionStatus().equals("Connected") && userAnswersEntityRepository.findAllByUserNameAndAuditeeAndQuestionSetVersionEntityId(x.getFriend(), user, questionSetVersionEntityId).equals(Collections.emptySet())) {
                  for (UserAnswersEntity y : foundUserAnswersEntities) {
                             userAnswersEntityRepository.save(
                             new UserAnswersEntity( x.getFriend(), y.getAnswer(), y.getAnswerPoints(), y.getAuditee(),
@@ -157,7 +157,7 @@ public class UserAnswersEntityService {
 
         // for each friendship add the list of auditee's answers to the db with friend's name on them. (if connection status is not 'pending')
         for (FriendshipsEntity x : foundFriendshipsEntities) {
-            if (!x.getConnectionStatus().equals("pending") && userAnswersEntityRepository.findAllByUserNameAndAuditeeAndQuestionSetVersionEntityId(x.getFriend(), user, questionSetVersionEntityId).equals(Collections.emptySet())) {
+            if (x.getConnectionStatus().equals("Connected") && userAnswersEntityRepository.findAllByUserNameAndAuditeeAndQuestionSetVersionEntityId(x.getFriend(), user, questionSetVersionEntityId).equals(Collections.emptySet())) {
                 for (UserAnswersEntity y : foundUserAnswersEntities) {
                     userAnswersEntityRepository.save(
                             new UserAnswersEntity( x.getFriend(), y.getAnswer(), y.getAnswerPoints(), y.getAuditee(),
@@ -180,7 +180,7 @@ public class UserAnswersEntityService {
         else {
         Set<UserAnswersEntity> foundUserAnswersEntities = userAnswersEntityRepository.findAllByUserNameAndAuditeeAndQuestionSetVersionEntityId(user, user, questionSetVersionEntityId);
 
-        if (!foundFriendshipsEntity.getConnectionStatus().equals("pending") && userAnswersEntityRepository.findAllByUserNameAndAuditeeAndQuestionSetVersionEntityId(friend, user, questionSetVersionEntityId).equals(Collections.emptySet())) {
+        if (foundFriendshipsEntity.getConnectionStatus().equals("Connected") && userAnswersEntityRepository.findAllByUserNameAndAuditeeAndQuestionSetVersionEntityId(friend, user, questionSetVersionEntityId).equals(Collections.emptySet())) {
                 for (UserAnswersEntity y : foundUserAnswersEntities) {
                     userAnswersEntityRepository.save(
                             new UserAnswersEntity( friend, y.getAnswer(), y.getAnswerPoints(), y.getAuditee(),

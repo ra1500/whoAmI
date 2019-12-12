@@ -198,16 +198,14 @@ public class PermissionsController extends AbstractRestController {
     @RequestMapping(value = "/sc/dc{id}", method = RequestMethod.GET)
     public ResponseEntity<Set<PermissionsEntity>> getPermissionsEntityUserScorePublicProfilePage(
             @RequestParam("id") final String userName) {
-        Set<PermissionsEntity> permissionsEntities = new HashSet<>();
         UserEntity foundUserEntity = userRepositoryDAO.findOneByUserName(userName);
-        if (foundUserEntity == null) {
+        if (foundUserEntity == null) { return new ResponseEntity<>(HttpStatus.NO_CONTENT); }
+
+        Set<PermissionsEntity> permissionsEntities = permissionsRepositoryDAO.getPublicProfilePageQsets(userName);
+        if (foundUserEntity.getPublicProfile().equals("Public") && !permissionsEntities.isEmpty() ) {
             return ResponseEntity.ok(permissionsEntities);
         }
-        if (foundUserEntity.getPublicProfile().equals("Public")) {
-        // TODO: Create a set of Dto's in the transformer and return them as a Set instead of direct to repository.
-         permissionsEntities = permissionsRepositoryDAO.getPublicProfilePageQsets(userName);
-        }; // end if
-        return ResponseEntity.ok(permissionsEntities);
+        else { return new ResponseEntity<>(HttpStatus.NO_CONTENT); }
     }
 
     // GET. scores for a Network Contact (checks UserEntity PublicProfile permission & FriendshipsEntity Privacy permission)
@@ -268,7 +266,7 @@ public class PermissionsController extends AbstractRestController {
         return ResponseEntity.ok(permissionsEntities);
     }
 
-    // GET. For Answers - 'Network Sets'.
+    // GET. For Answers - 'Network Sets'. (no 'removed' contact's qsets)
     @ApiOperation(value = "permissionsEntity")
     @RequestMapping(value = "/sc/dv", method = RequestMethod.GET)
     public ResponseEntity<Set<PermissionsEntity>> getPermissionsEntityNetworkQsets(
@@ -281,8 +279,15 @@ public class PermissionsController extends AbstractRestController {
         final String[] values = credentials.split(":", 2);
         String user = values[0];
 
-        // TODO: Create a set of Dto's in the transformer and return them as a Set instead of direct to repository.
         Set<PermissionsEntity> permissionsEntities = permissionsRepositoryDAO.getNetworkCreatedQsets(user);
+        if (permissionsEntities.isEmpty()) { return new ResponseEntity<>(HttpStatus.NO_CONTENT); }
+
+        UserEntity foundUserEntity = userRepositoryDAO.findOneByUserName(user);
+        Set<FriendshipsEntity> foundFriendshipsEntities = foundUserEntity.getFriendsSet();
+        foundFriendshipsEntities.removeIf(i -> i.getConnectionStatus().equals("Connected"));  // black listed friends 'removed' or 'pending'
+
+        for (FriendshipsEntity x : foundFriendshipsEntities ) {
+            permissionsEntities.removeIf(i -> i.getAuditee().equals(x.getFriend())); }
 
         if (permissionsEntities.isEmpty()) { return new ResponseEntity<>(HttpStatus.NO_CONTENT); }
         return ResponseEntity.ok(permissionsEntities);

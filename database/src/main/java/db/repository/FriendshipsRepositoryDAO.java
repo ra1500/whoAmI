@@ -3,6 +3,7 @@ package db.repository;
 import db.entity.FriendshipsEntity;
 import db.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
@@ -17,6 +18,10 @@ public interface FriendshipsRepositoryDAO extends JpaRepository<FriendshipsEntit
     FriendshipsEntity findOneByIdAndUserEntityId(Long friendId, Long userId);
     Set<FriendshipsEntity> findAllByUserEntity(UserEntity userEntity);
     FriendshipsEntity findOneByUserEntityIdAndFriend(Long userEntityId, String friend);
+
+    //@Query("SELECT COUNT(a) FROM FriendshipsEntity a JOIN FETCH b.userEntityId WHERE b.id = :userId")
+    @Query("SELECT COUNT(a) FROM FriendshipsEntity a WHERE userEntityId = :userId")
+    Long countFriends(Long userId);
 
     @Transactional
     Integer deleteOneById(Long id);

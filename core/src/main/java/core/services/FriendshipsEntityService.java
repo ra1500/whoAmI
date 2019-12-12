@@ -47,6 +47,9 @@ public class FriendshipsEntityService {
 
         if (foundFriendshipsEntity == null && friendExistsUserEntity != null ) {
 
+            // limit quantity of friendships
+            if (friendshipsRepositoryDAO.countFriends( userId) > 99) { return friendshipsEntityDto; };
+
             // create a new 'raw' friendshipsEntity (1 of 2 entries) (ManyToOne twice, instead of ManyToMany)
             FriendshipsEntity newFriendshipsEntity1 = friendshipsEntityDtoTransformer.generate(friendshipsEntityDto);
 

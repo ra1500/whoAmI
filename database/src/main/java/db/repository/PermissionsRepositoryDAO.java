@@ -17,6 +17,8 @@ public interface PermissionsRepositoryDAO extends JpaRepository<PermissionsEntit
     PermissionsEntity findOneByIdAndUserName(Long Id, String userName);
     PermissionsEntity findOneById(Long Id);
 
+    @Query("SELECT p FROM PermissionsEntity p JOIN p.questionSetVersionEntity b WHERE b.id = :questionSetVersionEntityId AND p.userName = :friend AND p.typeNumber BETWEEN '4' AND 8")
+    PermissionsEntity findQsetPermission(String friend, Long questionSetVersionEntityId);
 
     @Query("SELECT p FROM PermissionsEntity p JOIN p.questionSetVersionEntity b WHERE b.id = :questionSetVersionEntityId AND p.userName = :userName AND p.typeNumber BETWEEN '9' AND 15")
     PermissionsEntity findOneByUserNameAndQuestionSetVersionEntityId(String userName, Long questionSetVersionEntityId);
