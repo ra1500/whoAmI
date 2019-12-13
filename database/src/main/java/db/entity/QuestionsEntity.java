@@ -27,49 +27,49 @@ public class QuestionsEntity implements Serializable {
     @Column(length=2)
     private Long sequenceNumber;
 
-    @Column
+    @Column (length = 100)
     private String creativeSource;
 
-    @Column
+    @Column (length = 80)
     private String question;
 
-    @Column
+    @Column (length = 50)
     private String category;
 
     @Column(length = 3)
     private Long maxPoints;
 
-    @Column
+    @Column (length = 50)
     private String answer1;
 
     @Column(length = 3)
     private Long answer1Points;
 
-    @Column
+    @Column (length = 50)
     private String answer2;
 
     @Column(length = 3)
     private Long answer2Points;
 
-    @Column
+    @Column (length = 50)
     private String answer3;
 
     @Column(length = 3)
     private Long answer3Points;
 
-    @Column
+    @Column (length = 50)
     private String answer4;
 
     @Column(length = 3)
     private Long answer4Points;
 
-    @Column
+    @Column (length = 50)
     private String answer5;
 
     @Column(length = 3)
     private Long answer5Points;
 
-    @Column
+    @Column (length = 50)
     private String answer6;
 
     @Column(length = 3)

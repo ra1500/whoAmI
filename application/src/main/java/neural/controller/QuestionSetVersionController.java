@@ -6,6 +6,7 @@ import db.entity.QuestionSetVersionEntity;
 import db.repository.PermissionsRepositoryDAO;
 import db.repository.QuestionSetVersionRepositoryDAO;
 import db.repository.QuestionsRepositoryDAO;
+import db.repository.UserAnswersRepositoryDAO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import model.QuestionSetVersionEntityDto;
@@ -28,13 +29,15 @@ public class QuestionSetVersionController extends AbstractRestController {
     private QuestionsRepositoryDAO questionsRepositoryDAO;
     private QuestionSetVersionRepositoryDAO questionSetVersionRepositoryDAO;
     private PermissionsRepositoryDAO permissionsRepositoryDAO;
+    private UserAnswersRepositoryDAO userAnswersRepositoryDAO;
 
     public QuestionSetVersionController(QuestionSetVersionEntityService questionSetVersionEntityService,
-                                        QuestionsRepositoryDAO questionsRepositoryDAO, QuestionSetVersionRepositoryDAO questionSetVersionRepositoryDAO, PermissionsRepositoryDAO permissionsRepositoryDAO) {
+                                        QuestionsRepositoryDAO questionsRepositoryDAO, QuestionSetVersionRepositoryDAO questionSetVersionRepositoryDAO, PermissionsRepositoryDAO permissionsRepositoryDAO, UserAnswersRepositoryDAO userAnswersRepositoryDAO) {
         this.questionSetVersionEntityService = questionSetVersionEntityService;
         this.questionsRepositoryDAO = questionsRepositoryDAO;
         this.questionSetVersionRepositoryDAO = questionSetVersionRepositoryDAO;
-        this.permissionsRepositoryDAO = permissionsRepositoryDAO; }
+        this.permissionsRepositoryDAO = permissionsRepositoryDAO;
+        this.userAnswersRepositoryDAO = userAnswersRepositoryDAO; }
 
     // GET questionSetVersion. DTO excludes Set<Questions> to reduce load.
     @ApiOperation(value = "getQuestionsEntity")
@@ -108,7 +111,7 @@ public class QuestionSetVersionController extends AbstractRestController {
             return ResponseEntity.ok(maxQtyQuestionsJSON);}
     }
 
-    // POST  delete all questions and respective Qset.
+    // POST  delete Qset (and all related questions, permissions and answers).
     @RequestMapping(value = "/da", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> deleteAllQuestionsInQset(
             @Valid
@@ -130,6 +133,7 @@ public class QuestionSetVersionController extends AbstractRestController {
         }
 
         permissionsRepositoryDAO.deleteAllByQuestionSetVersionEntityId(questionSetVersionEntityDto.getId());
+        userAnswersRepositoryDAO.deleteAllByQuestionSetVersionEntityId(questionSetVersionEntityDto.getId());
         questionsRepositoryDAO.deleteAllByQuestionSetVersionEntityId(questionSetVersionEntityDto.getId());
         questionSetVersionRepositoryDAO.deleteById(questionSetVersionEntityDto.getId());
 

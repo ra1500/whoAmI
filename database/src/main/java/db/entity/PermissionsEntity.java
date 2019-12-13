@@ -22,28 +22,28 @@ public class PermissionsEntity implements Serializable {
     @Column
     private Date created;
 
-    @Column(name = "userName")
+    @Column(name = "userName", length = 100)
     private String userName; // auditor/answeror
 
-    @Column
+    @Column (length = 100)
     private String auditee; // auditee
 
-    @Column
-    private String viewGroup; // QsetPerm:   AnswerPerm: viewGroup can view
+    @Column (length = 20)
+    private String viewGroup;
 
-    @Column  // Type: Qset view permission or userScore permission
+    @Column  (length = 50) // Type: Qset view permission or userScore permission
     private String type;
 
-    @Column
+    @Column (length = 4)
     private Long typeNumber;
 
-    @Column
+    @Column (length = 4)
     private Long score;
 
-    @Column  // what the score means.
+    @Column (length = 40) // what the score means.
     private String result;
 
-    @Column  // badge type to display.
+    @Column  (length = 3) // badge type to display.
     private Long badge;
 
     @ManyToOne(fetch = FetchType.EAGER)

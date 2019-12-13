@@ -26,14 +26,14 @@ public class UserEntity implements Serializable {
     @Column
     private Date created;
 
-    @Column (nullable = false, length = 20)
+    @Column (unique=true, nullable = false, length = 100)
     private String userName;
 
-    @Column (nullable = false, length = 20)
+    @Column (nullable = false, length = 100)
     private String password;
 
     @Column (length = 20)
-    private String publicProfile; // not boolean for possible future variations
+    private String publicProfile; // not boolean
 
     @JsonIgnore
     @OneToMany(mappedBy = "userEntity", fetch = FetchType.EAGER)

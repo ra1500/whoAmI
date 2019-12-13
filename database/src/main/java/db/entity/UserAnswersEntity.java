@@ -18,19 +18,19 @@ public class UserAnswersEntity implements Serializable {
     @Column
     private Date created;
 
-    @Column
+    @Column (length = 100)
     private String userName;
 
-    @Column
+    @Column (length = 50)
     private String answer;
 
-    @Column(length = 4)
+    @Column (length = 4)
     private Long answerPoints;
 
-    @Column
+    @Column (length = 100)
     private String auditee;
 
-    @Column
+    @Column (length = 70)
     private String comments;
 
     @ManyToOne

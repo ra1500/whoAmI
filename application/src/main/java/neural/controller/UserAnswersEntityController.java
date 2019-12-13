@@ -192,7 +192,7 @@ public class UserAnswersEntityController extends AbstractRestController {
     // GET list of audit answers. used in 'ViewAuditsDetails'
     @ApiOperation(value = "ViewAudits list")
     @RequestMapping(value = "/y{sv}{fnm}", method = RequestMethod.GET)
-    public ResponseEntity<List<UserAnswersEntity>> getAuditorsAnswersComments(
+    public ResponseEntity<Set<UserAnswersEntity>> getAuditorsAnswersComments(
             @RequestHeader("Authorization") String token,
             @RequestParam("sv") final Long questionSetVersionEntityId,
             @RequestParam("fnm") final String friend) {
@@ -203,7 +203,7 @@ public class UserAnswersEntityController extends AbstractRestController {
         final String[] values = credentials.split(":", 2);
         String user = values[0];
 
-        List<UserAnswersEntity> data = userAnswersRepositoryDAO.findAuditDetails(friend, user, questionSetVersionEntityId);
+        Set<UserAnswersEntity> data = userAnswersRepositoryDAO.findAuditDetails(friend, user, questionSetVersionEntityId);
         if (data == null) { return new ResponseEntity<>(HttpStatus.NO_CONTENT); }
 
         // only for 'Connected'. If someone pending or removed, then remove. Using for loop for all blocked friends just in case this end-point exploited.
@@ -220,7 +220,7 @@ public class UserAnswersEntityController extends AbstractRestController {
             y.getQuestionsEntity().setCreated(null);
         }
 
-        data.sort(Comparator.comparing(UserAnswersEntity::getId)); //
+        //data.sort(Comparator.comparing(UserAnswersEntity::getQuestionsEntity)); // sorted on front-end instead.
         return ResponseEntity.ok(data);
     }
 

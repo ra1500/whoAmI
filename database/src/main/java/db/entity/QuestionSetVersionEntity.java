@@ -26,13 +26,13 @@ public class QuestionSetVersionEntity implements Serializable {
     @Column (length = 40)
     private String category;
 
-    @Column (length = 200)
+    @Column (length = 60)
     private String description;
 
     @Column (length = 20)
     private String version;
 
-    @Column (length = 40)
+    @Column (length = 100)
     private String creativeSource;
 
     @Column (length = 3)
@@ -44,16 +44,16 @@ public class QuestionSetVersionEntity implements Serializable {
     @Column (length = 3)
     private Long badges; // which types of ribbons/badges used to match with results (1 'company created qset' badges or 2 'user created qset' badges.
 
-    @Column (length = 20)
+    @Column (length = 40)
     private String result1;
 
-    @Column (length = 20)
+    @Column (length = 40)
     private String result2;
 
-    @Column (length = 20)
+    @Column (length = 40)
     private String result3;
 
-    @Column (length = 20)
+    @Column (length = 40)
     private String result4;
 
     @Column (length = 3)

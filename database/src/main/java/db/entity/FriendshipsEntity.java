@@ -23,10 +23,10 @@ public class FriendshipsEntity implements Serializable {
     @Column
     private Date created;
 
-    @Column(length = 20)
+    @Column(length = 100)
     private String inviter; // the user who initiated the invitation to be a friend
 
-    @Column(length = 20) // the user's friend
+    @Column(length = 100) // the user's friend
     private String friend;
 
     @Column(length = 20)

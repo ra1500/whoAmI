@@ -41,7 +41,7 @@ public interface UserAnswersRepositoryDAO extends JpaRepository<UserAnswersEntit
 
     // TODO provide the original user's answers also so that comparison is easy between original answer and the auditors answer
     @Query("SELECT a FROM UserAnswersEntity a JOIN a.questionSetVersionEntity b WHERE a.userName = :friend AND auditee = :user AND b.id = :questionSetVersionEntityId")
-    List<UserAnswersEntity> findAuditDetails(String friend, String user, Long questionSetVersionEntityId);
+    Set<UserAnswersEntity> findAuditDetails(String friend, String user, Long questionSetVersionEntityId);
 
     @Transactional
     Integer deleteAllByUserNameAndAuditeeAndQuestionSetVersionEntityId(String userName, String auditee, Long questionSetVersionEntityId);
@@ -51,5 +51,8 @@ public interface UserAnswersRepositoryDAO extends JpaRepository<UserAnswersEntit
 
     @Transactional
     Integer deleteAllByAuditeeAndQuestionSetVersionEntity(String auditee, QuestionSetVersionEntity questionSetVersionEntity);
+
+    @Transactional
+    Integer deleteAllByQuestionSetVersionEntityId(Long questionSetVersionEntityId);
 
 }
