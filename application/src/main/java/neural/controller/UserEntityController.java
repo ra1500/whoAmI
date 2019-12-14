@@ -28,7 +28,7 @@ public class UserEntityController extends AbstractRestController {
         this.userEntityService = userEntityService;
     }
 
-    // GET a user's  (and user's friendships). Excludes removed friends.
+    // GET a user (and user's friendships). Excludes removed friends.
     @ApiOperation(value = "getUserEntity")
     @RequestMapping(value = "/n", method = RequestMethod.GET)
     public ResponseEntity<UserEntityDto> getUserEntitySansRemovedFriends(
@@ -48,7 +48,7 @@ public class UserEntityController extends AbstractRestController {
         return ResponseEntity.ok(userEntityDto);
     }
 
-    // GET a user's  (and user's friendships). Removed friends only.
+    // GET a user (and user's friendships). Removed friends only.
     @ApiOperation(value = "getUserEntity")
     @RequestMapping(value = "/r", method = RequestMethod.GET)
     public ResponseEntity<UserEntityDto> getUserEntityRemovedFriends(
