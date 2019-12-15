@@ -53,8 +53,8 @@ public class LoginConfig extends WebSecurityConfigurerAdapter {
     // CORS bean
     @Bean
     public WebMvcConfigurer corsConfigurer() {
-        //final CorsConfiguration config = new CorsConfiguration();
-        //config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "OPTIONS", "DELETE", "PATCH"));
+        final CorsConfiguration config = new CorsConfiguration();
+        config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "OPTIONS", "DELETE", "PATCH"));
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
@@ -63,27 +63,15 @@ public class LoginConfig extends WebSecurityConfigurerAdapter {
         };
     }
 
-    // CORS filter.
-    //@Bean
-    //public CorsFilter corsFilter() {
-    //    final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-    //    final CorsConfiguration config = new CorsConfiguration();
-    //    config.setAllowCredentials(true);
-    //    config.setAllowedOrigins(Collections.singletonList("*"));
-    //    config.setAllowedHeaders(Arrays.asList("Origin", "Content-Type", "Accept"));
-    //    config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "OPTIONS", "DELETE", "PATCH"));
-    //    source.registerCorsConfiguration("/**", config);
-    //    return new CorsFilter(source);
-    // }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()  // cross-site request forgery. disabled for now. need to generate a code to feed into the html login form.
                 .authorizeRequests()
-                .antMatchers("/user/*").permitAll()
-                .antMatchers("/max").permitAll() //max # questions in QuestionSet
-                .antMatchers("/prm/sc/dc*").permitAll()
+                .antMatchers("/user/userId").permitAll() // login
+                .antMatchers("/prm/sc/dc*").permitAll() // public profile page
+                //.antMatchers("/*").permitAll()
                 //.antMatchers("/**").permitAll() // gives all access without authentication
                 .anyRequest().authenticated()
                 .and()
@@ -96,7 +84,6 @@ public class LoginConfig extends WebSecurityConfigurerAdapter {
                 .sessionCreationPolicy(SessionCreationPolicy.NEVER);
         http
                 .cors(); // for CORS obviously
-
     }
 
     @Component
@@ -116,7 +103,6 @@ public class LoginConfig extends WebSecurityConfigurerAdapter {
             setRealmName("NeuralJuice");
             super.afterPropertiesSet();
         }
-
     }
 
     public class CustomFilter extends GenericFilterBean {
