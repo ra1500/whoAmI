@@ -17,7 +17,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 @RestController
-@RequestMapping(value = "f", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/api/f", produces = MediaType.APPLICATION_JSON_VALUE)
 @Api(description = "FriendshipsEntity endpoints", tags = "FriendshipsEntity")
 public class FriendshipsEntityController extends AbstractRestController {
 

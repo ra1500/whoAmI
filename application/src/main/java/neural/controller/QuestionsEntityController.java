@@ -19,7 +19,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 @RestController
-@RequestMapping(value = "q", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/api/q", produces = MediaType.APPLICATION_JSON_VALUE)
 @Api(description = "QuestionsEntity endpoints", tags = "QuestionsEntity")
 public class QuestionsEntityController extends AbstractRestController {
 

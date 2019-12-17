@@ -21,7 +21,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 @RestController
-@RequestMapping(value = "qs", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/api/qs", produces = MediaType.APPLICATION_JSON_VALUE)
 @Api(description = "QuestionsEntity endpoints", tags = "QuestionsEntity")
 public class QuestionSetVersionController extends AbstractRestController {
 

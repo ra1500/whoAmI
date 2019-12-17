@@ -23,7 +23,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @RestController
-@RequestMapping(value = "prm", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/api/prm", produces = MediaType.APPLICATION_JSON_VALUE)
 @Api(description = "Permissions endpoints", tags = "PermissionsEntity")
 public class PermissionsController extends AbstractRestController {
 

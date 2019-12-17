@@ -72,7 +72,7 @@ public class LoginConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/user/userId").permitAll() // login
                 .antMatchers("/prm/sc/dc*").permitAll() // public profile page
                 //.antMatchers("/*").permitAll()
-                //.antMatchers("/**").permitAll() // gives all access without authentication
+                .antMatchers("/**").permitAll() // gives all access without authentication
                 .anyRequest().authenticated()
                 .and()
                 .httpBasic()
