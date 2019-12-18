@@ -4,6 +4,7 @@ import db.entity.PermissionsEntity;
 import db.entity.QuestionSetVersionEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import java.util.Set;
 
@@ -15,6 +16,6 @@ public interface QuestionSetVersionRepositoryDAO extends JpaRepository<QuestionS
     //QuestionSetVersionEntity findOneByQuestionSetId(Long questionSetId);
 
     @Query("SELECT COUNT(a) FROM QuestionSetVersionEntity a WHERE creativeSource = :userName")
-    Long countQuantityQsetsByUsername(String userName);
+    Long countQuantityQsetsByUsername(@Param("userName") String userName);
 
 }

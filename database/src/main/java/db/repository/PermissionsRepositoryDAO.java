@@ -18,10 +18,10 @@ public interface PermissionsRepositoryDAO extends JpaRepository<PermissionsEntit
     PermissionsEntity findOneById(Long Id);
 
     @Query("SELECT p FROM PermissionsEntity p JOIN p.questionSetVersionEntity b WHERE b.id = :questionSetVersionEntityId AND p.userName = :friend AND p.typeNumber BETWEEN '4' AND 8")
-    PermissionsEntity findQsetPermission(String friend, Long questionSetVersionEntityId);
+    PermissionsEntity findQsetPermission(@Param("friend") String friend, @Param("questionSetVersionEntityId") Long questionSetVersionEntityId);
 
     @Query("SELECT p FROM PermissionsEntity p JOIN p.questionSetVersionEntity b WHERE b.id = :questionSetVersionEntityId AND p.userName = :userName AND p.typeNumber BETWEEN '9' AND 15")
-    PermissionsEntity findOneByUserNameAndQuestionSetVersionEntityId(String userName, Long questionSetVersionEntityId);
+    PermissionsEntity findOneByUserNameAndQuestionSetVersionEntityId(@Param("userName") String userName, @Param("questionSetVersionEntityId") Long questionSetVersionEntityId);
 
     @Transactional // PermissionsController
     Integer deleteOneById(Long id);
@@ -36,32 +36,32 @@ public interface PermissionsRepositoryDAO extends JpaRepository<PermissionsEntit
     Integer deleteAllByAuditeeAndQuestionSetVersionEntityAndTypeNumber(String auditee, QuestionSetVersionEntity foundQuestionSetVersionEntity, Long typeNumber);
 
     @Query("SELECT p FROM PermissionsEntity p WHERE p.userName = :userName AND p.typeNumber BETWEEN '9' AND 15")
-    Set<PermissionsEntity> getPrivateProfilePageQsets(String userName);
+    Set<PermissionsEntity> getPrivateProfilePageQsets(@Param("userName") String userName);
 
     @Query("SELECT p FROM PermissionsEntity p WHERE p.userName = :userName AND p.typeNumber = 9")
-    Set<PermissionsEntity> getPublicProfilePageQsets(String userName);
+    Set<PermissionsEntity> getPublicProfilePageQsets(@Param("userName") String userName);
 
     @Query("SELECT p FROM PermissionsEntity p WHERE p.typeNumber = 1 OR p.typeNumber = 2")
     Set<PermissionsEntity> getScoresPageQsets();
 
     // two permissions indicate if a user can see a friend's posted scores. UserEntity PublicProfile & FriendshipsEntity Privacy settings.
     @Query("SELECT p FROM PermissionsEntity p WHERE p.auditee = :friend AND p.typeNumber BETWEEN '11' AND '15' OR p.auditee = :friend AND p.typeNumber = '9'")
-    Set<PermissionsEntity> getNetworkContactScores(String friend);
+    Set<PermissionsEntity> getNetworkContactScores(@Param("friend") String friend);
 
     @Query("SELECT p FROM PermissionsEntity p WHERE p.userName = :userName AND p.auditee = :userName AND p.typeNumber = 3")
-    Set<PermissionsEntity> getPrivateProfilePageSelfMadeQsets(String userName);
+    Set<PermissionsEntity> getPrivateProfilePageSelfMadeQsets(@Param("userName") String userName);
 
     @Query("SELECT p FROM PermissionsEntity p WHERE p.userName = :userName AND p.auditee = :friend AND p.typeNumber BETWEEN '4' AND '8'")
-    Set<PermissionsEntity> getNetworkProfilePageQsets(String userName, String friend);
+    Set<PermissionsEntity> getNetworkProfilePageQsets(@Param("userName") String userName, @Param("friend") String friend);
 
     @Query("SELECT p FROM PermissionsEntity p WHERE p.userName = :userName AND p.auditee != :userName AND p.typeNumber BETWEEN '4' AND '8'")
-    Set<PermissionsEntity> getNetworkCreatedQsets(String userName);
+    Set<PermissionsEntity> getNetworkCreatedQsets(@Param("userName") String userName);
 
     @Query("SELECT p FROM PermissionsEntity p JOIN FETCH p.questionSetVersionEntity b WHERE b.id = :questionSetVersionEntityId AND p.auditee = :userName AND p.typeNumber = 16")
-    Set<PermissionsEntity> getAudits(String userName, Long questionSetVersionEntityId);
+    Set<PermissionsEntity> getAudits(@Param("userName") String userName, @Param("questionSetVersionEntityId") Long questionSetVersionEntityId);
 
     @Query("SELECT p FROM PermissionsEntity p JOIN FETCH p.questionSetVersionEntity b WHERE p.auditee = :userName AND p.typeNumber = 16")
-    Set<PermissionsEntity> getAuditsRecent(String userName);
+    Set<PermissionsEntity> getAuditsRecent(@Param("userName") String userName);
 
 
 //    TypeIndex	    score	viewer	            owner	    view group	        PermissionType

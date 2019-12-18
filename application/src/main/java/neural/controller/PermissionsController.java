@@ -41,26 +41,26 @@ public class PermissionsController extends AbstractRestController {
         this.userAnswersRepositoryDAO = userAnswersRepositoryDAO;
     }
 
-    // GET
-    @ApiOperation(value = "permissionsEntity")
-    @RequestMapping(value = "/{au}/{qsId}", method = RequestMethod.GET)
-    public ResponseEntity<PermissionsEntityDto> getPermissionsEntity(
-            @RequestHeader("Authorization") String token,
-            @PathVariable("au") final String auditee,
-            @PathVariable("qId") final Long questionSetVersionEntityId) {
-        String base64Credentials = token.substring("Basic".length()).trim();
-        byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
-        String credentials = new String(credDecoded, StandardCharsets.UTF_8);
+    // GET not used??
+    //@ApiOperation(value = "permissionsEntity")
+    //@RequestMapping(value = "/{au}/{qsId}", method = RequestMethod.GET)
+    //public ResponseEntity<PermissionsEntityDto> getPermissionsEntity(
+    //        @RequestHeader("Authorization") String token,
+    //        @PathVariable("au") final String auditee,
+    //        @PathVariable("qId") final Long questionSetVersionEntityId) {
+    //    String base64Credentials = token.substring("Basic".length()).trim();
+    //    byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
+    //    String credentials = new String(credDecoded, StandardCharsets.UTF_8);
         // credentials = username:password
-        final String[] values = credentials.split(":", 2);
-        String user = values[0];
+    //    final String[] values = credentials.split(":", 2);
+    //    String user = values[0];
 
-        PermissionsEntityDto permissionsEntityDto = permissionsEntityService.getPermissionsEntity(user, auditee, questionSetVersionEntityId);
-        if (permissionsEntityDto == null) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-        return ResponseEntity.ok(permissionsEntityDto);
-    }
+    //    PermissionsEntityDto permissionsEntityDto = permissionsEntityService.getPermissionsEntity(user, auditee, questionSetVersionEntityId);
+    //    if (permissionsEntityDto == null) {
+    //        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    //    }
+    //    return ResponseEntity.ok(permissionsEntityDto);
+    //}
 
     // POST/PATCH  SCORE permission. (Audit '16' permission below).
     @RequestMapping(value = "/sc/d{qsId}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)

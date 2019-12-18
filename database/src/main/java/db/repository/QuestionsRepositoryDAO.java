@@ -17,7 +17,7 @@ public interface QuestionsRepositoryDAO extends JpaRepository<QuestionsEntity, L
     QuestionsEntity findOneBySequenceNumberAndQuestionSetVersionEntityId(Long sequenceNumber, Long questionSetVersionEntityId);
 
     @Query("SELECT a FROM QuestionsEntity a JOIN FETCH a.questionSetVersionEntity b WHERE b.id = :questionSetVersionEntityId")
-    Set<QuestionsEntity> findStuff(Long questionSetVersionEntityId);
+    Set<QuestionsEntity> findStuff(@Param("questionSetVersionEntityId") Long questionSetVersionEntityId);
 
     // indexed parameter (first method parameter is indicated as ?1)
     @Query("SELECT MAX(sequenceNumber) FROM QuestionsEntity WHERE questionSetVersionEntityId = ?1")
@@ -30,7 +30,7 @@ public interface QuestionsRepositoryDAO extends JpaRepository<QuestionsEntity, L
     Integer deleteAllByQuestionSetVersionEntityId(Long questionSetVersionEntityId);
 
     @Query("SELECT a FROM QuestionsEntity a JOIN FETCH a.questionSetVersionEntity b WHERE b.id = :questionSetVersionEntityId AND a.sequenceNumber = 1")
-    QuestionsEntity findOneByQuestionSetVersionEntityId(Long questionSetVersionEntityId);
+    QuestionsEntity findOneByQuestionSetVersionEntityId(@Param("questionSetVersionEntityId") Long questionSetVersionEntityId);
 
     @Transactional
     Integer deleteOneById(Long id);

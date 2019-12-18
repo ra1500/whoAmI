@@ -34,14 +34,14 @@ public interface UserAnswersRepositoryDAO extends JpaRepository<UserAnswersEntit
     Long findUserScoresTotal(@Param("userName") String userName, @Param("auditee") String auditee, @Param("questionSetVersionEntityId") Long questionSetVersionEntityId);
 
     @Query("SELECT COUNT(distinct a.questionSetVersionEntity) FROM UserAnswersEntity a WHERE a.userName <> :userName AND auditee = :userName")
-    Long getCountAuditInvites(String userName);
+    Long getCountAuditInvites(@Param("userName") String userName);
 
     @Query("SELECT a FROM UserAnswersEntity a JOIN FETCH a.questionSetVersionEntity b WHERE a.userName <> :userName AND auditee = :userName AND b.id = :questionSetVersionEntityId")
-    Set<UserAnswersEntity> findAllByUserNameAndAuditeeDifferent(String userName, Long questionSetVersionEntityId);
+    Set<UserAnswersEntity> findAllByUserNameAndAuditeeDifferent(@Param("userName") String userName, @Param("questionSetVersionEntityId") Long questionSetVersionEntityId);
 
     // TODO provide the original user's answers also so that comparison is easy between original answer and the auditors answer
     @Query("SELECT a FROM UserAnswersEntity a JOIN a.questionSetVersionEntity b WHERE a.userName = :friend AND auditee = :user AND b.id = :questionSetVersionEntityId")
-    Set<UserAnswersEntity> findAuditDetails(String friend, String user, Long questionSetVersionEntityId);
+    Set<UserAnswersEntity> findAuditDetails(@Param("friend") String friend, @Param("user") String user, @Param("questionSetVersionEntityId") Long questionSetVersionEntityId);
 
     @Transactional
     Integer deleteAllByUserNameAndAuditeeAndQuestionSetVersionEntityId(String userName, String auditee, Long questionSetVersionEntityId);
