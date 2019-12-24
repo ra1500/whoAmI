@@ -10,8 +10,11 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.cors.CorsConfiguration;
@@ -39,13 +42,11 @@ public class LoginConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     CustomAuthenticationProvider customAuthProvider;
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.authenticationProvider(customAuthProvider);
     }
-
-    @Autowired
-    private MyBasicAuthenticationEntryPoint authenticationEntryPoint;
 
     @Bean
     public PasswordEncoder encoder() {return new BCryptPasswordEncoder();}
@@ -53,8 +54,12 @@ public class LoginConfig extends WebSecurityConfigurerAdapter {
     // CORS bean
     @Bean
     public WebMvcConfigurer corsConfigurer() {
+        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         final CorsConfiguration config = new CorsConfiguration();
+        config.setAllowCredentials(true);
+        config.setAllowedOrigins(Collections.singletonList("*"));
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "OPTIONS", "DELETE", "PATCH"));
+        source.registerCorsConfiguration("/**", config);
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
@@ -63,52 +68,35 @@ public class LoginConfig extends WebSecurityConfigurerAdapter {
         };
     }
 
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()  // cross-site request forgery. disabled for now. need to generate a code to feed into the html login form.
                 .authorizeRequests()
-                .antMatchers("/user/userId").permitAll() // login post
-                .antMatchers("/prm/sc/dc*").permitAll() // public profile page
-                //.antMatchers("/*").permitAll() // homepage?
-                .antMatchers("/**").permitAll() // gives all access without authentication
+                .antMatchers("/api/user/userId").permitAll() // login post
+                .antMatchers("/api/prm/sc/dc*").permitAll() // public profile page
+                .antMatchers("/api/*").permitAll() // Introduction page
+                .antMatchers("/*").permitAll() // homepage/index
+                .antMatchers("*.js", "*.jsx").permitAll()
+                .antMatchers(" *.ico").permitAll()
+                .antMatchers("/index.html").permitAll()
+                .antMatchers("/keystore/keystore.p12").permitAll()
+                //.antMatchers("/**").permitAll() // gives all access without authentication
                 .anyRequest().authenticated()
                 .and()
-                .httpBasic()
-                .authenticationEntryPoint(authenticationEntryPoint); //JSON response instead of full 401 error.
+                .httpBasic();
         //http
-        //        .addFilterAfter(new CustomFilter(), BasicAuthenticationFilter.class); //TODO
+        //         .addFilterAfter(new CustomFilter(), BasicAuthenticationFilter.class); //TODO
         http
                 .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.NEVER);
+                .sessionCreationPolicy(SessionCreationPolicy.NEVER);  //
         http
-                .cors(); // for CORS obviously
+                .cors();
+        // https SSL certificate use
+        //http
+        //        .requiresChannel()
+        //        .anyRequest()
+        //        .requiresSecure();
     }
 
-    @Component
-    public class MyBasicAuthenticationEntryPoint extends BasicAuthenticationEntryPoint {
-
-        //@Override
-        public void commence (HttpServletRequest request, HttpServletResponse response, AuthenticationException authEx)
-                throws IOException, ServletException {
-            response.addHeader("WWW-Authenticate", "Basic realm=" + getRealmName() + "");
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            PrintWriter writer = response.getWriter();
-            writer.println("HTTP Status 401 - " + authEx.getMessage());
-        }
-
-        @Override
-        public void afterPropertiesSet() throws Exception {
-            setRealmName("NeuralJuice");
-            super.afterPropertiesSet();
-        }
-    }
-
-    public class CustomFilter extends GenericFilterBean {
-        @Override
-        public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-            chain.doFilter(request, response);
-        }
-    }
 }
