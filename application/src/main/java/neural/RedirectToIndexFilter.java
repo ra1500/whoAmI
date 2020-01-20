@@ -26,6 +26,8 @@ public class RedirectToIndexFilter implements Filter {
         HttpServletRequest req = (HttpServletRequest) request;
         String requestURI = req.getRequestURI();
 
+
+
         if (requestURI.startsWith("/api") || requestURI.contains("swagger") || requestURI.contains("doc")) {
             if (!response.isCommitted()) {
                 chain.doFilter(request, response);
@@ -45,3 +47,5 @@ public class RedirectToIndexFilter implements Filter {
                 .forward(request, response);
     }
 }
+
+

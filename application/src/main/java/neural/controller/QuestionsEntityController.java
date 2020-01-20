@@ -162,4 +162,10 @@ public class QuestionsEntityController extends AbstractRestController {
         return ResponseEntity.ok(allDeleted);
     }
 
+            // for multiple files upload...
+           // return Arrays.asList(files)
+           // .stream()
+           //     .map(file -> uploadFile(file))
+           // .collect(Collectors.toList());
+
 }

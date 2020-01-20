@@ -77,9 +77,10 @@ public class UserEntityService {
 
     // POST a new user
     public UserEntityDto createUserEntity(final UserEntityDto userEntityDto) {
-        userEntityDto.setPublicProfile("Network");
-        UserEntity userEntity = userEntityRepository.saveAndFlush(userEntityDtoTransformer.generate(userEntityDto));
-        return userEntityDtoTransformer.generate(userEntity);
+            userEntityDto.setPublicProfile("Network");
+            UserEntity userEntity = userEntityRepository.saveAndFlush(userEntityDtoTransformer.generate(userEntityDto));
+            return userEntityDtoTransformer.generate(userEntity);
+
     }
 
     // PATCH

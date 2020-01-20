@@ -74,11 +74,13 @@ public class LoginConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()  // cross-site request forgery. disabled for now. need to generate a code to feed into the html login form.
                 .authorizeRequests()
                 .antMatchers("/api/user/userId").permitAll() // login post
+                .antMatchers("/api/user/signup").permitAll() // sign up
                 .antMatchers("/api/prm/sc/dc*").permitAll() // public profile page
                 .antMatchers("/api/*").permitAll() // Introduction page
                 .antMatchers("/*").permitAll() // homepage/index
                 .antMatchers("*.js", "*.jsx").permitAll()
-                .antMatchers(" *.ico").permitAll()
+                .antMatchers("*.ico").permitAll()
+                .antMatchers("/*.ico").permitAll()
                 .antMatchers("/index.html").permitAll()
                 .antMatchers("/keystore/keystore.p12").permitAll()
                 //.antMatchers("/**").permitAll() // gives all access without authentication

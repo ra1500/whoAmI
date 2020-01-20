@@ -33,7 +33,7 @@ public class UserEntity implements Serializable {
     private String password;
 
     @Column (length = 20)
-    private String publicProfile; // not boolean
+    private String publicProfile; // not boolean. permission for viewing user's public profile page on internet.
 
     @JsonIgnore
     @OneToMany(mappedBy = "userEntity", fetch = FetchType.EAGER)

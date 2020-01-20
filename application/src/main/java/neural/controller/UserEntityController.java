@@ -2,6 +2,7 @@ package neural.controller;
 
 // import Paths;     --use later if wish to have Paths restricted/opened via separate class--
 import core.services.UserEntityService;
+import db.repository.UserRepositoryDAO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import model.UserEntityDto;
@@ -23,9 +24,11 @@ import java.util.Base64;
 public class UserEntityController extends AbstractRestController {
 
     private UserEntityService userEntityService;
+    private UserRepositoryDAO userEntityRepository;
 
-    public UserEntityController(UserEntityService userEntityService) {
+    public UserEntityController(UserEntityService userEntityService, UserRepositoryDAO userEntityRepository) {
         this.userEntityService = userEntityService;
+        this.userEntityRepository = userEntityRepository;
     }
 
     // GET a user (and user's friendships). Excludes removed friends.
@@ -117,8 +120,10 @@ public class UserEntityController extends AbstractRestController {
 
         if (userEntityDto.getUserName().length() < 4 ) { return new ResponseEntity<>(HttpStatus.NO_CONTENT); };
         if (userEntityDto.getPassword().length() < 4 ) { return new ResponseEntity<>(HttpStatus.NO_CONTENT); };
-
-        UserEntityDto savedUserEntityDto = userEntityService.createUserEntity(userEntityDto);
+        if (userEntityRepository.findOneByUserName(userEntityDto.getUserName()) != null ) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+            UserEntityDto savedUserEntityDto = userEntityService.createUserEntity(userEntityDto);
         return ResponseEntity.ok(savedUserEntityDto);
     }
 
