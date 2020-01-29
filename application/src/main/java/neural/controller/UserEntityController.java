@@ -2,6 +2,7 @@ package neural.controller;
 
 // import Paths;     --use later if wish to have Paths restricted/opened via separate class--
 import core.services.UserEntityService;
+import db.entity.UserEntity;
 import db.repository.UserRepositoryDAO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -51,6 +52,48 @@ public class UserEntityController extends AbstractRestController {
         return ResponseEntity.ok(userEntityDto);
     }
 
+    // GET. friends of friend. a friend's userEntity (with friendships). Excludes removed & pending friends.
+    @ApiOperation(value = "getUserEntity")
+    @RequestMapping(value = "/q", method = RequestMethod.GET)
+    public ResponseEntity<UserEntityDto> getFriendsUserEntitySansRemovedFriends(
+            @RequestHeader("Authorization") String token,
+            @RequestParam("fid") final Long friendId){
+
+        String base64Credentials = token.substring("Basic".length()).trim();
+        byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
+        String credentials = new String(credDecoded, StandardCharsets.UTF_8);
+        // credentials = username:password
+        final String[] values = credentials.split(":", 2);
+        String user = values[0];
+
+        UserEntityDto userEntityDto = userEntityService.getFriendsUserEntityWithoutRemovedFriends(user, friendId);
+        userEntityDto.setPassword(null);
+        if (userEntityDto == null) { return new ResponseEntity<>(HttpStatus.NO_CONTENT); }
+        if (userEntityDto.getFriendsSet().isEmpty()) { return new ResponseEntity<>(HttpStatus.NO_CONTENT); };
+        return ResponseEntity.ok(userEntityDto);
+    }
+
+    // GET. friends of friend. a friend's userEntity (with friendships). Excludes removed & pending friends.
+    @ApiOperation(value = "getUserEntity")
+    @RequestMapping(value = "/t", method = RequestMethod.GET)
+    public ResponseEntity<UserEntityDto> getSetFriendsofFriend(
+            @RequestHeader("Authorization") String token,
+            @RequestParam("fid") final Long friendId){
+
+        String base64Credentials = token.substring("Basic".length()).trim();
+        byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
+        String credentials = new String(credDecoded, StandardCharsets.UTF_8);
+        // credentials = username:password
+        final String[] values = credentials.split(":", 2);
+        String user = values[0];
+
+        UserEntityDto userEntityDto = userEntityService.getSetofFriendsofFriend(user, friendId);
+        userEntityDto.setPassword(null);
+        if (userEntityDto == null) { return new ResponseEntity<>(HttpStatus.NO_CONTENT); }
+        if (userEntityDto.getFriendsSet().isEmpty()) { return new ResponseEntity<>(HttpStatus.NO_CONTENT); };
+        return ResponseEntity.ok(userEntityDto);
+    }
+
     // GET a user (and user's friendships). Removed friends only.
     @ApiOperation(value = "getUserEntity")
     @RequestMapping(value = "/r", method = RequestMethod.GET)
@@ -71,7 +114,7 @@ public class UserEntityController extends AbstractRestController {
         return ResponseEntity.ok(userEntityDto);
     }
 
-    // GET a user (without the friendships Set). so user knows publicProfile privacy setting.
+    // GET a user (without the friendships Set).
     @ApiOperation(value = "getUserEntity")
     @RequestMapping(value = "/pr", method = RequestMethod.GET)
     public ResponseEntity<UserEntityDto> getUserEntity2(
@@ -85,6 +128,28 @@ public class UserEntityController extends AbstractRestController {
         String user = values[0];
 
         UserEntityDto userEntityDto = userEntityService.getUserEntity(user);
+        userEntityDto.setPassword(null);
+        userEntityDto.setFriendsSet(null);
+        userEntityDto.setUserName(null);
+        if (userEntityDto == null) { return new ResponseEntity<>(HttpStatus.NO_CONTENT); }
+        return ResponseEntity.ok(userEntityDto);
+    }
+
+    // GET a friend's userEntity for profile text (without the friendships Set).
+    @ApiOperation(value = "getUserEntity")
+    @RequestMapping(value = "/ps", method = RequestMethod.GET)
+    public ResponseEntity<UserEntityDto> getFriendUserEntityProfile(
+            @RequestHeader("Authorization") String token,
+            @RequestParam("fid") final Long friendId){
+
+        String base64Credentials = token.substring("Basic".length()).trim();
+        byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
+        String credentials = new String(credDecoded, StandardCharsets.UTF_8);
+        // credentials = username:password
+        final String[] values = credentials.split(":", 2);
+        String user = values[0];
+
+        UserEntityDto userEntityDto = userEntityService.getFriendUserEntity(user, friendId);
         userEntityDto.setPassword(null);
         userEntityDto.setFriendsSet(null);
         userEntityDto.setUserName(null);
@@ -123,6 +188,9 @@ public class UserEntityController extends AbstractRestController {
         if (userEntityRepository.findOneByUserName(userEntityDto.getUserName()) != null ) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
+            userEntityDto.setOccupation("");
+            userEntityDto.setEducation(new Long(5));
+            userEntityDto.setRelationshipStatus(new Long(3));
             UserEntityDto savedUserEntityDto = userEntityService.createUserEntity(userEntityDto);
         return ResponseEntity.ok(savedUserEntityDto);
     }
@@ -200,4 +268,55 @@ public class UserEntityController extends AbstractRestController {
 
         return ResponseEntity.ok(patchedUserEntityDto);
     }
+
+    // POST a user's profile fields
+    @RequestMapping(value = "/pf", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<UserEntityDto> patchProfileFields(
+            @RequestHeader("Authorization") String token,
+            @Valid
+            @RequestBody
+            final UserEntityDto userEntityDto) {
+
+        // getting userName from Authorization token to secure endpoint.
+        String base64Credentials = token.substring("Basic".length()).trim();
+        byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
+        String credentials = new String(credDecoded, StandardCharsets.UTF_8);
+        // credentials = username:password
+        final String[] values = credentials.split(":", 2);
+        String user = values[0];
+        String password = values[1];
+
+        // setting/securing DTO userName as obtained from the Authorization token.
+        userEntityDto.setUserName(user);
+        userEntityDto.setPassword(password); // password cannot be null for a post/patch
+
+        UserEntityDto patchedUserEntityDto = userEntityService.patchProfileUserEntity(user, userEntityDto);
+        patchedUserEntityDto.setPassword(null); //outgoing dto shouldnt have the password.
+        patchedUserEntityDto.setFriendsSet(null);
+        patchedUserEntityDto.setCreated(null);
+        patchedUserEntityDto.setId(null);
+
+        return ResponseEntity.ok(patchedUserEntityDto);
+    }
+
+    // GET. Public Profile Text
+    @ApiOperation(value = "publicProfileText")
+    @RequestMapping(value = "/pp{id}", method = RequestMethod.GET)
+    public ResponseEntity<UserEntityDto> getPermissionsEntityUserScorePublicProfilePage(
+            @RequestParam("id") final String userName) {
+        UserEntityDto foundUserEntity = userEntityService.getUserEntity(userName);
+        if (foundUserEntity == null) { return new ResponseEntity<>(HttpStatus.NO_CONTENT); }
+
+        if (foundUserEntity.getPublicProfile().equals("Public") ) {
+            foundUserEntity.setFriendsSet(null);
+            foundUserEntity.setCreated(null);
+            foundUserEntity.setId(null);
+            foundUserEntity.setPassword(null);
+            foundUserEntity.setContactInfo(null);
+            foundUserEntity.setRelationshipStatus(null);
+            return ResponseEntity.ok(foundUserEntity);
+        }
+        else { return new ResponseEntity<>(HttpStatus.NO_CONTENT); }
+    }
+
 }

@@ -40,6 +40,13 @@ public class UserEntityDtoTransformer {
         dto.setUserName(userEntity.getUserName());
         dto.setPassword(userEntity.getPassword());
         dto.setPublicProfile(userEntity.getPublicProfile());
+        dto.setTitle(userEntity.getTitle());
+        dto.setBlurb(userEntity.getBlurb());
+        dto.setEducation(userEntity.getEducation());
+        dto.setOccupation(userEntity.getOccupation());
+        dto.setRelationshipStatus(userEntity.getRelationshipStatus());
+        dto.setLocation(userEntity.getLocation());
+        dto.setContactInfo(userEntity.getContactInfo());
         dto.setFriendsSet(getFriendshipsSetService(userEntity));
         return dto;
     }

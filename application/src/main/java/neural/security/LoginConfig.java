@@ -75,7 +75,9 @@ public class LoginConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/api/user/userId").permitAll() // login post
                 .antMatchers("/api/user/signup").permitAll() // sign up
-                .antMatchers("/api/prm/sc/dc*").permitAll() // public profile page
+                .antMatchers("/api/prm/sc/dc*").permitAll() // public profile stats
+                .antMatchers("/api/user/pp*").permitAll() // public profile text
+                .antMatchers("/api/files/pp*").permitAll() // public profile image
                 .antMatchers("/api/*").permitAll() // Introduction page
                 .antMatchers("/*").permitAll() // homepage/index
                 .antMatchers("*.js", "*.jsx").permitAll()

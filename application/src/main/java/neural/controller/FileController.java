@@ -31,12 +31,14 @@ import java.util.Set;
 public class FileController {
 
     private FileStorageService fileStorageService;
+    private UserRepositoryDAO userEntityRepository;
 
-    public FileController(FileStorageService fileStorageService) {
+    public FileController(FileStorageService fileStorageService, UserRepositoryDAO userEntityRepository) {
         this.fileStorageService = fileStorageService;
+        this.userEntityRepository = userEntityRepository;
     }
 
-    // GET image
+    // GET image -
     @RequestMapping(value = "/f", method = RequestMethod.GET)
     public ResponseEntity<Resource> downloadFile(
             @RequestHeader("Authorization") String token,
@@ -152,4 +154,74 @@ public class FileController {
                 .body(resource);
 
     }
+
+    // GET image of a contact's contact.
+    @RequestMapping(value = "/j", method = RequestMethod.GET)
+    public ResponseEntity<Resource> downloadFriendOfFriendImage(
+            @RequestHeader("Authorization") String token,
+            @RequestParam("fid") final Long friendId,
+            HttpServletRequest request) {
+
+        String base64Credentials = token.substring("Basic".length()).trim();
+        byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
+        String credentials = new String(credDecoded, StandardCharsets.UTF_8);
+        // credentials = username:password
+        final String[] values = credentials.split(":", 2);
+        String user = values[0];
+
+        Resource resource = fileStorageService.getFriendOfFriendImage(user, friendId);
+
+        // Try to determine file's content type
+        String contentType = null;
+        try {contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
+        } catch (IOException ex) {
+        }
+
+        // Fallback to the default content type if type could not be determined
+        if(contentType == null) {contentType = "application/octet-stream";}
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(contentType))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+                .body(resource);
+
+    }
+
+   // UserEntity foundUserEntity = userEntityRepository.findOneByUserName(userName);
+   //     if (foundUserEntity == null) { return new ResponseEntity<>(null); }
+
+
+   //     Resource resource = fileStorageService.loadFileAsResource(publicProfileImage);
+
+    // GET profile image Public Profile.
+    @RequestMapping(value = "/pp{id}", method = RequestMethod.GET)
+    public ResponseEntity<Resource> downloadPublicProfileImage(
+            @RequestParam("id") final String userName,
+            HttpServletRequest request) {
+
+            String imageSelected;
+            UserEntity foundUserEntity = userEntityRepository.findOneByUserName(userName);
+             if (foundUserEntity == null) { imageSelected = null;}
+             else if (foundUserEntity.getPublicProfile().equals("Public") ) {imageSelected = userName + "1.jpg"; }
+             else { imageSelected = null;}
+
+            Resource resource = fileStorageService.loadFileAsResource(imageSelected);
+
+            // Try to determine file's content type
+            String contentType = null;
+            try {
+                contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
+            } catch (IOException ex) {
+            }
+
+            // Fallback to the default content type if type could not be determined
+            if(contentType == null) {contentType = "application/octet-stream";}
+
+            return ResponseEntity.ok()
+                    .contentType(MediaType.parseMediaType(contentType))
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+                    .body(resource);
+
+        }
+
 }

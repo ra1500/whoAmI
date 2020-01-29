@@ -27,6 +27,27 @@ public class UserEntityDto implements Serializable {
     @JsonProperty("publicProfile")
     private String publicProfile;
 
+    @JsonProperty("title")
+    private String title;
+
+    @JsonProperty("blurb")
+    private String blurb;
+
+    @JsonProperty("education")
+    private Long education;
+
+    @JsonProperty("occupation")
+    private String occupation;
+
+    @JsonProperty("relationshipStatus")
+    private Long relationshipStatus;
+
+    @JsonProperty("location")
+    private String location;
+
+    @JsonProperty("contactInfo")
+    private String contactInfo;
+
     @JsonProperty("friendsList")
     private Set<FriendshipsEntity> friendsSet;
 
@@ -71,6 +92,62 @@ public class UserEntityDto implements Serializable {
 
     public void setPublicProfile(String publicProfile) {
         this.publicProfile = publicProfile;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getBlurb() {
+        return blurb;
+    }
+
+    public void setBlurb(String blurb) {
+        this.blurb = blurb;
+    }
+
+    public Long getEducation() {
+        return education;
+    }
+
+    public void setEducation(Long education) {
+        this.education = education;
+    }
+
+    public String getOccupation() {
+        return occupation;
+    }
+
+    public void setOccupation(String occupation) {
+        this.occupation = occupation;
+    }
+
+    public Long getRelationshipStatus() {
+        return relationshipStatus;
+    }
+
+    public void setRelationshipStatus(Long relationshipStatus) {
+        this.relationshipStatus = relationshipStatus;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public String getContactInfo() {
+        return contactInfo;
+    }
+
+    public void setContactInfo(String contactInfo) {
+        this.contactInfo = contactInfo;
     }
 
     public Set<FriendshipsEntity> getFriendsSet() {

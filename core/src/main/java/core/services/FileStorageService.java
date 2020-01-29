@@ -128,12 +128,44 @@ public class FileStorageService {
             Path defaultFilePath2 = this.fileStorageLocation.resolve(defaultImage2).normalize();
             Resource defaultResource2 = new UrlResource(defaultFilePath2.toUri());
 
-            if(resource.exists()) {
-                return resource;
-            } else if(defaultResource2.exists()) {
-                return defaultResource2; }
-            else {
-                throw new MyFileNotFoundException("File not found ");
+            if(resource.exists()) {return resource;
+            } else if(defaultResource2.exists()) {return defaultResource2; }
+            else {throw new MyFileNotFoundException("File not found ");
+            }
+
+        } catch (MalformedURLException ex) {
+            throw new MyFileNotFoundException("File not found ", ex);
+        }
+    }
+
+    // Get a friend of friend profile image
+    public Resource getFriendOfFriendImage(String user, Long friendId) {
+
+        // TODO: validate that contact is indeed a friend of a friend of the user
+        //UserEntity foundUserEntity = userRepositoryDAO.findOneByUserName(user);
+        //Set<FriendshipsEntity> foundFriendshipsEntities = foundUserEntity.getFriendsSet();
+        //foundFriendshipsEntities.removeIf(i -> !i.getId().equals(friendId));
+        String defaultImage = "profiledefault.jpg";
+        Path defaultFilePath = this.fileStorageLocation.resolve(defaultImage).normalize();
+        try {
+            Resource defaultResource = new UrlResource(defaultFilePath.toUri());
+            //if (foundFriendshipsEntities.isEmpty()) { return defaultResource; }
+
+            // TODO: also check that friendship isn't 'removed' from other side of friendship (so that people can't still see the profile image of someonw who removed them).
+
+            FriendshipsEntity foundFriendshipsEntity = friendshipsRepositoryDAO.findOneById(friendId);
+            String imageSelected = foundFriendshipsEntity.getFriend() + "1.jpg";
+
+            Path filePath = this.fileStorageLocation.resolve(imageSelected).normalize();
+            Resource resource = new UrlResource(filePath.toUri());
+
+            String defaultImage2 = "profiledefault.jpg";
+            Path defaultFilePath2 = this.fileStorageLocation.resolve(defaultImage2).normalize();
+            Resource defaultResource2 = new UrlResource(defaultFilePath2.toUri());
+
+            if(resource.exists()) {return resource;
+            } else if(defaultResource2.exists()) {return defaultResource2; }
+            else {throw new MyFileNotFoundException("File not found ");
             }
 
         } catch (MalformedURLException ex) {
