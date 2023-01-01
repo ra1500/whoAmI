@@ -17,6 +17,6 @@
   },
   "homepage": "https://github.com/ra1500/whoAmI#readme",
   "dependencies": {
-    "webpack": "^4.41.2"
+    "webpack": "^5.75.0"
   }
 }
